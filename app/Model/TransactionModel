@@ -1,0 +1,26 @@
+<?php
+
+declare(strict_types=1);
+
+namespace app\Model;
+
+class TransactionModel extends MainModel
+{
+    public function __construct(protected ?string $databaseName = null)
+    {
+        parent::__construct($databaseName);
+    }
+
+    public function createTransaction(string $tableName, array $sanitizedData): bool
+    {
+        if (empty($tableName)) {
+            throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
+        }
+
+        if (empty($sanitizedData)) {
+            throw new \InvalidArgumentException("No data specified; kindly provide missing array argument.");
+        }
+
+        return $this->dbTableOp->createRecords(tableName: $tableName, sanitizedData: $sanitizedData);
+    }
+}
