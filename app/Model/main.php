@@ -17,8 +17,19 @@ $databseName = $databaseNames[0];
  * 
  * *************************************************************************************
  */
-$ID = time();
-$newRecord = []; // Record must be passed as an associative array
+$admin_id = "adm" . time(); // Admin User
+// $customer_id = "cus" . time(); // Customer User
+
+$user_password = password_hash(password: readline("Enter Password: "), algo: PASSWORD_BCRYPT); // Admin or Customer
+
+$newRecord = [
+    "user_id" => $admin_id, "user_name" => "Samuel Aniogbu", "user_email" => "aniogbu.samuel@yahoo.com", "user_password" => $user_password, "user_role" => "ADMIN"
+];
+
+// $newRecord = [
+//     "user_id" => $customer_id, "user_name" => "Wendy Uche", "user_email" => "uche.wendy@yahoo.com", "user_password" => $user_password
+// ];
+
 $tableName = "users";
 $conn = new UserModel(databaseName: $databaseName);
 

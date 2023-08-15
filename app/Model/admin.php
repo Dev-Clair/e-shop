@@ -43,46 +43,47 @@ if ($dbConn->query($sql_query)) {
  */
 
 $usersTable = "users";
-$usersTableFields = "`userID` INT PRIMARY KEY,
-                     `name` VARCHAR(150) NOT NULL,
-                     `email` VARCHAR(150) UNIQUE NOT NULL,
-                     `password` VARCHAR(255) NOT NULL,
-                     `role` ENUM('ADMIN', 'CUSTOMER') DEFAULT 'CUSTOMER'";
+$usersTableFields = "`user_id` INT PRIMARY KEY,
+                     `user_name` VARCHAR(150) NOT NULL,
+                     `user_email` VARCHAR(150) UNIQUE NOT NULL,
+                     `user_password` VARCHAR(255) NOT NULL,
+                     `user_role` ENUM('ADMIN', 'CUSTOMER') DEFAULT 'CUSTOMER',
+                     `user_account_status` ENUM('Active', 'Inactive') DEFAULT 'Active'";
 
 $booksTable = "books";
-$booksTableFields = "`bookID` INT PRIMARY KEY,
-                     `title` VARCHAR(150) NOT NULL,
-                     `author` VARCHAR(150) NOT NULL,
-                     `description` TEXT NOT NULL,
-                     `price` DECIMAL(10, 2) NOT NULL,
-                     `coverImage` BLOB,
-                     `publicationDate` DATE";
+$booksTableFields = "`book_id` INT PRIMARY KEY,
+                     `book_title` VARCHAR(150) NOT NULL,
+                     `book_author` VARCHAR(150) NOT NULL,
+                     `book_description` TEXT NOT NULL,
+                     `book_price` DECIMAL(10, 2) NOT NULL,
+                     `book_qty` INT NOT NULL UNSIGNED DEFAULT 0,
+                     `book_cover_image` BLOB,
+                     `book_publication_date` DATE";
 
 $ordersTable = "orders";
-$ordersTableFields = "`orderID` INT PRIMARY KEY,
-                      `userID` INT NOT NULL,
-                      `orderQty` INT NOT NULL,
-                      `orderAmt` DECIMAL(10, 2) NOT NULL,
-                      `orderDate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                      FOREIGN KEY (`userID`) REFERENCES users(`userID`)";
+$ordersTableFields = "`order_id` INT PRIMARY KEY,
+                      `user_id` INT NOT NULL,
+                      `order_qty` INT NOT NULL,
+                      `order_amt` DECIMAL(10, 2) NOT NULL,
+                      `order_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                      FOREIGN KEY (`user_id) REFERENCES users(`user_id`)";
 
 $cartItemsTable = "cartitems";
-$cartItemsTableFields = "`cartItemID` INT AUTO_INCREMENT PRIMARY KEY,
-                         `userID` INT NOT NULL,
-                         `bookID` INT NOT NULL,
-                         `cartQty` INT NOT NULL,
-                         `cartAmt` DECIMAL(10, 2) NOT NULL,
-                         FOREIGN KEY (`userID`) REFERENCES users(`userID`),
-                         FOREIGN KEY (`bookID`) REFERENCES books(`bookID`)";
-
+$cartItemsTableFields = "`cart_item_id` INT AUTO_INCREMENT PRIMARY KEY,
+                         `user_id` INT NOT NULL,
+                         `book_id` INT NOT NULL,
+                         `cart_qty` INT NOT NULL,
+                         `cart_amt` DECIMAL(10, 2) NOT NULL,
+                         FOREIGN KEY (`user_id`) REFERENCES users(`user_id`),
+                         FOREIGN KEY (`book_id`) REFERENCES books(`book_id`)";
 
 $returnedItemsTable = "returns";
-$returnedItemsTableFields = "`returnID` INT AUTO_INCREMENT PRIMARY KEY,
-                             `userID` INT NOT NULL,
-                             `orderID` INT NOT NULL,
-                             `returnDate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                             FOREIGN KEY (`userID`) REFERENCES users(`userID`),
-                             FOREIGN KEY (`orderID`) REFERENCES orders(`orderID`)";
+$returnedItemsTableFields = "`return_id` INT AUTO_INCREMENT PRIMARY KEY,
+                             `user_id` INT NOT NULL,
+                             `order_id` INT NOT NULL,
+                             `return_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                             FOREIGN KEY (`user_id`) REFERENCES users(`user_id`),
+                             FOREIGN KEY (`order_id`) REFERENCES orders(`order_id`)";
 
 $databaseTables = [
     $usersTable => $usersTableFields,

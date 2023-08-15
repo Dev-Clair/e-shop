@@ -25,4 +25,32 @@ class UserController extends AbsController
             'pageTitle' => 'e-shop Profile'
         ]);
     }
+
+    public function userRegistration()
+    {
+    }
+
+    public function userLogin()
+    {
+    }
+
+    public function userLogout()
+    {
+    }
+
+    public function retrieveUserInfo()
+    {
+    }
+
+    public function verifyUserInfo()
+    {
+    }
+
+    public function updateUserInfo()
+    {
+    }
+
+    public function userAccountStatus()
+    {
+    }
 }

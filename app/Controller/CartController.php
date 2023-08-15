@@ -12,7 +12,7 @@ use app\View\View;
 class CartController extends AbsController
 {
     protected string $tableName = "books";
-    protected string $fieldName = "BookID";
+    protected string $fieldName = "bookID";
     protected UserModel $userModel;
     protected BookModel $bookModel;
     protected CartModel $cartModel;
@@ -26,7 +26,7 @@ class CartController extends AbsController
 
     private function modifyStock($itemQty, $fieldValue): void
     {
-        $bookModel = $this->bookModel->updateBook(tableName: $this->tableName, sanitizedData: ["BookQty" => "BookQty" - $itemQty], fieldName: $this->fieldName, fieldValue: $fieldValue);
+        $bookModel = $this->bookModel->updateBook(tableName: $this->tableName, sanitizedData: ["book_qty" => "book_qty - $itemQty"], fieldName: $this->fieldName, fieldValue: $fieldValue);
     }
 
     protected function validateStock(mixed $fieldValue): bool
@@ -35,7 +35,7 @@ class CartController extends AbsController
     }
 
     protected function confirmStockQty(mixed $fieldValue): bool
-    {;
+    {
         return $this->bookModel->retrieveBookValue(tableName: $this->tableName, fieldName: $this->fieldName, fieldValue: $fieldValue) > 0;
     }
 

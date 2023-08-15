@@ -5,15 +5,18 @@ declare(strict_types=1);
 namespace app\Controller;
 
 use app\Model\BookModel;
+use app\Model\CartModel;
 use app\View\View;
 
 class BookController extends AbsController
 {
     protected BookModel $bookModel;
+    protected CartModel $cartModel;
 
-    public function __construct(BookModel $bookModel)
+    public function __construct(BookModel $bookModel, CartModel $cartModel)
     {
         $this->bookModel = new $bookModel(databaseName: "eshop");
+        $this->cartModel = new $cartModel(databaseName: "eshop");
     }
 
     public function index()
@@ -28,14 +31,18 @@ class BookController extends AbsController
         ]);
     }
 
-    public function create()
+    public function addToCart()
+    {
+    }
+
+    public function newBook()
     {
         $formAction = '/e-shop/store';
         $pageTitle = "Add Book";
         return View::make('e-shop/create', ['formAction' => $formAction, 'pageTitle' => $pageTitle]);
     }
 
-    public function store()
+    public function storeBook()
     {
         if (filter_has_var(INPUT_POST, 'submitcreateBook')) {
 
@@ -57,7 +64,7 @@ class BookController extends AbsController
         }
     }
 
-    public function edit()
+    public function editBook()
     {
         $fieldName = "ID";
         $fieldValue = (int)$_GET['BookID'];
@@ -75,16 +82,16 @@ class BookController extends AbsController
                 $bookID = array_key_first($_POST['updateBook']);
 
                 // Retrieve and pass $_POST['updateBook'] value to validateUpdate method
-                $this->validateUpdateAction(bookID: $bookID);
+                $this->validateUpdateBookAction(bookID: $bookID);
             }
         }
 
         if (filter_has_var(INPUT_POST, 'deleteBook')) {
-            $this->delete();
+            $this->deleteBook();
         }
     }
 
-    protected function validateUpdateAction(int|string $bookID)
+    protected function validateUpdateBookAction(int|string $bookID)
     {
         $fieldName = "ID";
         $fieldValue = $bookID;
@@ -101,7 +108,7 @@ class BookController extends AbsController
         exit();
     }
 
-    protected function delete()
+    protected function deleteBook()
     {
         if (isset($_POST['deleteBook']) && is_array($_POST['deleteBook'])) {
             $bookID = array_key_first($_POST['deleteBook']);
@@ -134,7 +141,7 @@ class BookController extends AbsController
         exit();
     }
 
-    public function update()
+    public function updateBook()
     {
         if (filter_has_var(INPUT_POST, 'submiteditBook')) {
 
@@ -161,7 +168,7 @@ class BookController extends AbsController
         }
     }
 
-    public function search()
+    public function searchBook()
     {
         if (filter_has_var(INPUT_POST, 'searchBook')) {
 
@@ -173,12 +180,12 @@ class BookController extends AbsController
 
             if ($validateStatus === true) {
                 $record = $this->bookModel->retrieveSingleBook(tableName: "active", fieldName: $fieldName, fieldValue: $fieldValue);
-                $successAlertMsg = "&#9742  Book:   " . $record['BookID'];
+                $successAlertMsg = "&#128366; Book:   " . $record['BookID'];
                 $_SESSION['successAlertMsg'] = $successAlertMsg;
                 header('Location: /e-shop');
                 exit();
             };
-            $errorAlertMsg = "No Book Record found for &#9742 $searchInput";
+            $errorAlertMsg = "No Book Record found for &#128366; $searchInput";
             $_SESSION['errorAlertMsg'] = $errorAlertMsg;
             header('Location: /e-shop');
             exit();
