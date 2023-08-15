@@ -20,7 +20,7 @@ class HomeController extends AbsController
     {
         $books = $this->bookModel->retrieveAllBooks();
 
-        return View::make('index', [
+        return $this->view::make('index', [
             'book' => array_slice($books, 0, 20),
             'pageTitle' => 'e-shop Home',
             'searchFormAction' => '/e-shop/search',

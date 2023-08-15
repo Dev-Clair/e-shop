@@ -20,7 +20,7 @@ class UserController extends AbsController
     {
         $users = $this->userModel->retrieveAllUsers();
 
-        return View::make('index', [
+        return $this->view::make('index', [
             'users' => $users,
             'pageTitle' => 'e-shop Profile'
         ]);

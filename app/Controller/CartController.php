@@ -56,7 +56,7 @@ class CartController extends AbsController
 
         $cartItems[] = $newCartItems;
 
-        return View::make('index', [
+        return $this->view::make('index', [
             'cartItems' => $cartItems,
             'pageTitle' => 'e-shop Cart'
         ]);

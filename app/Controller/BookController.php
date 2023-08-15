@@ -20,7 +20,7 @@ class BookController extends AbsController
     {
         $books = $this->bookModel->retrieveAllBooks(tableName: "books", fetchMode: "1");
 
-        return View::make('index', [
+        return $this->view::make('index', [
             'books' => array_slice($books, 0, 50),
             'pageTitle' => 'e-shop Home',
             'searchFormAction' => '/e-shop/books/search',
@@ -57,7 +57,7 @@ class BookController extends AbsController
     {
         $formAction = '/e-shop/store';
         $pageTitle = "Add Book";
-        return View::make('e-shop/books/create', ['formAction' => $formAction, 'pageTitle' => $pageTitle]);
+        return $this->view::make('e-shop/books/create', ['formAction' => $formAction, 'pageTitle' => $pageTitle]);
     }
 
     public function storeBook()
@@ -88,7 +88,7 @@ class BookController extends AbsController
         $book = $this->bookModel->retrieveSingleBook(fieldValue: $fieldValue);
         $formAction = '/e-shop/books/update';
         $pageTitle = "Update Book";
-        return View::make('/e-shop/books/edit', ['book' => $book, 'formAction' => $formAction, 'pageTitle' => $pageTitle]);
+        return $this->view::make('/e-shop/books/edit', ['book' => $book, 'formAction' => $formAction, 'pageTitle' => $pageTitle]);
     }
 
     public function userAction()
