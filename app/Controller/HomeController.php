@@ -9,10 +9,16 @@ use app\View\View;
 
 class HomeController extends AbsController
 {
+    protected BookModel $bookModel;
+
+    public function __construct(BookModel $bookModel)
+    {
+        $this->bookModel = new $bookModel(databaseName: "eshop");
+    }
+
     public function index()
     {
-        $bookModel = new BookModel(databaseName: "eshop");
-        $books = $bookModel->retrieveAllBooks(tableName: "stock", fetchMode: "1");
+        $books = $this->bookModel->retrieveAllBooks(tableName: "books", fetchMode: "1");
 
         return View::make('index', [
             'book' => array_slice($books, 0, 20),
