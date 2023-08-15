@@ -17,39 +17,82 @@ class UserController extends AbsController
 
     public function index()
     {
+        $verifyUserAction = $_GET['register'];
+
+        $welcomePageView = isset($verifyUserAction)
+            ?
+            $this->view::make(
+                'login',
+                [
+                    'formAction' => '/e-shop/users/register',
+                    'pageTitle' => 'e-shop Log in'
+                ]
+            )
+            :
+            $this->view::make(
+                'register',
+                [
+                    'formAction' => '/e-shop/users/register',
+                    'pageTitle' => 'e-shop Register'
+                ]
+            );
+
+        return $welcomePageView;
+    }
+
+    public function editUser()
+    {
+        return $this->view::make(
+            'edit',
+            [
+                'formAction' => '/e-shop/users/update',
+                'pageTitle' => 'e-shop Update Account'
+            ]
+        );
+    }
+
+    public function showUsers()
+    {
         $users = $this->userModel->retrieveAllUsers();
 
-        return $this->view::make('index', [
-            'users' => $users,
-            'pageTitle' => 'e-shop Profile'
-        ]);
+        return $this->view::make(
+            'show',
+            [
+                'users' => $users,
+                'pageTitle' => 'e-shop e-shop User Accounts'
+            ]
+        );
     }
 
-    public function userRegistration()
+    public function updateUser()
     {
     }
 
-    public function userLogin()
+    public function register()
     {
     }
 
-    public function userLogout()
+    public function login()
     {
     }
 
-    public function retrieveUserInfo()
+    public function logout()
     {
     }
 
-    public function verifyUserInfo()
+    private function verifyAdmin()
     {
     }
 
-    public function updateUserInfo()
+    protected function retrieveUserInfo()
     {
     }
 
-    public function userAccountStatus()
+    protected function verifyUserInfo()
+    {
+    }
+
+    protected function setUserAccountStatus()
     {
     }
 }
