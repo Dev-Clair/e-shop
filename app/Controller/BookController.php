@@ -9,10 +9,16 @@ use app\View\View;
 
 class BookController extends AbsController
 {
+    protected BookModel $bookModel;
+
+    public function __construct(BookModel $bookModel)
+    {
+        $this->bookModel = new $bookModel(databaseName: "eshop");
+    }
+
     public function index()
     {
-        $bookModel = new BookModel(databaseName: "books");
-        $books = $bookModel->retrieveAllBooks(tableName: "active", fetchMode: "1");
+        $books = $this->bookModel->retrieveAllBooks(tableName: "books", fetchMode: "1");
 
         return View::make('index', [
             'books' => array_slice($books, 0, 50),
@@ -35,9 +41,9 @@ class BookController extends AbsController
 
             $sanitizedInputs = [];
 
-            $bookModel = new BookModel(databaseName: "books");
+
             $sanitizedData = $sanitizedInputs;
-            $createStatus = $bookModel->createBook(tableName: "active", sanitizedData: $sanitizedData);
+            $createStatus = $this->bookModel->createBook(tableName: "books", sanitizedData: $sanitizedData);
             if ($createStatus === true) {
                 $successAlertMsg = "New Book Added";
                 $_SESSION['successAlertMsg'] = $successAlertMsg;
@@ -53,10 +59,9 @@ class BookController extends AbsController
 
     public function edit()
     {
-        $bookModel = new BookModel(databaseName: "books");
         $fieldName = "ID";
         $fieldValue = (int)$_GET['BookID'];
-        $book = $bookModel->retrieveSingleBook(tableName: "active", fieldName: $fieldName, fieldValue: $fieldValue);
+        $book = $this->bookModel->retrieveSingleBook(tableName: "books", fieldName: $fieldName, fieldValue: $fieldValue);
         $formAction = '/books/update';
         $pageTitle = "Update Book";
         return View::make('books/edit', ['book' => $book, 'formAction' => $formAction, 'pageTitle' => $pageTitle]);
@@ -83,8 +88,7 @@ class BookController extends AbsController
     {
         $fieldName = "ID";
         $fieldValue = $bookID;
-        $booksModel = new BookModel(databaseName: "Books");
-        $validateStatus = $booksModel->validateBook(tableName: "active", fieldName: $fieldName, fieldValue: $fieldValue);
+        $validateStatus = $this->bookModel->validateBook(tableName: "books", fieldName: $fieldName, fieldValue: $fieldValue);
 
         if ($validateStatus === true) {
             header('Location: /books/edit?BookID=' . $bookID);
@@ -106,12 +110,11 @@ class BookController extends AbsController
         $fieldName = "ID";
         $fieldValue = $bookID;
 
-        $booksModel = new BookModel(databaseName: "Books");
 
-        $validateStatus = $booksModel->validateBook(tableName: "active", fieldName: $fieldName, fieldValue: $fieldValue);
+        $validateStatus = $this->bookModel->validateBook(tableName: "active", fieldName: $fieldName, fieldValue: $fieldValue);
 
         if ($validateStatus === true) {
-            $deleteStatus = $booksModel->deleteBook(tableName: "active", fieldName: $fieldName, fieldValue: $fieldValue);
+            $deleteStatus = $this->bookModel->deleteBook(tableName: "active", fieldName: $fieldName, fieldValue: $fieldValue);
 
             if ($deleteStatus === true) {
                 $successAlertMsg = "Book Deleted";
@@ -142,8 +145,7 @@ class BookController extends AbsController
             $fieldValue = $_POST['id'];
             var_dump($fieldValue);
 
-            $booksModel = new BookModel(databaseName: "Books");
-            $updateStatus = $booksModel->updateBook(tableName: "active", sanitizedData: $sanitizedData, fieldName: $fieldName, fieldValue: $fieldValue);
+            $updateStatus = $this->bookModel->updateBook(tableName: "books", sanitizedData: $sanitizedData, fieldName: $fieldName, fieldValue: $fieldValue);
 
             if ($updateStatus === true) {
                 $successAlertMsg = "Book Record Updated";
@@ -162,16 +164,15 @@ class BookController extends AbsController
     public function search()
     {
         if (filter_has_var(INPUT_POST, 'searchBook')) {
-            $booksModel = new bookModel(databaseName: "Books");
 
             $searchInput = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
             $fieldName = "BookID";
             $fieldValue = $searchInput;
-            $validateStatus = $booksModel->validateBook(tableName: "active", fieldName: $fieldName, fieldValue: $fieldValue);
+            $validateStatus = $this->bookModel->validateBook(tableName: "active", fieldName: $fieldName, fieldValue: $fieldValue);
 
             if ($validateStatus === true) {
-                $record = $booksModel->retrieveSingleBook(tableName: "active", fieldName: $fieldName, fieldValue: $fieldValue);
+                $record = $this->bookModel->retrieveSingleBook(tableName: "active", fieldName: $fieldName, fieldValue: $fieldValue);
                 $successAlertMsg = "&#9742  Book:   " . $record['BookID'];
                 $_SESSION['successAlertMsg'] = $successAlertMsg;
                 header('Location: /e-shop');

@@ -4,42 +4,49 @@ declare(strict_types=1);
 
 namespace app\Controller;
 
+use app\Model\UserModel;
 use app\Model\BookModel;
-use app\Model\TransactionModel;
+use app\Model\CartModel;
 use app\View\View;
 
 class CartController extends AbsController
 {
-    protected string $tableName = "stock";
+    protected string $tableName = "books";
     protected string $fieldName = "BookID";
+    protected UserModel $userModel;
+    protected BookModel $bookModel;
+    protected CartModel $cartModel;
+
+    public function __construct(UserModel $userModel, BookModel $bookModel, CartModel $cartModel)
+    {
+        $this->userModel = new $userModel(databaseName: "eshop");
+        $this->bookModel = new $bookModel(databaseName: "eshop");
+        $this->cartModel = new $cartModel(databaseName: "eshop");
+    }
 
     private function modifyStock($itemQty, $fieldValue): void
     {
-        $bookModel = new BookModel("eshop");
-
-        $bookModel = $bookModel->updateBook(tableName: $this->tableName, sanitizedData: ["BookQty" => "BookQty" - $itemQty], fieldName: $this->fieldName, fieldValue: $fieldValue);
+        $bookModel = $this->bookModel->updateBook(tableName: $this->tableName, sanitizedData: ["BookQty" => "BookQty" - $itemQty], fieldName: $this->fieldName, fieldValue: $fieldValue);
     }
 
-    protected function validateStock(BookModel $bookModel, $fieldValue): bool
+    protected function validateStock(mixed $fieldValue): bool
     {
-        return  $bookModel->validateBook(tableName: $this->tableName, fieldName: $this->fieldName, fieldValue: $fieldValue);
+        return  $this->bookModel->validateBook(tableName: $this->tableName, fieldName: $this->fieldName, fieldValue: $fieldValue);
     }
 
-    protected function confirmStockQty(BookModel $bookModel, $fieldValue): bool
+    protected function confirmStockQty(mixed $fieldValue): bool
     {;
-        return $bookModel->retrieveBookValue(tableName: $this->tableName, fieldName: $this->fieldName, fieldValue: $fieldValue) > 0;
+        return $this->bookModel->retrieveBookValue(tableName: $this->tableName, fieldName: $this->fieldName, fieldValue: $fieldValue) > 0;
     }
 
     public function index()
     {
-        $bookModel = new BookModel("eshop");
-
         $cartItems = [];
 
         $fieldValue = $_GET['BookID'];
 
-        if ($this->validateStock(bookModel: $bookModel, fieldValue: $fieldValue) && $this->confirmStockQty(bookModel: $bookModel, fieldValue: $fieldValue)) {
-            $newCartItem = $bookModel->retrieveSingleBook(tableName: $this->tableName, fieldName: $this->fieldName, fieldValue: $fieldValue);
+        if ($this->validateStock(fieldValue: $fieldValue) && $this->confirmStockQty(fieldValue: $fieldValue)) {
+            $newCartItem = $this->bookModel->retrieveSingleBook(tableName: $this->tableName, fieldName: $this->fieldName, fieldValue: $fieldValue);
 
             $cartItems[] = $newCartItem;
         }
@@ -55,10 +62,9 @@ class CartController extends AbsController
         if (filter_has_var(INPUT_POST, 'proceedToCheckOut')) {
             $formData = $_POST;
 
-            $transactionModel = new TransactionModel(databaseName: "eshop");
-            $transactionStatus = $transactionModel->createTransaction(tableName: "sold", sanitizedData: $formData);
+            $orderStatus = $this->cartModel->createOrder(tableName: "sold", sanitizedData: $formData);
 
-            if ($transactionStatus === true) {
+            if ($orderStatus === true) {
                 foreach ($formData as $form) {
                     // $this->modifyStock(itemQty: $form[], fieldValue: $form[]);
                 }
