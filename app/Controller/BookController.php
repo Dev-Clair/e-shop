@@ -4,19 +4,16 @@ declare(strict_types=1);
 
 namespace app\Controller;
 
+use app\Model\UserModel;
 use app\Model\BookModel;
 use app\Model\CartModel;
 use app\View\View;
 
 class BookController extends AbsController
 {
-    protected BookModel $bookModel;
-    protected CartModel $cartModel;
-
-    public function __construct(BookModel $bookModel, CartModel $cartModel)
+    public function __construct(?UserModel $userModel = null, protected BookModel $bookModel, protected CartModel $cartModel)
     {
-        $this->bookModel = new $bookModel(databaseName: "eshop");
-        $this->cartModel = new $cartModel(databaseName: "eshop");
+        parent::__construct($userModel, $bookModel, $cartModel);
     }
 
     public function index()
@@ -26,8 +23,8 @@ class BookController extends AbsController
         return View::make('index', [
             'books' => array_slice($books, 0, 50),
             'pageTitle' => 'e-shop Home',
-            'searchFormAction' => '/e-shop/search',
-            'tableFormAction' => '/e-shop/userAction'
+            'searchFormAction' => '/e-shop/books/search',
+            'tableFormAction' => '/e-shop/books/userAction'
         ]);
     }
 
@@ -39,7 +36,7 @@ class BookController extends AbsController
     {
         $formAction = '/e-shop/store';
         $pageTitle = "Add Book";
-        return View::make('e-shop/create', ['formAction' => $formAction, 'pageTitle' => $pageTitle]);
+        return View::make('e-shop/books/create', ['formAction' => $formAction, 'pageTitle' => $pageTitle]);
     }
 
     public function storeBook()
@@ -54,12 +51,12 @@ class BookController extends AbsController
             if ($createStatus === true) {
                 $successAlertMsg = "New Book Added";
                 $_SESSION['successAlertMsg'] = $successAlertMsg;
-                header('Location: /e-shop');
+                header('Location: /e-shop/books');
                 exit();
             }
             $errorAlertMsg = "Error! Cannot Add Book";
             $_SESSION['errorAlertMsg'] = $errorAlertMsg;
-            header('Location: /e-shop');
+            header('Location: /e-shop/books');
             exit();
         }
     }
@@ -69,9 +66,9 @@ class BookController extends AbsController
         $fieldName = "ID";
         $fieldValue = (int)$_GET['BookID'];
         $book = $this->bookModel->retrieveSingleBook(tableName: "books", fieldName: $fieldName, fieldValue: $fieldValue);
-        $formAction = '/books/update';
+        $formAction = '/e-shop/books/update';
         $pageTitle = "Update Book";
-        return View::make('books/edit', ['book' => $book, 'formAction' => $formAction, 'pageTitle' => $pageTitle]);
+        return View::make('/e-shop/books/edit', ['book' => $book, 'formAction' => $formAction, 'pageTitle' => $pageTitle]);
     }
 
     public function userAction()
@@ -98,13 +95,13 @@ class BookController extends AbsController
         $validateStatus = $this->bookModel->validateBook(tableName: "books", fieldName: $fieldName, fieldValue: $fieldValue);
 
         if ($validateStatus === true) {
-            header('Location: /books/edit?BookID=' . $bookID);
+            header('Location: /e-shop/books/edit?BookID=' . $bookID);
             exit();
         }
 
         $errorAlertMsg = "Error! Book $bookID does not exist";
         $_SESSION['errorAlertMsg'] = $errorAlertMsg;
-        header('Location: /e-shop');
+        header('Location: /e-shop/books');
         exit();
     }
 
@@ -126,18 +123,18 @@ class BookController extends AbsController
             if ($deleteStatus === true) {
                 $successAlertMsg = "Book Deleted";
                 $_SESSION['successAlertMsg'] = $successAlertMsg;
-                header('Location: /e-shop');
+                header('Location: /e-shop/books');
                 exit();
             }
             $errorAlertMsg = "Error! Cannot Delete Book $fieldValue";
             $_SESSION['errorAlertMsg'] = $errorAlertMsg;
-            header('Location: /e-shop');
+            header('Location: /e-shop/books');
             exit();
         }
 
         $errorAlertMsg = "Error! Book $bookID does not exist";
         $_SESSION['errorAlertMsg'] = $errorAlertMsg;
-        header('Location: /e-shop');
+        header('Location: /e-shop/books');
         exit();
     }
 
@@ -157,13 +154,13 @@ class BookController extends AbsController
             if ($updateStatus === true) {
                 $successAlertMsg = "Book Record Updated";
                 $_SESSION['successAlertMsg'] = $successAlertMsg;
-                header('Location: /e-shop');
+                header('Location: /e-shop/books');
                 exit();
             }
 
             $errorAlertMsg = "Error! Cannot Update Book $fieldValue";
             $_SESSION['errorAlertMsg'] = $errorAlertMsg;
-            header('Location: /e-shop');
+            header('Location: /e-shop/books');
             exit();
         }
     }
@@ -182,12 +179,12 @@ class BookController extends AbsController
                 $record = $this->bookModel->retrieveSingleBook(tableName: "active", fieldName: $fieldName, fieldValue: $fieldValue);
                 $successAlertMsg = "&#128366; Book:   " . $record['BookID'];
                 $_SESSION['successAlertMsg'] = $successAlertMsg;
-                header('Location: /e-shop');
+                header('Location: /e-shop/books');
                 exit();
             };
             $errorAlertMsg = "No Book Record found for &#128366; $searchInput";
             $_SESSION['errorAlertMsg'] = $errorAlertMsg;
-            header('Location: /e-shop');
+            header('Location: /e-shop/books');
             exit();
         }
     }

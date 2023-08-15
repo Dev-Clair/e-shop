@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace app\Controller;
 
+use app\Model\UserModel;
 use app\Model\BookModel;
+use app\Model\CartModel;
 use app\View\View;
 
 class HomeController extends AbsController
 {
-    protected BookModel $bookModel;
-
-    public function __construct(BookModel $bookModel)
+    public function __construct(protected UserModel $userModel, protected BookModel $bookModel, protected CartModel $cartModel)
     {
-        $this->bookModel = new $bookModel(databaseName: "eshop");
+        parent::__construct($userModel, $bookModel, $cartModel);
     }
 
     public function index()

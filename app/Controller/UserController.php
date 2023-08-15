@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace app\Controller;
 
 use app\Model\UserModel;
+use app\Model\BookModel;
+use app\Model\CartModel;
 use app\View\View;
 
 class UserController extends AbsController
 {
-    protected UserModel $userModel;
-
-    public function __construct(UserModel $userModel)
+    public function __construct(protected UserModel $userModel, ?BookModel $bookModel = null, protected CartModel $cartModel)
     {
-        $this->userModel = new $userModel(databaseName: "eshop");
+        parent::__construct($userModel, $bookModel, $cartModel);
     }
 
     public function index()

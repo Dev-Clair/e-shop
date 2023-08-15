@@ -12,16 +12,11 @@ use app\View\View;
 class CartController extends AbsController
 {
     protected string $tableName = "books";
-    protected string $fieldName = "bookID";
-    protected UserModel $userModel;
-    protected BookModel $bookModel;
-    protected CartModel $cartModel;
+    protected string $fieldName = "book_id";
 
-    public function __construct(UserModel $userModel, BookModel $bookModel, CartModel $cartModel)
+    public function __construct(protected UserModel $userModel, protected BookModel $bookModel, protected CartModel $cartModel)
     {
-        $this->userModel = new $userModel(databaseName: "eshop");
-        $this->bookModel = new $bookModel(databaseName: "eshop");
-        $this->cartModel = new $cartModel(databaseName: "eshop");
+        parent::__construct($userModel, $bookModel, $cartModel);
     }
 
     private function modifyStock($itemQty, $fieldValue): void
@@ -57,12 +52,12 @@ class CartController extends AbsController
         ]);
     }
 
-    public function store()
+    public function createOrder()
     {
         if (filter_has_var(INPUT_POST, 'proceedToCheckOut')) {
             $formData = $_POST;
 
-            $orderStatus = $this->cartModel->createOrder(tableName: "sold", sanitizedData: $formData);
+            $orderStatus = $this->cartModel->createOrder(tableName: "orders", sanitizedData: $formData);
 
             if ($orderStatus === true) {
                 foreach ($formData as $form) {
