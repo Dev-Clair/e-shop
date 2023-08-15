@@ -27,9 +27,9 @@ class CartController extends AbsController
         return  $this->bookModel->validateBook(fieldValue: $fieldValue);
     }
 
-    protected function confirmBookQty(mixed $fieldValue): bool
+    protected function confirmBookQty(string $fieldName = "book_qty", mixed $fieldValue): bool
     {
-        return $this->bookModel->retrieveBookValue(fieldValue: $fieldValue) > 0;
+        return $this->bookModel->retrieveBookValue(fieldName: $fieldName, fieldValue: $fieldValue) > 0;
     }
 
     public function index()

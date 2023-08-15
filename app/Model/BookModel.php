@@ -52,7 +52,7 @@ class BookModel extends MainModel
         return $this->dbTableOp->retrieveSingleRecord(tableName: $tableName, fieldName: $fieldName, fieldValue: $fieldValue);
     }
 
-    public function retrieveBookValue(string $tableName = "books", string $fieldName = "book_id", mixed $fieldValue): mixed
+    public function retrieveBookValue(string $tableName = "books", string $fieldName, mixed $fieldValue): mixed
     {
         if (empty($tableName)) {
             throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
