@@ -7,7 +7,6 @@ namespace app\Controller;
 use app\Model\UserModel;
 use app\Model\BookModel;
 use app\Model\CartModel;
-use app\View\View;
 
 class HomeController extends AbsController
 {
