@@ -69,7 +69,7 @@ $ordersTableFields = "`order_id` INT PRIMARY KEY,
                       FOREIGN KEY (`user_id) REFERENCES users(`user_id`)";
 
 $cartItemsTable = "cartitems";
-$cartItemsTableFields = "`cart_item_id` INT AUTO_INCREMENT PRIMARY KEY,
+$cartItemsTableFields = "`cart_item_id` INT PRIMARY KEY,
                          `user_id` INT NOT NULL,
                          `book_id` INT NOT NULL,
                          `cart_qty` INT NOT NULL,

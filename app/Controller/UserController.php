@@ -11,14 +11,14 @@ use app\View\View;
 
 class UserController extends AbsController
 {
-    public function __construct(protected UserModel $userModel, ?BookModel $bookModel = null, protected CartModel $cartModel)
+    public function __construct(protected ?UserModel $userModel, protected ?BookModel $bookModel, protected ?CartModel $cartModel)
     {
         parent::__construct($userModel, $bookModel, $cartModel);
     }
 
     public function index()
     {
-        $users = $this->userModel->retrieveAllUsers(tableName: "users", fetchMode: "1");
+        $users = $this->userModel->retrieveAllUsers();
 
         return View::make('index', [
             'users' => $users,

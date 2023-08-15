@@ -11,7 +11,7 @@ class BookModel extends MainModel
         parent::__construct($databaseName);
     }
 
-    public function createBook(string $tableName, array $sanitizedData): bool
+    public function createBook(string $tableName = "books", array $sanitizedData): bool
     {
         if (empty($tableName)) {
             throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
@@ -24,7 +24,7 @@ class BookModel extends MainModel
         return $this->dbTableOp->createRecords(tableName: $tableName, sanitizedData: $sanitizedData);
     }
 
-    public function retrieveAllBooks(string $tableName, string $fetchMode): array
+    public function retrieveAllBooks(string $tableName = "books", string $fetchMode = "1"): array
     {
         if (empty($tableName)) {
             throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
@@ -33,7 +33,7 @@ class BookModel extends MainModel
         return $this->dbTableOp->retrieveAllRecords(tableName: $tableName, fetchMode: $fetchMode);
     }
 
-    public function retrieveSingleBook(string $tableName, string $fieldName, mixed $fieldValue): array
+    public function retrieveSingleBook(string $tableName = "books", string $fieldName = "book_id", mixed $fieldValue): array
     {
         if (empty($tableName)) {
             throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
@@ -52,7 +52,7 @@ class BookModel extends MainModel
         return $this->dbTableOp->retrieveSingleRecord(tableName: $tableName, fieldName: $fieldName, fieldValue: $fieldValue);
     }
 
-    public function retrieveBookValue(string $tableName, string $fieldName, mixed $fieldValue): mixed
+    public function retrieveBookValue(string $tableName = "books", string $fieldName = "book_id", mixed $fieldValue): mixed
     {
         if (empty($tableName)) {
             throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
@@ -71,7 +71,7 @@ class BookModel extends MainModel
         return $this->dbTableOp->retrieveSingleValue(tableName: $tableName, fieldName: $fieldName, fieldValue: $fieldValue);
     }
 
-    public function validateBook(string $tableName, string $fieldName, mixed $fieldValue): bool
+    public function validateBook(string $tableName = "books", string $fieldName = "book_id", mixed $fieldValue): bool
     {
         if (empty($tableName)) {
             throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
@@ -90,7 +90,7 @@ class BookModel extends MainModel
         return $this->dbTableOp->validateRecord(tableName: $tableName, fieldName: $fieldName, fieldValue: $fieldValue);
     }
 
-    public function updateBook(string $tableName, array $sanitizedData, string $fieldName, mixed $fieldValue): bool
+    public function updateBook(string $tableName = "books", array $sanitizedData, string $fieldName = "book_id", mixed $fieldValue): bool
     {
         if (empty($tableName)) {
             throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
@@ -113,7 +113,7 @@ class BookModel extends MainModel
         return $this->dbTableOp->updateRecord(tableName: $tableName, sanitizedData: $sanitizedData, fieldName: $fieldName, fieldValue: $fieldValue);
     }
 
-    public function deleteBook(string $tableName, string $fieldName, mixed $fieldValue): bool
+    public function deleteBook(string $tableName = "books", string $fieldName = "book_id", mixed $fieldValue): bool
     {
         if (empty($tableName)) {
             throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");

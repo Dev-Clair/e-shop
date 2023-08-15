@@ -11,40 +11,50 @@ use app\View\View;
 
 class CartController extends AbsController
 {
-    protected string $tableName = "books";
-    protected string $fieldName = "book_id";
-
     public function __construct(protected UserModel $userModel, protected BookModel $bookModel, protected CartModel $cartModel)
     {
         parent::__construct($userModel, $bookModel, $cartModel);
     }
 
-    private function modifyStock($itemQty, $fieldValue): void
+    private function modifyBookQty($itemQty, $fieldValue): void
     {
-        $bookModel = $this->bookModel->updateBook(tableName: $this->tableName, sanitizedData: ["book_qty" => "book_qty - $itemQty"], fieldName: $this->fieldName, fieldValue: $fieldValue);
+        $this->bookModel->updateBook(sanitizedData: ["book_qty" => "book_qty - $itemQty"], fieldValue: $fieldValue);
+        return;
     }
 
-    protected function validateStock(mixed $fieldValue): bool
+    protected function confirmBookAvailability(mixed $fieldValue): bool
     {
-        return  $this->bookModel->validateBook(tableName: $this->tableName, fieldName: $this->fieldName, fieldValue: $fieldValue);
+        return  $this->bookModel->validateBook(fieldValue: $fieldValue);
     }
 
-    protected function confirmStockQty(mixed $fieldValue): bool
+    protected function confirmBookQty(mixed $fieldValue): bool
     {
-        return $this->bookModel->retrieveBookValue(tableName: $this->tableName, fieldName: $this->fieldName, fieldValue: $fieldValue) > 0;
+        return $this->bookModel->retrieveBookValue(fieldValue: $fieldValue) > 0;
     }
 
     public function index()
     {
         $cartItems = [];
 
-        $fieldValue = $_GET['BookID'];
+        $fieldValue = $_GET['book_id'];
 
-        if ($this->validateStock(fieldValue: $fieldValue) && $this->confirmStockQty(fieldValue: $fieldValue)) {
-            $newCartItem = $this->bookModel->retrieveSingleBook(tableName: $this->tableName, fieldName: $this->fieldName, fieldValue: $fieldValue);
-
-            $cartItems[] = $newCartItem;
+        if (!$this->confirmBookAvailability(fieldValue: $fieldValue)) {
+            $errorAlertMsg = "Sorry! This book is currently not available";
+            $_SESSION['errorAlertMsg'] = $errorAlertMsg;
+            header('Location: /e-shop/');
+            exit();
         }
+
+        if (!$this->confirmBookQty(fieldValue: $fieldValue)) {
+            $errorAlertMsg = "Sorry! This book is currently out of stock";
+            $_SESSION['errorAlertMsg'] = $errorAlertMsg;
+            header('Location: /e-shop');
+            exit();
+        }
+
+        $newCartItems = $this->cartModel->retrieveCartItem();
+
+        $cartItems[] = $newCartItems;
 
         return View::make('index', [
             'cartItems' => $cartItems,
@@ -55,13 +65,14 @@ class CartController extends AbsController
     public function createOrder()
     {
         if (filter_has_var(INPUT_POST, 'proceedToCheckOut')) {
+
             $formData = $_POST;
 
-            $orderStatus = $this->cartModel->createOrder(tableName: "orders", sanitizedData: $formData);
+            $orderStatus = $this->cartModel->createOrder(sanitizedData: $formData);
 
             if ($orderStatus === true) {
                 foreach ($formData as $form) {
-                    // $this->modifyStock(itemQty: $form[], fieldValue: $form[]);
+                    $this->modifyBookQty(itemQty: $form, fieldValue: $form);
                 }
                 $successAlertMsg = "Your Order(s) is/are being processed, A delivery personnel will be in touch shortly";
                 $_SESSION['successAlertMsg'] = $successAlertMsg;

@@ -11,7 +11,7 @@ use app\View\View;
 
 class BookController extends AbsController
 {
-    public function __construct(?UserModel $userModel = null, protected BookModel $bookModel, protected CartModel $cartModel)
+    public function __construct(protected ?UserModel $userModel, protected ?BookModel $bookModel, protected ?CartModel $cartModel)
     {
         parent::__construct($userModel, $bookModel, $cartModel);
     }
@@ -30,6 +30,27 @@ class BookController extends AbsController
 
     public function addToCart()
     {
+        $book_id = $_GET['book_id'];
+
+        $user_id = $_SESSION['user_id'];
+
+        $cart_item_id = "crt" . time();
+
+        $book = $this->bookModel->retrieveSingleBook(tableName: "books", fieldName: "book_id", fieldValue: $book_id);
+
+        $sanitizedData = ["cart_item_id"  => $cart_item_id, "user_id" => $user_id, "book_id" => $book_id, "item_qty" => 1, "item_amt" => $book["book_price"]];
+
+        $addToCartStatus = $this->cartModel->createCartItem(sanitizedData: $sanitizedData);
+
+        if ($addToCartStatus) {
+            $successAlertMsg = "Book added to your cart!";
+            $_SESSION['successAlertMsg'] = $successAlertMsg;
+        } else {
+            $errorAlertMsg = "Failed to add book to your cart.";
+            $_SESSION['errorAlertMsg'] = $errorAlertMsg;
+        }
+        header('Location: /e-shop/books');
+        exit();
     }
 
     public function newBook()
@@ -47,7 +68,7 @@ class BookController extends AbsController
 
 
             $sanitizedData = $sanitizedInputs;
-            $createStatus = $this->bookModel->createBook(tableName: "books", sanitizedData: $sanitizedData);
+            $createStatus = $this->bookModel->createBook(sanitizedData: $sanitizedData);
             if ($createStatus === true) {
                 $successAlertMsg = "New Book Added";
                 $_SESSION['successAlertMsg'] = $successAlertMsg;
@@ -63,9 +84,8 @@ class BookController extends AbsController
 
     public function editBook()
     {
-        $fieldName = "ID";
-        $fieldValue = (int)$_GET['BookID'];
-        $book = $this->bookModel->retrieveSingleBook(tableName: "books", fieldName: $fieldName, fieldValue: $fieldValue);
+        $fieldValue = (int)$_GET['book_id'];
+        $book = $this->bookModel->retrieveSingleBook(fieldValue: $fieldValue);
         $formAction = '/e-shop/books/update';
         $pageTitle = "Update Book";
         return View::make('/e-shop/books/edit', ['book' => $book, 'formAction' => $formAction, 'pageTitle' => $pageTitle]);
@@ -90,9 +110,8 @@ class BookController extends AbsController
 
     protected function validateUpdateBookAction(int|string $bookID)
     {
-        $fieldName = "ID";
         $fieldValue = $bookID;
-        $validateStatus = $this->bookModel->validateBook(tableName: "books", fieldName: $fieldName, fieldValue: $fieldValue);
+        $validateStatus = $this->bookModel->validateBook(fieldValue: $fieldValue);
 
         if ($validateStatus === true) {
             header('Location: /e-shop/books/edit?BookID=' . $bookID);
@@ -111,14 +130,11 @@ class BookController extends AbsController
             $bookID = array_key_first($_POST['deleteBook']);
         }
 
-        $fieldName = "ID";
         $fieldValue = $bookID;
-
-
-        $validateStatus = $this->bookModel->validateBook(tableName: "active", fieldName: $fieldName, fieldValue: $fieldValue);
+        $validateStatus = $this->bookModel->validateBook(fieldValue: $fieldValue);
 
         if ($validateStatus === true) {
-            $deleteStatus = $this->bookModel->deleteBook(tableName: "active", fieldName: $fieldName, fieldValue: $fieldValue);
+            $deleteStatus = $this->bookModel->deleteBook(fieldValue: $fieldValue);
 
             if ($deleteStatus === true) {
                 $successAlertMsg = "Book Deleted";
@@ -145,11 +161,10 @@ class BookController extends AbsController
             $sanitizedInputs = [];
 
             $sanitizedData = $sanitizedInputs;
-            $fieldName = "ID";
             $fieldValue = $_POST['id'];
             var_dump($fieldValue);
 
-            $updateStatus = $this->bookModel->updateBook(tableName: "books", sanitizedData: $sanitizedData, fieldName: $fieldName, fieldValue: $fieldValue);
+            $updateStatus = $this->bookModel->updateBook(sanitizedData: $sanitizedData, fieldValue: $fieldValue);
 
             if ($updateStatus === true) {
                 $successAlertMsg = "Book Record Updated";
@@ -171,13 +186,12 @@ class BookController extends AbsController
 
             $searchInput = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-            $fieldName = "BookID";
             $fieldValue = $searchInput;
-            $validateStatus = $this->bookModel->validateBook(tableName: "active", fieldName: $fieldName, fieldValue: $fieldValue);
+            $validateStatus = $this->bookModel->validateBook(fieldValue: $fieldValue);
 
             if ($validateStatus === true) {
-                $record = $this->bookModel->retrieveSingleBook(tableName: "active", fieldName: $fieldName, fieldValue: $fieldValue);
-                $successAlertMsg = "&#128366; Book:   " . $record['BookID'];
+                $record = $this->bookModel->retrieveSingleBook(fieldValue: $fieldValue);
+                $successAlertMsg = "&#128366; Book:   " . $record['book_id'];
                 $_SESSION['successAlertMsg'] = $successAlertMsg;
                 header('Location: /e-shop/books');
                 exit();

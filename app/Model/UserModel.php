@@ -11,7 +11,7 @@ class UserModel extends MainModel
         parent::__construct($databaseName);
     }
 
-    public function createUser(string $tableName, array $sanitizedData): bool
+    public function createUser(string $tableName = "users", array $sanitizedData): bool
     {
         if (empty($tableName)) {
             throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
@@ -24,7 +24,7 @@ class UserModel extends MainModel
         return $this->dbTableOp->createRecords(tableName: $tableName, sanitizedData: $sanitizedData);
     }
 
-    public function retrieveAllUsers(string $tableName, string $fetchMode): array
+    public function retrieveAllUsers(string $tableName = "users", string $fetchMode = "1"): array
     {
         if (empty($tableName)) {
             throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
@@ -33,7 +33,7 @@ class UserModel extends MainModel
         return $this->dbTableOp->retrieveAllRecords(tableName: $tableName, fetchMode: $fetchMode);
     }
 
-    public function retrieveSingleUser(string $tableName, string $fieldName, mixed $fieldValue): array
+    public function retrieveSingleUser(string $tableName = "users", string $fieldName = "user_id", mixed $fieldValue): array
     {
         if (empty($tableName)) {
             throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
@@ -52,7 +52,7 @@ class UserModel extends MainModel
         return $this->dbTableOp->retrieveSingleRecord(tableName: $tableName, fieldName: $fieldName, fieldValue: $fieldValue);
     }
 
-    public function retrieveUserValue(string $tableName, string $fieldName, mixed $fieldValue): mixed
+    public function retrieveUserValue(string $tableName = "users", string $fieldName = "user_id", mixed $fieldValue): mixed
     {
         if (empty($tableName)) {
             throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
@@ -71,7 +71,7 @@ class UserModel extends MainModel
         return $this->dbTableOp->retrieveSingleValue(tableName: $tableName, fieldName: $fieldName, fieldValue: $fieldValue);
     }
 
-    public function validateUser(string $tableName, string $fieldName, mixed $fieldValue): bool
+    public function validateUser(string $tableName = "users", string $fieldName = "user_id", mixed $fieldValue): bool
     {
         if (empty($tableName)) {
             throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
@@ -90,7 +90,7 @@ class UserModel extends MainModel
         return $this->dbTableOp->validateRecord(tableName: $tableName, fieldName: $fieldName, fieldValue: $fieldValue);
     }
 
-    public function updateUser(string $tableName, array $sanitizedData, string $fieldName, mixed $fieldValue): bool
+    public function updateUser(string $tableName = "users", array $sanitizedData, string $fieldName = "user_id", mixed $fieldValue): bool
     {
         if (empty($tableName)) {
             throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
@@ -113,7 +113,7 @@ class UserModel extends MainModel
         return $this->dbTableOp->updateRecord(tableName: $tableName, sanitizedData: $sanitizedData, fieldName: $fieldName, fieldValue: $fieldValue);
     }
 
-    public function deleteUser(string $tableName, string $fieldName, mixed $fieldValue): bool
+    public function deleteUser(string $tableName = "users", string $fieldName = "user_id", mixed $fieldValue): bool
     {
         if (empty($tableName)) {
             throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");

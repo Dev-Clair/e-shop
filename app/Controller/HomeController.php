@@ -11,14 +11,14 @@ use app\View\View;
 
 class HomeController extends AbsController
 {
-    public function __construct(protected UserModel $userModel, protected BookModel $bookModel, protected CartModel $cartModel)
+    public function __construct(protected ?UserModel $userModel, protected ?BookModel $bookModel, protected ?CartModel $cartModel)
     {
         parent::__construct($userModel, $bookModel, $cartModel);
     }
 
     public function index()
     {
-        $books = $this->bookModel->retrieveAllBooks(tableName: "books", fetchMode: "1");
+        $books = $this->bookModel->retrieveAllBooks();
 
         return View::make('index', [
             'book' => array_slice($books, 0, 20),
