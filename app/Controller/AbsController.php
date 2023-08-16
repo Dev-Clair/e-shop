@@ -23,7 +23,7 @@ abstract class AbsController implements IntController
 
     abstract public function index();
 
-    protected function validateLoginStatus(): void
+    private function validateLoginStatus(): void
     {
         $user_id = $_SESSION['user_id'];
         if (!isset($user_id) || empty($user_id)) {
@@ -48,11 +48,13 @@ abstract class AbsController implements IntController
     protected function cartAddError(string $message): void
     {
         $_SESSION['errorAlertMsg'] = $message;
+        return;
     }
 
     protected function cartAddSuccess(string $message): void
     {
         $_SESSION['successAlertMsg'] = $message;
+        return;
     }
 
     protected function verifyAdmin(): void
@@ -82,11 +84,5 @@ abstract class AbsController implements IntController
             $sanitizedInput[$fieldName] = filter_var($userInput, FILTER_SANITIZE_SPECIAL_CHARS);
         }
         return $sanitizedInput;
-    }
-
-    protected function validateUserEmail(string $user_email): bool
-    {
-        $validated_email = filter_input(INPUT_POST, $user_email, FILTER_VALIDATE_EMAIL);
-        return $validated_email === $user_email;
     }
 }

@@ -23,7 +23,7 @@
         <div class="row">
             <div class="col-12">
                 <header class="fixed-top bg-secondary text-white text-left mt-1 py-1">
-                    <h4>JoyBoy</h4>
+                    <h5><strong>JoyBoy</strong></h5>
                 </header>
             </div>
         </div>
@@ -37,7 +37,7 @@
         <div class="row">
             <div class="col-12">
                 <footer class="fixed-bottom bg-secondary text-white text-left mb-1 py-1">
-                    <small>&copy; joyboy designs | 2023</small>
+                    <small><strong>&copy; joyboy designs | 2023</strong></small>
                 </footer>
             </div>
         </div>
