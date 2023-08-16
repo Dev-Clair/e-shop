@@ -22,6 +22,9 @@ class HomeController extends AbsController
 
     public function index()
     {
+        // Create Login Functionality and retry admin verification
+        // $this->verifyAdmin();
+
         $books = $this->bookModel->retrieveAllBooks(tableName: "books");
 
         return View::make('index', [

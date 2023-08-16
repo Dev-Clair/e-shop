@@ -11,8 +11,12 @@ use app\View\View;
 
 class UserController extends AbsController
 {
-    public function __construct(UserModel $userModel = null, BookModel $bookModel = null, CartModel $cartModel = null)
+    public function __construct()
     {
+        $userModel = new UserModel(databaseName: "eshop");
+        $bookModel = new BookModel(databaseName: "eshop");
+        $cartModel = new CartModel(databaseName: "eshop");
+
         parent::__construct($userModel, $bookModel, $cartModel);
     }
 

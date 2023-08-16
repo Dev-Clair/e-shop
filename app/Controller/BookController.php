@@ -11,8 +11,12 @@ use app\View\View;
 
 class BookController extends AbsController
 {
-    public function __construct(UserModel $userModel = null, BookModel $bookModel = null, CartModel $cartModel = null)
+    public function __construct()
     {
+        $userModel = new UserModel(databaseName: "eshop");
+        $bookModel = new BookModel(databaseName: "eshop");
+        $cartModel = new CartModel(databaseName: "eshop");
+
         parent::__construct($userModel, $bookModel, $cartModel);
     }
 
@@ -24,7 +28,7 @@ class BookController extends AbsController
             'index',
             [
                 'books' => array_slice($books, 0, 50),
-                'pageTitle' => 'e-shop Home',
+                'pageTitle' => 'e-shop Books',
                 'searchFormAction' => '/e-shop/books/search',
                 'cartFormAction' => '/e-shop/books/addToCart'
             ]

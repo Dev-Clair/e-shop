@@ -60,13 +60,11 @@ foreach ($books as $book) {
     <div class="row">
         <div class="col-md-12">
             <div class="btn-group mb-2" role="group" aria-label="Fetch Buttons">
-                <!-- Display Book -->
+                <!-- Display Books -->
                 <?php
                 // Instantiate Form Class
                 $newForm = new Form();
                 $newForm->createForm(formID: "cartForm", formName: "cartForm", formMethod: "post", formAction: $cartFormAction, enctype: "multipart/form-data");
-
-                $newForm->formDiv(divID: "book", divClass: "btn-group mb-3");
 
                 /** Add Hidden Form Input: Book_ID */
                 $newForm->formFieldInput(inputID: "book", inputType: "hidden", value: $book['book_id']);
