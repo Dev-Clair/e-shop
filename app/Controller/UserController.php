@@ -40,7 +40,7 @@ class UserController extends AbsController
         return $welcomePageView;
     }
 
-    public function editUser()
+    public function edit()
     {
         return $this->view::make(
             'edit',
@@ -51,7 +51,7 @@ class UserController extends AbsController
         );
     }
 
-    public function showUsers()
+    public function show()
     {
         $users = $this->userModel->retrieveAllUsers();
 
@@ -64,15 +64,19 @@ class UserController extends AbsController
         );
     }
 
-    public function updateUser()
+    public function update()
     {
     }
 
-    public function deleteUser()
+    public function delete()
     {
     }
 
-    public function register()
+    public function customerRegister()
+    {
+    }
+
+    public function adminRegister()
     {
     }
 

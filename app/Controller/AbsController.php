@@ -63,7 +63,7 @@ abstract class AbsController implements IntController
 
         $user_id = $_SESSION['user_id'];
         if ($this->userModel->retrieveUserValue(fieldName: "user_role", fieldValue: $user_id) !== "ADMIN") {
-            $this->errorRedirect(message: "Invalid Login Status", redirectTo: "login");
+            $this->errorRedirect(message: "Unauthorized Action!", redirectTo: "login");
         }
     }
 
@@ -73,7 +73,7 @@ abstract class AbsController implements IntController
 
         $user_id = $_SESSION['user_id'];
         if ($this->userModel->retrieveUserValue(fieldName: "user_role", fieldValue: $user_id) !== "CUSTOMER") {
-            $this->errorRedirect(message: "Invalid Login Status", redirectTo: "login");
+            $this->errorRedirect(message: "Unauthorized Action!", redirectTo: "login");
         }
     }
 

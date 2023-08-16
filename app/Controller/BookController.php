@@ -25,36 +25,15 @@ class BookController extends AbsController
                 'books' => array_slice($books, 0, 50),
                 'pageTitle' => 'e-shop Home',
                 'searchFormAction' => '/e-shop/books/search',
-                'tableFormAction' => '/e-shop/books/userAction'
+                'cartFormAction' => '/e-shop/books/addToCart'
             ]
         );
     }
 
-    public function addToCart()
+    public function create()
     {
-        $this->verifyCustomer() || $this->verifyAdmin();
+        $this->verifyAdmin();
 
-        $book_id = $_GET['book_id'];
-
-        $user_id = $_SESSION['user_id'];
-
-        $cart_item_id = "crt" . time();
-
-        $book = $this->bookModel->retrieveSingleBook(tableName: "books", fieldName: "book_id", fieldValue: $book_id);
-
-        $sanitizedData = ["cart_item_id"  => $cart_item_id, "user_id" => $user_id, "book_id" => $book_id, "item_qty" => 1, "item_amt" => $book["book_price"]];
-
-        $addToCartStatus = $this->cartModel->createCartItem(sanitizedData: $sanitizedData);
-
-        if ($addToCartStatus) {
-            $this->cartAddSuccess(message: "Book added to your cart!");
-        } else {
-            $this->cartAddError(message: "Failed to add book to your cart!");
-        }
-    }
-
-    public function newBook()
-    {
         $formAction = '/e-shop/store';
         $pageTitle = "Add Book";
         return $this->view::make(
@@ -66,7 +45,7 @@ class BookController extends AbsController
         );
     }
 
-    public function storeBook()
+    public function store()
     {
         if (filter_has_var(INPUT_POST, 'submitcreateBook')) {
 
@@ -81,8 +60,10 @@ class BookController extends AbsController
         }
     }
 
-    public function editBook()
+    public function edit()
     {
+        $this->verifyAdmin();
+
         $fieldValue = (int)$_GET['book_id'];
         $book = $this->bookModel->retrieveSingleBook(fieldValue: $fieldValue);
         $formAction = '/e-shop/books/update';
@@ -105,16 +86,16 @@ class BookController extends AbsController
                 $book_id = array_key_first($_POST['updateBook']);
 
                 // Retrieve and pass $_POST['updateBook'] value to validateUpdate method
-                $this->validateUpdateBookAction(book_id: $book_id);
+                $this->validateUpdateAction(book_id: $book_id);
             }
         }
 
         if (filter_has_var(INPUT_POST, 'deleteBook')) {
-            $this->deleteBook();
+            $this->delete();
         }
     }
 
-    protected function validateUpdateBookAction(int|string $book_id)
+    protected function validateUpdateAction(int|string $book_id)
     {
         $fieldValue = $book_id;
         $validateStatus = $this->bookModel->validateBook(fieldValue: $fieldValue);
@@ -127,8 +108,10 @@ class BookController extends AbsController
         $this->errorRedirect(message: "Error! Book $book_id does not exist", redirectTo: "books");
     }
 
-    protected function deleteBook()
+    protected function delete()
     {
+        $this->verifyAdmin();
+
         if (isset($_POST['deleteBook']) && is_array($_POST['deleteBook'])) {
             $book_id = array_key_first($_POST['deleteBook']);
         }
@@ -147,8 +130,10 @@ class BookController extends AbsController
         $this->errorRedirect(message: "Error! Book $book_id does not exist", redirectTo: "books");
     }
 
-    public function updateBook()
+    public function update()
     {
+        $this->verifyAdmin();
+
         if (filter_has_var(INPUT_POST, 'submiteditBook')) {
 
             $sanitizedInputs = $this->sanitizeUserInput();
@@ -164,7 +149,24 @@ class BookController extends AbsController
         }
     }
 
-    public function searchBook()
+    public function show()
+    {
+        $this->verifyAdmin();
+
+        $books = $this->bookModel->retrieveAllBooks(tableName: "books", fetchMode: "1");
+
+        return $this->view::make(
+            'index',
+            [
+                'books' => array_slice($books, 0, 50),
+                'pageTitle' => 'e-shop Home',
+                'searchFormAction' => '/e-shop/books/search',
+                'tableFormAction' => '/e-shop/books/userAction'
+            ]
+        );
+    }
+
+    public function search()
     {
         if (filter_has_var(INPUT_POST, 'searchBook')) {
 
@@ -180,6 +182,47 @@ class BookController extends AbsController
             };
             $message = sprintf("%s", "No Book Record found for &#128366 $searchInput");
             $this->errorRedirect(message: $message, redirectTo: "books");
+        }
+    }
+
+    protected function confirmBookAvailability(mixed $fieldValue): bool
+    {
+        return  $this->bookModel->validateBook(fieldValue: $fieldValue);
+    }
+
+    protected function confirmBookQty(string $fieldName = "book_qty", mixed $fieldValue): bool
+    {
+        return $this->bookModel->retrieveBookAttribute(fieldName: $fieldName, fieldValue: $fieldValue) > 0;
+    }
+
+    public function addToCart()
+    {
+        $this->verifyCustomer() || $this->verifyAdmin();
+
+        $book_id = $_GET['book_id'];
+
+        if (!$this->confirmBookAvailability(fieldValue: $book_id)) {
+            $this->errorRedirect(message: "Sorry! This book is currently not available", redirectTo: "");
+        }
+
+        if (!$this->confirmBookQty(fieldValue: $book_id)) {
+            $this->errorRedirect(message: "Sorry! This book is currently out of stock", redirectTo: "");
+        }
+
+        $user_id = $_SESSION['user_id'];
+
+        $cart_item_id = "crt" . time();
+
+        $book = $this->bookModel->retrieveSingleBook(tableName: "books", fieldName: "book_id", fieldValue: $book_id);
+
+        $sanitizedData = ["cart_item_id"  => $cart_item_id, "user_id" => $user_id, "book_id" => $book_id, "item_qty" => 1, "item_amt" => $book["book_price"]];
+
+        $addToCartStatus = $this->cartModel->createCartItem(sanitizedData: $sanitizedData);
+
+        if ($addToCartStatus) {
+            $this->cartAddSuccess(message: "Book added to your cart!");
+        } else {
+            $this->cartAddError(message: "Failed to add book to your cart!");
         }
     }
 }

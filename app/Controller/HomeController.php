@@ -22,8 +22,8 @@ class HomeController extends AbsController
         return $this->view::make('index', [
             'book' => array_slice($books, 0, 20),
             'pageTitle' => 'e-shop Home',
-            'searchFormAction' => '/e-shop/search',
-            'tableFormAction' => '/e-shop/userAction'
+            'searchFormAction' => '/e-shop/books/search',
+            'cartFormAction' => '/e-shop/books/addToCart'
         ]);
     }
 }
