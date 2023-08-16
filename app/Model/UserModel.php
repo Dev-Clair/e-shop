@@ -13,10 +13,6 @@ class UserModel extends MainModel
 
     public function createUser(string $tableName = "users", array $sanitizedData): bool
     {
-        if (empty($tableName)) {
-            throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
-        }
-
         if (empty($sanitizedData)) {
             throw new \InvalidArgumentException("No data specified; kindly provide missing array argument.");
         }
@@ -26,23 +22,11 @@ class UserModel extends MainModel
 
     public function retrieveAllUsers(string $tableName = "users", string $fetchMode = "1"): array
     {
-        if (empty($tableName)) {
-            throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
-        }
-
         return $this->dbTableOp->retrieveAllRecords(tableName: $tableName, fetchMode: $fetchMode);
     }
 
     public function retrieveSingleUser(string $tableName = "users", string $fieldName = "user_id", mixed $fieldValue): array
     {
-        if (empty($tableName)) {
-            throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
-        }
-
-        if (empty($fieldName)) {
-            throw new \InvalidArgumentException("No field name specified; kindly provide reference field name.");
-        }
-
         if (empty($fieldValue)) {
             throw new \InvalidArgumentException("No field value specified; kindly provide reference field value.");
         }
@@ -54,14 +38,6 @@ class UserModel extends MainModel
 
     public function retrieveUserValue(string $tableName = "users", string $fieldName = "user_id", mixed $fieldValue): mixed
     {
-        if (empty($tableName)) {
-            throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
-        }
-
-        if (empty($fieldName)) {
-            throw new \InvalidArgumentException("No field name specified; kindly provide reference field name.");
-        }
-
         if (empty($fieldValue)) {
             throw new \InvalidArgumentException("No field value specified; kindly provide reference field value.");
         }
@@ -73,14 +49,6 @@ class UserModel extends MainModel
 
     public function validateUser(string $tableName = "users", string $fieldName = "user_id", mixed $fieldValue): bool
     {
-        if (empty($tableName)) {
-            throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
-        }
-
-        if (empty($fieldName)) {
-            throw new \InvalidArgumentException("No field name specified; kindly provide reference field name.");
-        }
-
         if (empty($fieldValue)) {
             throw new \InvalidArgumentException("No field value specified; kindly provide reference field value.");
         }
@@ -92,16 +60,8 @@ class UserModel extends MainModel
 
     public function updateUser(string $tableName = "users", array $sanitizedData, string $fieldName = "user_id", mixed $fieldValue): bool
     {
-        if (empty($tableName)) {
-            throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
-        }
-
         if (empty($sanitizedData)) {
             throw new \InvalidArgumentException("No data specified; kindly provide missing array argument.");
-        }
-
-        if (empty($fieldName)) {
-            throw new \InvalidArgumentException("No field name specified; kindly provide reference field name.");
         }
 
         if (empty($fieldValue)) {
@@ -115,14 +75,6 @@ class UserModel extends MainModel
 
     public function deleteUser(string $tableName = "users", string $fieldName = "user_id", mixed $fieldValue): bool
     {
-        if (empty($tableName)) {
-            throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
-        }
-
-        if (empty($fieldName)) {
-            throw new \InvalidArgumentException("No field name specified; kindly provide reference field name.");
-        }
-
         if (empty($fieldValue)) {
             throw new \InvalidArgumentException("No field value specified; kindly provide reference field value.");
         }

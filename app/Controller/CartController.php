@@ -28,7 +28,7 @@ class CartController extends AbsController
 
     protected function confirmBookQty(string $fieldName = "book_qty", mixed $fieldValue): bool
     {
-        return $this->bookModel->retrieveBookValue(fieldName: $fieldName, fieldValue: $fieldValue) > 0;
+        return $this->bookModel->retrieveBookAttribute(fieldName: $fieldName, fieldValue: $fieldValue) > 0;
     }
 
     public function index()
@@ -38,17 +38,11 @@ class CartController extends AbsController
         $fieldValue = $_GET['book_id'];
 
         if (!$this->confirmBookAvailability(fieldValue: $fieldValue)) {
-            $errorAlertMsg = "Sorry! This book is currently not available";
-            $_SESSION['errorAlertMsg'] = $errorAlertMsg;
-            header('Location: /e-shop/');
-            exit();
+            $this->errorRedirect(message: "Sorry! This book is currently not available", redirectTo: "");
         }
 
         if (!$this->confirmBookQty(fieldValue: $fieldValue)) {
-            $errorAlertMsg = "Sorry! This book is currently out of stock";
-            $_SESSION['errorAlertMsg'] = $errorAlertMsg;
-            header('Location: /e-shop');
-            exit();
+            $this->errorRedirect(message: "Sorry! This book is currently out of stock", redirectTo: "");
         }
 
         $newCartItems = $this->cartModel->retrieveCartItem();
@@ -73,15 +67,9 @@ class CartController extends AbsController
                 foreach ($formData as $form) {
                     $this->modifyBookQty(itemQty: $form, fieldValue: $form);
                 }
-                $successAlertMsg = "Your Order(s) is/are being processed, A delivery personnel will be in touch shortly";
-                $_SESSION['successAlertMsg'] = $successAlertMsg;
-                header('Location: /e-shop');
-                exit();
+                $this->successRedirect(message: "Your Order(s) is/are being processed, A delivery personnel will be in touch shortly", redirectTo: "");
             }
-            $errorAlertMsg = "Error! Cannot process orders for now, Please try again";
-            $_SESSION['errorAlertMsg'] = $errorAlertMsg;
-            header('Location: /e-shop');
-            exit();
+            $this->errorRedirect(message: "Error! Cannot process orders for now, Please try again", redirectTo: "");
         }
     }
 }

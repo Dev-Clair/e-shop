@@ -59,12 +59,16 @@ class UserController extends AbsController
             'show',
             [
                 'users' => $users,
-                'pageTitle' => 'e-shop e-shop User Accounts'
+                'pageTitle' => 'e-shop Users'
             ]
         );
     }
 
     public function updateUser()
+    {
+    }
+
+    public function deleteUser()
     {
     }
 
@@ -77,10 +81,6 @@ class UserController extends AbsController
     }
 
     public function logout()
-    {
-    }
-
-    private function verifyAdmin()
     {
     }
 

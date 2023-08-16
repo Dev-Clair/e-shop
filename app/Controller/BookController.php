@@ -19,16 +19,21 @@ class BookController extends AbsController
     {
         $books = $this->bookModel->retrieveAllBooks(tableName: "books", fetchMode: "1");
 
-        return $this->view::make('index', [
-            'books' => array_slice($books, 0, 50),
-            'pageTitle' => 'e-shop Home',
-            'searchFormAction' => '/e-shop/books/search',
-            'tableFormAction' => '/e-shop/books/userAction'
-        ]);
+        return $this->view::make(
+            'index',
+            [
+                'books' => array_slice($books, 0, 50),
+                'pageTitle' => 'e-shop Home',
+                'searchFormAction' => '/e-shop/books/search',
+                'tableFormAction' => '/e-shop/books/userAction'
+            ]
+        );
     }
 
     public function addToCart()
     {
+        $this->verifyCustomer() || $this->verifyAdmin();
+
         $book_id = $_GET['book_id'];
 
         $user_id = $_SESSION['user_id'];
@@ -42,42 +47,37 @@ class BookController extends AbsController
         $addToCartStatus = $this->cartModel->createCartItem(sanitizedData: $sanitizedData);
 
         if ($addToCartStatus) {
-            $successAlertMsg = "Book added to your cart!";
-            $_SESSION['successAlertMsg'] = $successAlertMsg;
+            $this->cartAddSuccess(message: "Book added to your cart!");
         } else {
-            $errorAlertMsg = "Failed to add book to your cart.";
-            $_SESSION['errorAlertMsg'] = $errorAlertMsg;
+            $this->cartAddError(message: "Failed to add book to your cart!");
         }
-        header('Location: /e-shop/books');
-        exit();
     }
 
     public function newBook()
     {
         $formAction = '/e-shop/store';
         $pageTitle = "Add Book";
-        return $this->view::make('e-shop/books/create', ['formAction' => $formAction, 'pageTitle' => $pageTitle]);
+        return $this->view::make(
+            'e-shop/books/create',
+            [
+                'formAction' => $formAction,
+                'pageTitle' => $pageTitle
+            ]
+        );
     }
 
     public function storeBook()
     {
         if (filter_has_var(INPUT_POST, 'submitcreateBook')) {
 
-            $sanitizedInputs = [];
-
+            $sanitizedInputs = $this->sanitizeUserInput();
 
             $sanitizedData = $sanitizedInputs;
             $createStatus = $this->bookModel->createBook(sanitizedData: $sanitizedData);
             if ($createStatus === true) {
-                $successAlertMsg = "New Book Added";
-                $_SESSION['successAlertMsg'] = $successAlertMsg;
-                header('Location: /e-shop/books');
-                exit();
+                $this->successRedirect(message: "New Book Added", redirectTo: "books");
             }
-            $errorAlertMsg = "Error! Cannot Add Book";
-            $_SESSION['errorAlertMsg'] = $errorAlertMsg;
-            header('Location: /e-shop/books');
-            exit();
+            $this->errorRedirect(message: "Error! Cannot Add Book", redirectTo: "books");
         }
     }
 
@@ -87,7 +87,14 @@ class BookController extends AbsController
         $book = $this->bookModel->retrieveSingleBook(fieldValue: $fieldValue);
         $formAction = '/e-shop/books/update';
         $pageTitle = "Update Book";
-        return $this->view::make('/e-shop/books/edit', ['book' => $book, 'formAction' => $formAction, 'pageTitle' => $pageTitle]);
+        return $this->view::make(
+            '/e-shop/books/edit',
+            [
+                'book' => $book,
+                'formAction' => $formAction,
+                'pageTitle' => $pageTitle
+            ]
+        );
     }
 
     public function userAction()
@@ -95,10 +102,10 @@ class BookController extends AbsController
         if (filter_has_var(INPUT_POST, 'updateBook')) {
 
             if (isset($_POST['updateBook']) && is_array($_POST['updateBook'])) {
-                $bookID = array_key_first($_POST['updateBook']);
+                $book_id = array_key_first($_POST['updateBook']);
 
                 // Retrieve and pass $_POST['updateBook'] value to validateUpdate method
-                $this->validateUpdateBookAction(bookID: $bookID);
+                $this->validateUpdateBookAction(book_id: $book_id);
             }
         }
 
@@ -107,75 +114,53 @@ class BookController extends AbsController
         }
     }
 
-    protected function validateUpdateBookAction(int|string $bookID)
+    protected function validateUpdateBookAction(int|string $book_id)
     {
-        $fieldValue = $bookID;
+        $fieldValue = $book_id;
         $validateStatus = $this->bookModel->validateBook(fieldValue: $fieldValue);
 
         if ($validateStatus === true) {
-            header('Location: /e-shop/books/edit?BookID=' . $bookID);
+            header('Location: /e-shop/books/edit?book_id=' . $book_id);
             exit();
         }
 
-        $errorAlertMsg = "Error! Book $bookID does not exist";
-        $_SESSION['errorAlertMsg'] = $errorAlertMsg;
-        header('Location: /e-shop/books');
-        exit();
+        $this->errorRedirect(message: "Error! Book $book_id does not exist", redirectTo: "books");
     }
 
     protected function deleteBook()
     {
         if (isset($_POST['deleteBook']) && is_array($_POST['deleteBook'])) {
-            $bookID = array_key_first($_POST['deleteBook']);
+            $book_id = array_key_first($_POST['deleteBook']);
         }
 
-        $fieldValue = $bookID;
+        $fieldValue = $book_id;
         $validateStatus = $this->bookModel->validateBook(fieldValue: $fieldValue);
 
         if ($validateStatus === true) {
-            $deleteStatus = $this->bookModel->deleteBook(fieldValue: $fieldValue);
-
-            if ($deleteStatus === true) {
-                $successAlertMsg = "Book Deleted";
-                $_SESSION['successAlertMsg'] = $successAlertMsg;
-                header('Location: /e-shop/books');
-                exit();
-            }
-            $errorAlertMsg = "Error! Cannot Delete Book $fieldValue";
-            $_SESSION['errorAlertMsg'] = $errorAlertMsg;
-            header('Location: /e-shop/books');
-            exit();
+            $this->bookModel->deleteBook(fieldValue: $fieldValue)
+                ?
+                $this->successRedirect(message: "Book Deleted", redirectTo: "books")
+                :
+                $this->errorRedirect(message: "Error! Cannot Delete Book $fieldValue", redirectTo: "books");
         }
 
-        $errorAlertMsg = "Error! Book $bookID does not exist";
-        $_SESSION['errorAlertMsg'] = $errorAlertMsg;
-        header('Location: /e-shop/books');
-        exit();
+        $this->errorRedirect(message: "Error! Book $book_id does not exist", redirectTo: "books");
     }
 
     public function updateBook()
     {
         if (filter_has_var(INPUT_POST, 'submiteditBook')) {
 
-            $sanitizedInputs = [];
+            $sanitizedInputs = $this->sanitizeUserInput();
 
             $sanitizedData = $sanitizedInputs;
-            $fieldValue = $_POST['id'];
-            var_dump($fieldValue);
+            $fieldValue = $_POST['book_id'];
 
-            $updateStatus = $this->bookModel->updateBook(sanitizedData: $sanitizedData, fieldValue: $fieldValue);
-
-            if ($updateStatus === true) {
-                $successAlertMsg = "Book Record Updated";
-                $_SESSION['successAlertMsg'] = $successAlertMsg;
-                header('Location: /e-shop/books');
-                exit();
-            }
-
-            $errorAlertMsg = "Error! Cannot Update Book $fieldValue";
-            $_SESSION['errorAlertMsg'] = $errorAlertMsg;
-            header('Location: /e-shop/books');
-            exit();
+            $this->bookModel->updateBook(sanitizedData: $sanitizedData, fieldValue: $fieldValue)
+                ?
+                $this->successRedirect(message: "Book Record Updated", redirectTo: "books")
+                :
+                $this->errorRedirect(message: "Error! Cannot Update Book $fieldValue", redirectTo: "books");
         }
     }
 
@@ -186,19 +171,15 @@ class BookController extends AbsController
             $searchInput = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
             $fieldValue = $searchInput;
-            $validateStatus = $this->bookModel->validateBook(fieldValue: $fieldValue);
+            $validateStatus = $this->bookModel->validateBook(fieldName: "book_title", fieldValue: $fieldValue);
 
-            if ($validateStatus === true) {
-                $record = $this->bookModel->retrieveSingleBook(fieldValue: $fieldValue);
-                $successAlertMsg = "&#128366; Book:   " . $record['book_id'];
-                $_SESSION['successAlertMsg'] = $successAlertMsg;
-                header('Location: /e-shop/books');
-                exit();
+            if ($validateStatus) {
+                $book_title = $this->bookModel->retrieveBookAttribute(fieldName: "book_title", fieldValue: $fieldValue);
+                $message = sprintf("%s", "&#128366; Book: $book_title");
+                $this->successRedirect(message: $message, redirectTo: "books");
             };
-            $errorAlertMsg = "No Book Record found for &#128366; $searchInput";
-            $_SESSION['errorAlertMsg'] = $errorAlertMsg;
-            header('Location: /e-shop/books');
-            exit();
+            $message = sprintf("%s", "No Book Record found for &#128366 $searchInput");
+            $this->errorRedirect(message: $message, redirectTo: "books");
         }
     }
 }
