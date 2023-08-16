@@ -29,6 +29,7 @@ abstract class AbsController implements IntController
         if (!isset($user_id) || empty($user_id)) {
             $this->errorRedirect(message: "Invalid Login Status", redirectTo: "login");
         }
+        return;
     }
 
     protected function errorRedirect(string $message, string $redirectTo): void
@@ -65,6 +66,7 @@ abstract class AbsController implements IntController
         if ($this->userModel->retrieveUserValue(tableName: "users", fieldName: "user_role", fieldValue: $user_id) !== "ADMIN") {
             $this->errorRedirect(message: "Unauthorized Action!", redirectTo: "login");
         }
+        return;
     }
 
     protected function verifyCustomer(): void
@@ -75,6 +77,7 @@ abstract class AbsController implements IntController
         if ($this->userModel->retrieveUserValue(tableName: "users", fieldName: "user_role", fieldValue: $user_id) !== "CUSTOMER") {
             $this->errorRedirect(message: "Unauthorized Action!", redirectTo: "login");
         }
+        return;
     }
 
     protected function sanitizeUserInput(): array
