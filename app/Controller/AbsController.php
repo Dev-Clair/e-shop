@@ -7,14 +7,12 @@ namespace app\Controller;
 use app\Model\UserModel;
 use app\Model\BookModel;
 use app\Model\CartModel;
-use app\View\View;
 
 abstract class AbsController implements IntController
 {
     protected UserModel $userModel;
     protected BookModel $bookModel;
     protected CartModel $cartModel;
-    protected View $view;
 
     public function __construct(UserModel $userModel = null, BookModel $bookModel = null, CartModel $cartModel = null)
     {
@@ -62,7 +60,7 @@ abstract class AbsController implements IntController
         $this->validateLoginStatus();
 
         $user_id = $_SESSION['user_id'];
-        if ($this->userModel->retrieveUserValue(fieldName: "user_role", fieldValue: $user_id) !== "ADMIN") {
+        if ($this->userModel->retrieveUserValue(tableName: "users", fieldName: "user_role", fieldValue: $user_id) !== "ADMIN") {
             $this->errorRedirect(message: "Unauthorized Action!", redirectTo: "login");
         }
     }
@@ -72,7 +70,7 @@ abstract class AbsController implements IntController
         $this->validateLoginStatus();
 
         $user_id = $_SESSION['user_id'];
-        if ($this->userModel->retrieveUserValue(fieldName: "user_role", fieldValue: $user_id) !== "CUSTOMER") {
+        if ($this->userModel->retrieveUserValue(tableName: "users", fieldName: "user_role", fieldValue: $user_id) !== "CUSTOMER") {
             $this->errorRedirect(message: "Unauthorized Action!", redirectTo: "login");
         }
     }

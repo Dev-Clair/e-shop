@@ -11,7 +11,7 @@ class CartModel extends MainModel
         parent::__construct($databaseName);
     }
 
-    public function createOrder(string $tableName = "orders", array $sanitizedData): bool
+    public function createOrder(string $tableName, array $sanitizedData): bool
     {
         if (empty($tableName)) {
             throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
@@ -24,7 +24,7 @@ class CartModel extends MainModel
         return $this->dbTableOp->createRecords(tableName: $tableName, sanitizedData: $sanitizedData);
     }
 
-    public function createCartItem(string $tableName = "cartitems", array $sanitizedData): bool
+    public function createCartItem(string $tableName, array $sanitizedData): bool
     {
         if (empty($tableName)) {
             throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
@@ -37,13 +37,13 @@ class CartModel extends MainModel
         return $this->dbTableOp->createRecords(tableName: $tableName, sanitizedData: $sanitizedData);
     }
 
-    public function retrieveCartItem(string $tableName = "cartitems", string $fetchMode = "1"): array
+    public function retrieveCartItem(string $tableName): array
     {
         if (empty($tableName)) {
             throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
         }
 
-        return $this->dbTableOp->retrieveAllRecords(tableName: $tableName, fetchMode: $fetchMode);
+        return $this->dbTableOp->retrieveAllRecords(tableName: $tableName);
     }
 
     public function deleteCartItem(string $tableName, string $fieldName, mixed $fieldValue): bool

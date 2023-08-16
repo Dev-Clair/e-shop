@@ -45,20 +45,12 @@ class DbTableOp extends DbTable
             throw new \RuntimeException("Error executing statement: " . $e->getMessage());
         }
     }
-    public function retrieveAllRecords(string $tableName, string $fetchMode): array
+    public function retrieveAllRecords(string $tableName): array
     {
         $sql_query = "SELECT * FROM $tableName";
-        $fetchMode = match ($fetchMode) {
-            "1" => PDO::FETCH_ASSOC,
-            "2" => PDO::FETCH_BOTH,
-            "3" => PDO::FETCH_BOUND,
-            "4" => PDO::FETCH_CLASS,
-            "5" => PDO::FETCH_OBJ,
-            default => PDO::FETCH_ASSOC
-        };
         try {
             $stmt = $this->executeQuery(sql: $sql_query);
-            $rows = $stmt->fetchAll($fetchMode);
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return $rows;
         } catch (PDOException $e) {
             throw new \RuntimeException("Error executing statement: " . $e->getMessage());

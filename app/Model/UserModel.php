@@ -11,8 +11,12 @@ class UserModel extends MainModel
         parent::__construct($databaseName);
     }
 
-    public function createUser(string $tableName = "users", array $sanitizedData): bool
+    public function createUser(string $tableName, array $sanitizedData): bool
     {
+        if (empty($tableName)) {
+            throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
+        }
+
         if (empty($sanitizedData)) {
             throw new \InvalidArgumentException("No data specified; kindly provide missing array argument.");
         }
@@ -20,13 +24,25 @@ class UserModel extends MainModel
         return $this->dbTableOp->createRecords(tableName: $tableName, sanitizedData: $sanitizedData);
     }
 
-    public function retrieveAllUsers(string $tableName = "users", string $fetchMode = "1"): array
+    public function retrieveAllUsers(string $tableName): array
     {
-        return $this->dbTableOp->retrieveAllRecords(tableName: $tableName, fetchMode: $fetchMode);
+        if (empty($tableName)) {
+            throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
+        }
+
+        return $this->dbTableOp->retrieveAllRecords(tableName: $tableName);
     }
 
-    public function retrieveSingleUser(string $tableName = "users", string $fieldName = "user_id", mixed $fieldValue): array
+    public function retrieveSingleUser(string $tableName, string $fieldName, mixed $fieldValue): array
     {
+        if (empty($tableName)) {
+            throw new \InvalidArgumentException("Invalid table name specified; kindly provide a valid table name.");
+        }
+
+        if (empty($fieldName)) {
+            throw new \InvalidArgumentException("Invalid fieldname specified; kindly provide reference field name.");
+        }
+
         if (empty($fieldValue)) {
             throw new \InvalidArgumentException("No field value specified; kindly provide reference field value.");
         }
@@ -36,8 +52,16 @@ class UserModel extends MainModel
         return $this->dbTableOp->retrieveSingleRecord(tableName: $tableName, fieldName: $fieldName, fieldValue: $fieldValue);
     }
 
-    public function retrieveUserValue(string $tableName = "users", string $fieldName = "user_id", mixed $fieldValue): mixed
+    public function retrieveUserValue(string $tableName, string $fieldName, mixed $fieldValue): mixed
     {
+        if (empty($tableName)) {
+            throw new \InvalidArgumentException("Invalid table name specified; kindly provide a valid table name.");
+        }
+
+        if (empty($fieldName)) {
+            throw new \InvalidArgumentException("No field name specified; kindly provide reference field name.");
+        }
+
         if (empty($fieldValue)) {
             throw new \InvalidArgumentException("No field value specified; kindly provide reference field value.");
         }
@@ -47,8 +71,16 @@ class UserModel extends MainModel
         return $this->dbTableOp->retrieveSingleValue(tableName: $tableName, fieldName: $fieldName, fieldValue: $fieldValue);
     }
 
-    public function validateUser(string $tableName = "users", string $fieldName = "user_id", mixed $fieldValue): bool
+    public function validateUser(string $tableName, string $fieldName, mixed $fieldValue): bool
     {
+        if (empty($tableName)) {
+            throw new \InvalidArgumentException("Invalid table name specified; kindly provide a valid table name.");
+        }
+
+        if (empty($fieldName)) {
+            throw new \InvalidArgumentException("No field name specified; kindly provide reference field name.");
+        }
+
         if (empty($fieldValue)) {
             throw new \InvalidArgumentException("No field value specified; kindly provide reference field value.");
         }
@@ -58,10 +90,18 @@ class UserModel extends MainModel
         return $this->dbTableOp->validateRecord(tableName: $tableName, fieldName: $fieldName, fieldValue: $fieldValue);
     }
 
-    public function updateUser(string $tableName = "users", array $sanitizedData, string $fieldName = "user_id", mixed $fieldValue): bool
+    public function updateUser(string $tableName, array $sanitizedData, string $fieldName, mixed $fieldValue): bool
     {
+        if (empty($tableName)) {
+            throw new \InvalidArgumentException("Invalid table name specified; kindly provide a valid table name.");
+        }
+
         if (empty($sanitizedData)) {
             throw new \InvalidArgumentException("No data specified; kindly provide missing array argument.");
+        }
+
+        if (empty($fieldName)) {
+            throw new \InvalidArgumentException("No field name specified; kindly provide reference field name.");
         }
 
         if (empty($fieldValue)) {
@@ -73,8 +113,16 @@ class UserModel extends MainModel
         return $this->dbTableOp->updateRecord(tableName: $tableName, sanitizedData: $sanitizedData, fieldName: $fieldName, fieldValue: $fieldValue);
     }
 
-    public function deleteUser(string $tableName = "users", string $fieldName = "user_id", mixed $fieldValue): bool
+    public function deleteUser(string $tableName, string $fieldName, mixed $fieldValue): bool
     {
+        if (empty($tableName)) {
+            throw new \InvalidArgumentException("Invalid table name specified; kindly provide a valid table name.");
+        }
+
+        if (empty($fieldName)) {
+            throw new \InvalidArgumentException("No field name specified; kindly provide reference field name.");
+        }
+
         if (empty($fieldValue)) {
             throw new \InvalidArgumentException("No field value specified; kindly provide reference field value.");
         }

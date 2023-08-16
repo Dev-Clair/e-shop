@@ -7,29 +7,31 @@ namespace app\Controller;
 use app\Model\UserModel;
 use app\Model\BookModel;
 use app\Model\CartModel;
+use app\View\View;
 
 class CartController extends AbsController implements IntPaymentGateWay
 {
-    public function __construct(protected UserModel $userModel, protected BookModel $bookModel, protected CartModel $cartModel)
+    public function __construct(UserModel $userModel = null, BookModel $bookModel = null, CartModel $cartModel = null)
     {
         parent::__construct($userModel, $bookModel, $cartModel);
     }
 
     private function modifyBookQty($itemQty, $fieldValue): void
     {
-        $this->bookModel->updateBook(sanitizedData: ["book_qty" => "book_qty - $itemQty"], fieldValue: $fieldValue);
+        $this->bookModel->updateBook(tableName: "books", sanitizedData: ["book_qty" => "book_qty - $itemQty"], fieldName: "book_qty", fieldValue: $fieldValue);
         return;
     }
 
     public function index()
     {
-        $cartItems[] = $this->cartModel->retrieveCartItem() ?? [];
+        $cartItems[] = $this->cartModel->retrieveCartItem(tableName: "cartitems") ?? [];
 
-        return $this->view::make(
+        return View::make(
             'index',
             [
                 'cartItems' => $cartItems,
-                'pageTitle' => 'e-shop Cart'
+                'pageTitle' => 'e-shop Cart',
+                'formAction' => '/e-shop/cart/createOrder'
             ]
         );
     }
@@ -40,7 +42,7 @@ class CartController extends AbsController implements IntPaymentGateWay
 
             $formData = $_POST;
 
-            $orderStatus = $this->cartModel->createOrder(sanitizedData: $formData);
+            $orderStatus = $this->cartModel->createOrder(tableName: "orders", sanitizedData: $formData);
 
             if ($orderStatus === true) {
                 foreach ($formData as $form) {

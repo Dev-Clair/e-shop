@@ -8,7 +8,7 @@ require __DIR__ . '/../../vendor/autoload.php';
 
 // Database Array
 $databaseNames = ['eshop', 'backup'];
-$databseName = $databaseNames[0];
+$databaseName = $databaseNames[0];
 
 /** 
  * *************************************************************************************

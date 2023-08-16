@@ -1,9 +1,9 @@
 <?php
 // views/layout.php
 
-use app\Form;
+// use app\Form;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+// require_once __DIR__ . '/../vendor/autoload.php';
 
 ?>
 
@@ -23,7 +23,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
         <div class="row">
             <div class="col-12">
                 <header class="fixed-top bg-secondary text-white text-left mt-1 py-1">
-                    <h4>eSHOP</h4>
+                    <h4>JoyBoy</h4>
                 </header>
             </div>
         </div>

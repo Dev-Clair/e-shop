@@ -7,10 +7,11 @@ namespace app\Controller;
 use app\Model\UserModel;
 use app\Model\BookModel;
 use app\Model\CartModel;
+use app\View\View;
 
 class UserController extends AbsController
 {
-    public function __construct(protected ?UserModel $userModel, protected ?BookModel $bookModel, protected ?CartModel $cartModel)
+    public function __construct(UserModel $userModel = null, BookModel $bookModel = null, CartModel $cartModel = null)
     {
         parent::__construct($userModel, $bookModel, $cartModel);
     }
@@ -21,7 +22,7 @@ class UserController extends AbsController
 
         $welcomePageView = isset($verifyUserAction)
             ?
-            $this->view::make(
+            View::make(
                 'login',
                 [
                     'formAction' => '/e-shop/users/register',
@@ -29,7 +30,7 @@ class UserController extends AbsController
                 ]
             )
             :
-            $this->view::make(
+            View::make(
                 'register',
                 [
                     'formAction' => '/e-shop/users/register',
@@ -42,7 +43,7 @@ class UserController extends AbsController
 
     public function edit()
     {
-        return $this->view::make(
+        return View::make(
             'edit',
             [
                 'formAction' => '/e-shop/users/update',
@@ -53,9 +54,9 @@ class UserController extends AbsController
 
     public function show()
     {
-        $users = $this->userModel->retrieveAllUsers();
+        $users = $this->userModel->retrieveAllUsers(tableName: "users");
 
-        return $this->view::make(
+        return View::make(
             'show',
             [
                 'users' => $users,

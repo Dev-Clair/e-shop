@@ -41,9 +41,8 @@ if ($dbConn->query($sql_query)) {
  * 
  * *************************************************************************************
  */
-
 $usersTable = "users";
-$usersTableFields = "`user_id` INT PRIMARY KEY,
+$usersTableFields = "`user_id` VARCHAR(20) PRIMARY KEY,
                      `user_name` VARCHAR(150) NOT NULL,
                      `user_email` VARCHAR(150) UNIQUE NOT NULL,
                      `user_password` VARCHAR(255) NOT NULL,
@@ -51,39 +50,39 @@ $usersTableFields = "`user_id` INT PRIMARY KEY,
                      `user_account_status` ENUM('Active', 'Inactive') DEFAULT 'Active'";
 
 $booksTable = "books";
-$booksTableFields = "`book_id` INT PRIMARY KEY,
+$booksTableFields = "`book_id` VARCHAR(20) PRIMARY KEY,
                      `book_title` VARCHAR(150) NOT NULL,
                      `book_author` VARCHAR(150) NOT NULL,
                      `book_description` TEXT NOT NULL,
                      `book_price` DECIMAL(10, 2) NOT NULL,
-                     `book_qty` INT NOT NULL UNSIGNED DEFAULT 0,
+                     `book_qty` INT NOT NULL DEFAULT 0,
                      `book_cover_image` BLOB,
                      `book_publication_date` DATE";
 
 $ordersTable = "orders";
 $ordersTableFields = "`order_id` INT PRIMARY KEY,
-                      `user_id` INT NOT NULL,
+                      `user_id` VARCHAR(20) NOT NULL,
                       `order_qty` INT NOT NULL,
                       `order_amt` DECIMAL(10, 2) NOT NULL,
                       `order_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                      FOREIGN KEY (`user_id) REFERENCES users(`user_id`)";
+                      FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`)";
 
 $cartItemsTable = "cartitems";
 $cartItemsTableFields = "`cart_item_id` INT PRIMARY KEY,
-                         `user_id` INT NOT NULL,
-                         `book_id` INT NOT NULL,
+                         `user_id` VARCHAR(20) NOT NULL,
+                         `book_id` VARCHAR(20) NOT NULL,
                          `cart_qty` INT NOT NULL,
                          `cart_amt` DECIMAL(10, 2) NOT NULL,
-                         FOREIGN KEY (`user_id`) REFERENCES users(`user_id`),
-                         FOREIGN KEY (`book_id`) REFERENCES books(`book_id`)";
+                         FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`),
+                         FOREIGN KEY (`book_id`) REFERENCES `books`(`book_id`)";
 
 $returnedItemsTable = "returns";
 $returnedItemsTableFields = "`return_id` INT AUTO_INCREMENT PRIMARY KEY,
-                             `user_id` INT NOT NULL,
+                             `user_id` VARCHAR(20) NOT NULL,
                              `order_id` INT NOT NULL,
                              `return_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                             FOREIGN KEY (`user_id`) REFERENCES users(`user_id`),
-                             FOREIGN KEY (`order_id`) REFERENCES orders(`order_id`)";
+                             FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`),
+                             FOREIGN KEY (`order_id`) REFERENCES `orders`(`order_id`)";
 
 $databaseTables = [
     $usersTable => $usersTableFields,
