@@ -55,6 +55,9 @@ class BookController extends AbsController
             $sanitizedInputs = $this->sanitizeUserInput();
 
             $sanitizedData = $sanitizedInputs;
+            if (empty($sanitizedData)) {
+                $this->errorRedirect(message: "Error! Cannot Create New Book", redirectTo: "books/create");
+            }
             $createStatus = $this->bookModel->createBook(tableName: "books", sanitizedData: $sanitizedData);
             if ($createStatus === true) {
                 $this->successRedirect(message: "New Book Added", redirectTo: "books");

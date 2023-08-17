@@ -27,18 +27,18 @@ class UserController extends AbsController
         $welcomePageView = isset($verifyUserAction)
             ?
             View::make(
-                'login',
+                'register',
                 [
-                    'formAction' => '/e-shop/users/register',
-                    'pageTitle' => 'e-shop Log in'
+                    'formAction' => '/e-shop/users/customerRegister',
+                    'pageTitle' => 'e-shop Register'
                 ]
             )
             :
             View::make(
-                'register',
+                'login',
                 [
-                    'formAction' => '/e-shop/users/register',
-                    'pageTitle' => 'e-shop Register'
+                    'formAction' => '/e-shop/users/login',
+                    'pageTitle' => 'e-shop Log in'
                 ]
             );
 
@@ -91,6 +91,11 @@ class UserController extends AbsController
 
     public function logout()
     {
+        session_start();
+        session_destroy();
+        unset($_SESSION);
+        header('Location: /e-shop/login');
+        exit();
     }
 
     protected function retrieveUserInfo()
@@ -98,10 +103,6 @@ class UserController extends AbsController
     }
 
     protected function verifyUserInfo()
-    {
-    }
-
-    protected function setUserAccountStatus()
     {
     }
 }

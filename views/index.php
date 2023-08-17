@@ -57,26 +57,29 @@ echo $newForm->render();
 <?
 foreach ($books as $book) {
 ?>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="btn-group mb-2" role="group" aria-label="Fetch Buttons">
-                <!-- Display Books -->
-                <?php
-                // Instantiate Form Class
-                $newForm = new Form();
-                $newForm->createForm(formID: "cartForm", formName: "cartForm", formMethod: "post", formAction: $cartFormAction, enctype: "multipart/form-data");
+    <div>
+        <img src="data:image/png;base64,<? echo base64_encode($book['book_cover_image'] ?? ""); ?>" alt="<? echo $book['book_title'] ?? ""; ?>">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="btn-group mb-2" role="group" aria-label="Fetch Buttons">
+                    <!-- Display Books -->
+                    <?php
+                    // Instantiate Form Class
+                    $newForm = new Form();
+                    $newForm->createForm(formID: "cartForm", formName: "cartForm", formMethod: "post", formAction: $cartFormAction, enctype: "multipart/form-data");
 
-                /** Add Hidden Form Input: Book_ID */
-                $newForm->formFieldInput(inputID: "book", inputType: "hidden", value: $book['book_id']);
+                    /** Add Hidden Form Input: Book_ID */
+                    $newForm->formFieldInput(inputID: "book", inputType: "hidden", value: $book['book_id'] ?? "");
 
-                /** Add to Cart Submit Button */
-                $newForm->formButton(buttonID: "addToCart", buttonName: "addToCart", buttonType: "submit", buttonClass: "btn btn-sm btn-success rounded me-2", buttonTitle: "Add to Cart");
+                    /** Add to Cart Submit Button */
+                    $newForm->formButton(buttonID: "addToCart", buttonName: "addToCart", buttonType: "submit", buttonClass: "btn btn-sm btn-success rounded me-2", buttonTitle: "Add to Cart");
 
-                // Render Form
-                echo $newForm->render();
-                ?>
-                <!-- Book Details Button trigger modal -->
-                <button type="button" class="btn btn-sm btn-primary rounded me-2" data-bs-toggle="modal" data-bs-target="#showBookDetailsTableModal">More Details</button>
+                    // Render Form
+                    echo $newForm->render();
+                    ?>
+                    <!-- Book Details Button trigger modal -->
+                    <button type="button" class="btn btn-sm btn-primary rounded me-2" data-bs-toggle="modal" data-bs-target="#showBookDetailsTableModal">More Details</button>
+                </div>
             </div>
         </div>
     </div>

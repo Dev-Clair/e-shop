@@ -46,6 +46,7 @@ $usersTableFields = "`user_id` VARCHAR(20) PRIMARY KEY,
                      `user_name` VARCHAR(150) NOT NULL,
                      `user_email` VARCHAR(150) UNIQUE NOT NULL,
                      `user_password` VARCHAR(255) NOT NULL,
+                     `user_address` VARCHAR(150),
                      `user_role` ENUM('ADMIN', 'CUSTOMER') DEFAULT 'CUSTOMER',
                      `user_account_status` ENUM('Active', 'Inactive') DEFAULT 'Active'";
 
@@ -53,7 +54,7 @@ $booksTable = "books";
 $booksTableFields = "`book_id` VARCHAR(20) PRIMARY KEY,
                      `book_title` VARCHAR(150) NOT NULL,
                      `book_author` VARCHAR(150) NOT NULL,
-                     `book_description` TEXT NOT NULL,
+                     `book_edition` VARCHAR(10) NOT NULL,
                      `book_price` DECIMAL(10, 2) NOT NULL,
                      `book_qty` INT NOT NULL DEFAULT 0,
                      `book_cover_image` BLOB,

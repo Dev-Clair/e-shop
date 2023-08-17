@@ -29,6 +29,7 @@ abstract class AbsController implements IntController
         if (!isset($user_id) || empty($user_id)) {
             $this->errorRedirect(message: "Invalid Login Status", redirectTo: "login");
         }
+        session_regenerate_id(true);
         return;
     }
 
@@ -63,7 +64,11 @@ abstract class AbsController implements IntController
         $this->validateLoginStatus();
 
         $user_id = $_SESSION['user_id'];
-        if ($this->userModel->retrieveUserValue(tableName: "users", fieldName: "user_role", fieldValue: $user_id) !== "ADMIN") {
+        if (
+            $this->userModel->retrieveUserValue(tableName: "users", fieldName: "user_role", fieldValue: $user_id) !== "ADMIN"
+            &&
+            $this->getUserAccountStatus(user_id: $user_id) !== "Inactive"
+        ) {
             $this->errorRedirect(message: "Unauthorized Action!", redirectTo: "login");
         }
         return;
@@ -74,7 +79,11 @@ abstract class AbsController implements IntController
         $this->validateLoginStatus();
 
         $user_id = $_SESSION['user_id'];
-        if ($this->userModel->retrieveUserValue(tableName: "users", fieldName: "user_role", fieldValue: $user_id) !== "CUSTOMER") {
+        if (
+            $this->userModel->retrieveUserValue(tableName: "users", fieldName: "user_role", fieldValue: $user_id) !== "CUSTOMER"
+            &&
+            $this->getUserAccountStatus(user_id: $user_id) !== "Inactive"
+        ) {
             $this->errorRedirect(message: "Unauthorized Action!", redirectTo: "login");
         }
         return;
@@ -87,5 +96,19 @@ abstract class AbsController implements IntController
             $sanitizedInput[$fieldName] = filter_var($userInput, FILTER_SANITIZE_SPECIAL_CHARS);
         }
         return $sanitizedInput;
+    }
+
+    protected function getUserAccountStatus(string $user_id): string
+    {
+        return $this->userModel->retrieveUserValue(tableName: "users", fieldName: "user_id", fieldValue: $user_id);
+    }
+
+    protected function setUserAccountStatus(string $user_id): void
+    {
+        if ($this->userModel->retrieveUserValue(tableName: "users", fieldName: "user_account_status", fieldValue: $user_id) === "Active") {
+            $this->userModel->updateUser(tableName: "users", sanitizedData: ["user_account_status" => "Inactive"], fieldName: "user_id", fieldValue: $user_id);
+        } else {
+            $this->userModel->updateUser(tableName: "users", sanitizedData: ["user_account_status" => "Active"], fieldName: "user_id", fieldValue: $user_id);
+        }
     }
 }
