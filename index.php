@@ -16,10 +16,11 @@ try {
     $router = new Router();
 
     $router->get(route: '/e-shop/', action: [app\Controller\HomeController::class, 'index'])
-        ->get(route: '/e-shop/book/', action: [app\Controller\BookController::class, 'index'])
-        ->get(route: '/e-shop/cart/', action: [app\Controller\CartController::class, 'index'])
-        ->post(route: '/e-shop/books/addToCart', action: [app\Controller\BookController::class, 'addToCart'])
+        ->get(route: '/e-shop/users', action: [app\Controller\UserController::class, 'index'])
+        ->get(route: '/e-shop/book', action: [app\Controller\BookController::class, 'index'])
+        ->get(route: '/e-shop/cart', action: [app\Controller\CartController::class, 'index'])
         ->post(route: '/e-shop/cart/createOrder', action: [app\Controller\CartController::class, 'createOrder'])
+        ->post(route: '/e-shop/books/addToCart', action: [app\Controller\BookController::class, 'addToCart'])
         ->get(route: '/e-shop/book/create', action: [app\Controller\BookController::class, 'create'])
         ->post(route: '/e-shop/book/store', action: [app\Controller\BookController::class, 'store'])
         ->get(route: '/e-shop/book/edit', action: [app\Controller\BookController::class, 'edit'])

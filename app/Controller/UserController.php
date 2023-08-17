@@ -20,14 +20,14 @@ class UserController extends AbsController
         parent::__construct($userModel, $bookModel, $cartModel);
     }
 
-    public function index()
+    public function index(): View
     {
         $verifyUserAction = $_GET['register'];
 
         $welcomePageView = isset($verifyUserAction)
             ?
             View::make(
-                'register',
+                'users/register',
                 [
                     'formAction' => '/e-shop/users/customerRegister',
                     'pageTitle' => 'e-shop Register'
@@ -35,7 +35,7 @@ class UserController extends AbsController
             )
             :
             View::make(
-                'login',
+                'users/login',
                 [
                     'formAction' => '/e-shop/users/login',
                     'pageTitle' => 'e-shop Log in'
@@ -45,10 +45,10 @@ class UserController extends AbsController
         return $welcomePageView;
     }
 
-    public function edit()
+    public function edit(): View
     {
         return View::make(
-            'edit',
+            'users/edit',
             [
                 'formAction' => '/e-shop/users/update',
                 'pageTitle' => 'e-shop Update Account'
@@ -56,12 +56,12 @@ class UserController extends AbsController
         );
     }
 
-    public function show()
+    public function show(): View
     {
         $users = $this->userModel->retrieveAllUsers(tableName: "users");
 
         return View::make(
-            'show',
+            'users/show',
             [
                 'users' => $users,
                 'pageTitle' => 'e-shop Users'
@@ -77,19 +77,44 @@ class UserController extends AbsController
     {
     }
 
-    public function customerRegister()
+    public function customerRegister(): void
     {
     }
 
-    public function adminRegister()
+    public function adminRegister(): void
     {
     }
 
-    public function login()
+    public function login(): void
     {
+        if (filter_has_var(INPUT_POST, 'submitLoginForm')) {
+            $errors = [];
+            $validInputs = [];
+
+            // Email Field
+            $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+            if ($email !== null && $email !== false) {
+                $validInputs['email'] = $email;
+            } else {
+                $errors['email'] = "Please enter a valid email";
+            }
+
+            // Password Field
+            $password = $_POST['password'];
+
+            $user = $this->userModel->retrieveSingleUser(tableName: "users", fieldName: "email", fieldValue: $validInputs['email']);
+
+            $password_check = password_verify($password, $user['user_password']);
+            if (empty($errors) && $password_check) {
+                $_SESSION['user_id'] = $user['user_id'];
+                $this->successRedirect(message: "Logged in successfully!", redirectTo: "");
+            }
+            $_SESSION['errors'] = $errors;
+            $this->errorRedirect(message: "Error! Invalid Login Details", redirectTo: "users");
+        }
     }
 
-    public function logout()
+    public function logout(): void
     {
         session_start();
         session_destroy();

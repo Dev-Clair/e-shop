@@ -90,6 +90,25 @@ class BookModel extends MainModel
         return $this->dbTableOp->validateRecord(tableName: $tableName, fieldName: $fieldName, fieldValue: $fieldValue);
     }
 
+    public function searchBook(string $tableName, string $fieldName, mixed $fieldValue): array
+    {
+        if (empty($tableName)) {
+            throw new \InvalidArgumentException("Invalid table name specified; kindly omit or provide a valid table name.");
+        }
+
+        if (empty($fieldName)) {
+            throw new \InvalidArgumentException("No field name specified; kindly provide reference field name.");
+        }
+
+        if (empty($fieldValue)) {
+            throw new \InvalidArgumentException("No field value specified; kindly provide reference field value.");
+        }
+
+        $fieldName = "`$fieldName`";
+
+        return $this->dbTableOp->searchRecord(tableName: $tableName, fieldName: $fieldName, fieldValue: $fieldValue);
+    }
+
     public function updateBook(string $tableName, array $sanitizedData, string $fieldName, mixed $fieldValue): bool
     {
         if (empty($tableName)) {

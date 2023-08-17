@@ -27,7 +27,7 @@ abstract class AbsController implements IntController
     {
         $user_id = $_SESSION['user_id'];
         if (!isset($user_id) || empty($user_id)) {
-            $this->errorRedirect(message: "Invalid Login Status", redirectTo: "login");
+            $this->errorRedirect(message: "Invalid Login Status", redirectTo: "users/");
         }
         session_regenerate_id(true);
         return;
@@ -105,6 +105,8 @@ abstract class AbsController implements IntController
 
     protected function setUserAccountStatus(string $user_id): void
     {
+        $this->verifyAdmin();
+
         if ($this->userModel->retrieveUserValue(tableName: "users", fieldName: "user_account_status", fieldValue: $user_id) === "Active") {
             $this->userModel->updateUser(tableName: "users", sanitizedData: ["user_account_status" => "Inactive"], fieldName: "user_id", fieldValue: $user_id);
         } else {

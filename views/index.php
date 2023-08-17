@@ -35,7 +35,7 @@ $newForm->createForm(formID: "searchBook", formName: "searchBook", formMethod: "
 /** Form Field: Search Name or Phone Number */
 $newForm->formDiv(divID: "search", divClass: "btn-group mb-3");
 $newForm->formLabel(labelID: "search", labelClass: "form-label", labelTitle: "Search:");
-$newForm->formFieldInput(inputID: "search", inputName: "search", inputType: "search", inputClass: "form-control mb-1", inputPlaceholder: "Enter book title or author name");
+$newForm->formFieldInput(inputID: "search", inputName: "search", inputType: "search", inputClass: "form-control mb-1", inputPlaceholder: "Enter book title");
 if (isset($_SESSION['errors']['search'])) {
     $alertMsg = sprintf("%s", $_SESSION['errors']['search']);
     $newForm->fieldAlert(alertClass: "text-red", alertMsg: $alertMsg);
@@ -57,8 +57,8 @@ echo $newForm->render();
 <?
 foreach ($books as $book) {
 ?>
-    <div>
-        <img src="data:image/png;base64,<? echo base64_encode($book['book_cover_image'] ?? ""); ?>" alt="<? echo $book['book_title'] ?? ""; ?>">
+    <div class="text-center">
+        <img src="data:image/png;base64,<?php echo base64_encode($book['book_cover_image'] ?? ""); ?>" alt="<?php echo $book['book_title'] ?? ""; ?>" class="mb-2">
         <div class="row">
             <div class="col-md-12">
                 <div class="btn-group mb-2" role="group" aria-label="Fetch Buttons">
@@ -87,15 +87,12 @@ foreach ($books as $book) {
 }
 ?>
 
-<!-- Add to Cart Button -->
-<!-- <button type="button" class="btn btn-sm btn-primary rounded me-2" onclick="">Add to Cart</button> -->
-
 <!-- Book Details Table Modal -->
 <div class="modal fade" id="showBookDetailsTableModal" tabindex="-1" aria-labelledby="showBookDetailsTableModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content mx-3 px-3 my-4 py-3">
             <div class="modal-header">
-                <h5 class="modal-title" id="showBookDetailsTableModalLabel"><strong><? echo $book['book_title']; ?></strong></h5>
+                <h5 class="modal-title" id="showBookDetailsTableModalLabel"><strong><?php echo $book['book_title']; ?></strong></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-0 scrollable-container">

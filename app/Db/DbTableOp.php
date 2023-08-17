@@ -45,6 +45,20 @@ class DbTableOp extends DbTable
             throw new \RuntimeException("Error executing statement: " . $e->getMessage());
         }
     }
+
+    public function searchRecord(string $tableName, $fieldName, $fieldValue): array
+    {
+        $sql_query = "SELECT * FROM $tableName WHERE $fieldName LIKE ?";
+
+        try {
+            $stmt = $this->executeQuery(sql: $sql_query, params: [$fieldValue]);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $results;
+        } catch (PDOException $e) {
+            throw new \RuntimeException("Error executing statement: " . $e->getMessage());
+        }
+    }
+
     public function retrieveAllRecords(string $tableName): array
     {
         $sql_query = "SELECT * FROM $tableName";

@@ -20,7 +20,7 @@ class HomeController extends AbsController
         parent::__construct($userModel, $bookModel, $cartModel);
     }
 
-    public function index()
+    public function index(): View
     {
         // Create Login Functionality and retry admin verification
         // $this->verifyAdmin();

@@ -20,7 +20,7 @@ class BookController extends AbsController
         parent::__construct($userModel, $bookModel, $cartModel);
     }
 
-    public function index()
+    public function index(): View
     {
         $books = $this->bookModel->retrieveAllBooks(tableName: "books");
 
@@ -35,7 +35,7 @@ class BookController extends AbsController
         );
     }
 
-    public function create()
+    public function create(): View
     {
         $this->verifyAdmin();
 
@@ -48,7 +48,7 @@ class BookController extends AbsController
         );
     }
 
-    public function store()
+    public function store(): void
     {
         if (filter_has_var(INPUT_POST, 'submitcreateBook')) {
 
@@ -66,7 +66,7 @@ class BookController extends AbsController
         }
     }
 
-    public function edit()
+    public function edit(): View
     {
         $this->verifyAdmin();
 
@@ -83,7 +83,7 @@ class BookController extends AbsController
         );
     }
 
-    public function userAction()
+    public function userAction(): void
     {
         if (filter_has_var(INPUT_POST, 'updateBook')) {
 
@@ -100,7 +100,7 @@ class BookController extends AbsController
         }
     }
 
-    protected function validateUpdateAction(int|string $book_id)
+    protected function validateUpdateAction(int|string $book_id): void
     {
         $fieldValue = $book_id;
         $validateStatus = $this->bookModel->validateBook(tableName: "books",  fieldName: "book_id", fieldValue: $fieldValue);
@@ -113,7 +113,7 @@ class BookController extends AbsController
         $this->errorRedirect(message: "Error! Book $book_id does not exist", redirectTo: "books");
     }
 
-    protected function delete()
+    protected function delete(): void
     {
         $this->verifyAdmin();
 
@@ -135,7 +135,7 @@ class BookController extends AbsController
         $this->errorRedirect(message: "Error! Book $book_id does not exist", redirectTo: "books");
     }
 
-    public function update()
+    public function update(): void
     {
         $this->verifyAdmin();
 
@@ -154,7 +154,7 @@ class BookController extends AbsController
         }
     }
 
-    public function show()
+    public function show(): View
     {
         $this->verifyAdmin();
 
@@ -171,21 +171,20 @@ class BookController extends AbsController
         );
     }
 
-    public function search()
+    public function search(): void
     {
         if (filter_has_var(INPUT_POST, 'searchBook')) {
 
             $searchInput = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-            $fieldValue = $searchInput;
-            $validateStatus = $this->bookModel->validateBook(tableName: "books", fieldName: "book_title", fieldValue: $fieldValue);
+            $fieldValue = "%$searchInput%";
 
-            if ($validateStatus) {
-                $book_title = $this->bookModel->retrieveBookAttribute(tableName: "books", fieldName: "book_title", fieldValue: $fieldValue);
-                $message = sprintf("%s", "&#128366; Book: $book_title");
+            $searchResult = $this->bookModel->searchBook(tableName: "books", fieldName: "book_title", fieldValue: $fieldValue);
+            if (!empty($searchResult)) {
+                $message = sprintf("%s", "Similar Entries Found for $searchInput");
                 $this->successRedirect(message: $message, redirectTo: "books");
-            };
-            $message = sprintf("%s", "No Book Record found for &#128366 $searchInput");
+            }
+            $message = sprintf("%s", "No Similar Record Found for &#128366 $searchInput");
             $this->errorRedirect(message: $message, redirectTo: "books");
         }
     }
@@ -203,7 +202,8 @@ class BookController extends AbsController
     public function addToCart()
     {
         if (filter_has_var(INPUT_POST, 'addToCart')) {
-            $this->verifyCustomer() || $this->verifyAdmin();
+
+            // $this->verifyCustomer() || $this->verifyAdmin();
 
             $book_id = $_GET['book_id'];
 
