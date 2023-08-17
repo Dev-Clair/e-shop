@@ -22,27 +22,14 @@ class UserController extends AbsController
 
     public function index(): View
     {
-        $verifyUserAction = $_GET['register'];
-
-        $welcomePageView = isset($verifyUserAction)
-            ?
-            View::make(
-                'users/register',
-                [
-                    'formAction' => '/e-shop/users/customerRegister',
-                    'pageTitle' => 'e-shop Register'
-                ]
-            )
-            :
-            View::make(
-                'users/login',
-                [
-                    'formAction' => '/e-shop/users/login',
-                    'pageTitle' => 'e-shop Log in'
-                ]
-            );
-
-        return $welcomePageView;
+        return View::make(
+            'users/login',
+            [
+                'loginFormAction' => '/e-shop/users/login',
+                'registerFormAction' => '/e-shop/users/register',
+                'pageTitle' => 'e-shop Log in'
+            ]
+        );
     }
 
     public function edit(): View
@@ -77,11 +64,7 @@ class UserController extends AbsController
     {
     }
 
-    public function customerRegister(): void
-    {
-    }
-
-    public function adminRegister(): void
+    public function register(): void
     {
     }
 
@@ -119,7 +102,7 @@ class UserController extends AbsController
         session_start();
         session_destroy();
         unset($_SESSION);
-        header('Location: /e-shop/login');
+        header('Location: /e-shop/');
         exit();
     }
 

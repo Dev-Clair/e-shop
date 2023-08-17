@@ -27,13 +27,19 @@ if (isset($_SESSION['successAlertMsg'])) {
 unset($_SESSION['successAlertMsg']);
 ?>
 
-<div class="d-flex justify-content-left mt-3 mb-3">
-    <!-- Create New Contact -->
-    <a type="button" class="btn btn-primary rounded float-left" href="/e-shop/users/">Admin</a>
+<!-- Customer Register Button trigger modal -->
+<div class="text-end mt-3 mb-3">
+    <button type="button" class="btn btn-sm btn-success rounded me-2" data-bs-toggle="modal" data-bs-target="#showCustomerFormTableModal">Register</button>
 </div>
 
-<div class="text-center">
-    <h4>Log in</h4>
+<!-- Admin Register Button trigger modal -->
+<!-- <div class="text-end mt-3 mb-3">
+    <button type="button" class="btn btn-sm btn-success rounded me-2" data-bs-toggle="modal" data-bs-target="#showAdminFormTableModal">Register</button>
+</div> -->
+
+<div>
+    <h2 class="mb-3">Log in</h2>
+    <hr>
 
     <?php
     // Instantiate Form Class
@@ -61,16 +67,12 @@ unset($_SESSION['successAlertMsg']);
     unset($_SESSION['errors']);
 
     /** Submit Search Button */
-    $newForm->formButton(buttonID: "submitLoginForm", buttonName: "submitLoginForm", buttonType: "submit", buttonClass: "btn btn-sm btn-success float-end", buttonTitle: "Log in");
+    $newForm->formButton(buttonID: "submitLoginForm", buttonName: "submitLoginForm", buttonType: "submit", buttonClass: "btn btn-sm btn-primary float-end", buttonTitle: "Log in");
 
     // Render Form
     echo $newForm->render();
     ?>
 </div>
-
-<!-- Book Details Button trigger modal -->
-<button type="button" class="btn btn-sm btn-primary rounded me-2" data-bs-toggle="modal" data-bs-target="#showCustomerFormTableModal">New Account</button>
-
 
 <!-- Customer Register Form Modal -->
 <div class="modal fade" id="showCustomerFormTableModal" tabindex="-1" aria-labelledby="showCustomerFormTableModalLabel" aria-hidden="true">
@@ -88,7 +90,7 @@ unset($_SESSION['successAlertMsg']);
 </div>
 
 <!-- Admin Registration Form Modal -->
-<div class="modal fade" id="showAdminFormTableModal" tabindex="-1" aria-labelledby="showAdminFormTableModalLabel" aria-hidden="true">
+<!-- <div class="modal fade" id="showAdminFormTableModal" tabindex="-1" aria-labelledby="showAdminFormTableModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content mx-3 px-3 my-4 py-3">
             <div class="modal-header">
@@ -96,8 +98,9 @@ unset($_SESSION['successAlertMsg']);
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-0 scrollable-container">
-                <!-- Display Form Here -->
+                <? // Display Form Here 
+                ?>
             </div>
         </div>
     </div>
-</div>
+</div> -->

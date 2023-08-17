@@ -52,6 +52,7 @@ echo $newForm->render();
 <div class="d-flex justify-content-left mt-3 mb-3">
     <!-- Create New Contact -->
     <a type="button" class="btn btn-primary rounded float-left" href="/e-shop/cart">View Cart</a>
+    <a type="button" class="btn btn-primary rounded float-left" href="/e-shop/users">Login</a>
 </div>
 
 <?
