@@ -38,8 +38,8 @@ unset($_SESSION['successAlertMsg']);
 </div> -->
 
 <div>
-    <h2 class="mb-3">Log in</h2>
-    <hr>
+    <h2>Log in</h2>
+    <hr class="mb-3">
 
     <?php
     // Instantiate Form Class
@@ -67,7 +67,7 @@ unset($_SESSION['successAlertMsg']);
     unset($_SESSION['errors']);
 
     /** Submit Search Button */
-    $newForm->formButton(buttonID: "submitLoginForm", buttonName: "submitLoginForm", buttonType: "submit", buttonClass: "btn btn-sm btn-primary float-end", buttonTitle: "Log in");
+    $newForm->formButton(buttonID: "submitLoginForm", buttonName: "submitLoginForm", buttonType: "submit", buttonClass: "btn btn-sm btn-primary rounded me-2 float-end", buttonTitle: "Log in");
 
     // Render Form
     echo $newForm->render();
@@ -112,6 +112,15 @@ unset($_SESSION['successAlertMsg']);
                 $newForm->formFieldInput(inputID: "password", inputName: "password", inputType: "password", inputClass: "form-control mb-1", inputPlaceholder: "Enter password");
                 if (isset($_SESSION['errors']['password'])) {
                     $alertMsg = sprintf("%s", $_SESSION['errors']['password']);
+                    $newForm->fieldAlert(alertClass: "text-red", alertMsg: $alertMsg);
+                }
+
+                /** Form Field: Confirm Password */
+                $newForm->formDiv(divID: "confirm_password", divClass: "btn-group mb-3");
+                $newForm->formLabel(labelID: "confirm_password", labelClass: "form-label", labelTitle: "Confirm Password:");
+                $newForm->formFieldInput(inputID: "confirm_password", inputName: "password", inputType: "password", inputClass: "form-control mb-1", inputPlaceholder: "Re-Enter password");
+                if (isset($_SESSION['errors']['confirm_password'])) {
+                    $alertMsg = sprintf("%s", $_SESSION['errors']['confirm_password']);
                     $newForm->fieldAlert(alertClass: "text-red", alertMsg: $alertMsg);
                 }
 

@@ -189,12 +189,12 @@ class BookController extends AbsController
         }
     }
 
-    protected function confirmBookAvailability(mixed $fieldValue): bool
+    protected function confirmBookAvailability(string $fieldName = "book_id", mixed $fieldValue): bool
     {
-        return  $this->bookModel->validateBook(tableName: "books",  fieldName: "book_id", fieldValue: $fieldValue);
+        return  $this->bookModel->validateBook(tableName: "books",  fieldName: $fieldName, fieldValue: $fieldValue);
     }
 
-    protected function confirmBookQty(string $fieldName = "book_qty", mixed $fieldValue): bool
+    protected function confirmBookQty(string $fieldName = "book_id", mixed $fieldValue): bool
     {
         return $this->bookModel->retrieveBookAttribute(tableName: "books", fieldName: $fieldName, fieldValue: $fieldValue) > 0;
     }

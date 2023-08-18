@@ -32,27 +32,14 @@ unset($_SESSION['successAlertMsg']);
 $newForm = new Form();
 $newForm->createForm(formID: "searchBook", formName: "searchBook", formMethod: "post", formAction: $searchFormAction, enctype: "multipart/form-data");
 
-/** Form Field: Search Name or Phone Number */
-$newForm->formDiv(divID: "search", divClass: "btn-group mb-3");
-$newForm->formLabel(labelID: "search", labelClass: "form-label", labelTitle: "Search:");
-$newForm->formFieldInput(inputID: "search", inputName: "search", inputType: "search", inputClass: "form-control mb-1", inputPlaceholder: "Enter book title");
-if (isset($_SESSION['errors']['search'])) {
-    $alertMsg = sprintf("%s", $_SESSION['errors']['search']);
-    $newForm->fieldAlert(alertClass: "text-red", alertMsg: $alertMsg);
-}
-unset($_SESSION['errors']);
-
-/** Submit Search Button */
-$newForm->formButton(buttonID: "searchButton", buttonName: "searchBook", buttonType: "submit", buttonClass: "btn btn-sm btn-success float-end", buttonTitle: "Search");
+/** Form Field: Search Book */
+$newForm->formDiv(divID: "search", divClass: "form-inline");
+$newForm->formFieldInput(inputID: "search", inputName: "search", inputType: "search", inputClass: "form-control me-2", inputPlaceholder: "&#128269 Search...");
 
 // Render Form
 echo $newForm->render();
-?>
 
-<div class="d-flex justify-content-left mt-3 mb-3">
-    <!-- Create New Contact -->
-    <a type="button" class="btn btn-primary rounded float-left" href="/e-shop/cart">View Cart</a>
-</div>
+?>
 
 <?
 foreach ($books as $book) {
@@ -62,7 +49,7 @@ foreach ($books as $book) {
         <div class="row">
             <div class="col-md-12">
                 <div class="btn-group mb-2" role="group" aria-label="Fetch Buttons">
-                    <!-- Display Books -->
+                    <!-- Display Each Book Entity -->
                     <?php
                     // Instantiate Form Class
                     $newForm = new Form();

@@ -11,20 +11,18 @@
 <html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../public/style.css" />
-    <title><?= $pageTitle ?></title>
+    <?php
+    require_once __DIR__ . '/components/head.php';
+    ?>
 </head>
 
 <body>
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <header class="fixed-top bg-secondary text-white text-left mt-1 py-1">
-                    <h5><strong>JoyBoy</strong></h5>
-                </header>
+                <?php
+                require_once __DIR__ . '/components/header.php';
+                ?>
             </div>
         </div>
         <div class="row">
@@ -36,9 +34,9 @@
         </div>
         <div class="row">
             <div class="col-12">
-                <footer class="fixed-bottom bg-secondary text-white text-left mb-1 py-1">
-                    <small><strong>&copy; joyboy designs | 2023</strong></small>
-                </footer>
+                <?php
+                require_once __DIR__ . '/components/footer.php';
+                ?>
             </div>
         </div>
     </div>

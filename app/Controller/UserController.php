@@ -66,6 +66,68 @@ class UserController extends AbsController
 
     public function register(): void
     {
+        if (filter_has_var(INPUT_POST, 'submitRegisterForm')) {
+            $errors = [];
+            $validInputs = [];
+
+            // Name Field
+            $regpattern = '/^[A-Za-z]+(?:\s+[A-Za-z]+)*$/';
+            $name = filter_input(INPUT_POST, 'name', FILTER_VALIDATE_REGEXP, array(
+                'options' => array('regexp' => $regpattern)
+            ));
+
+            if ($name !== false && $name !== null) {
+                $validInputs['name'] = ucwords($name);
+            } else {
+                $errors['name'] = "Name cannot contain numbers or non-alpahbetic characters";
+            }
+
+            // Email Field
+            $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+
+            if ($email !== null && $email !== false) {
+                $validInputs['email'] = $email;
+            } else {
+                $errors['email'] = "Please enter a valid email";
+            }
+
+            // Password Field
+            $password = $_POST['password'];
+            $confirm_password = $_POST['confirm_password'];
+
+            if ($password !== $confirm_password) {
+                $errors['password'] = "Passwords do not match";
+                $errors['confirm_password'] = "Passwords do not match";
+            }
+            $validInputs['password'] = password_hash($password, PASSWORD_BCRYPT);
+
+            // Address Field
+            $address = filter_input(INPUT_POST, 'address', FILTER_DEFAULT);
+
+            if (!is_string($address)) {
+                $errors['address'] = "Address is not valid";
+            }
+            $validInputs['address'] = $address;
+
+            if (!empty($errors)) {
+                $this->errorRedirect(message: "Error! Invalid Details", redirectTo: "users");
+            }
+            // Submit Form
+            $user_id = "cus" . time();
+            $newRecord = [
+                "user_id" => $user_id,
+                "user_name" => $validInputs['name'],
+                "user_email" => $validInputs['email'],
+                "user_password" => $validInputs['password'],
+                "user_address" => $validInputs['address']
+            ];
+
+            $this->userModel->createUser(tableName: "users", sanitizedData: $newRecord)
+                ?
+                $this->successRedirect(message: "Account Creation was Successful, You can now login", redirectTo: "users")
+                :
+                $this->errorRedirect(message: "Error! Account Creation Failed, Please Try Again", redirectTo: "users");
+        }
     }
 
     public function login(): void
@@ -85,7 +147,8 @@ class UserController extends AbsController
             // Password Field
             $password = $_POST['password'];
 
-            $user = $this->userModel->retrieveSingleUser(tableName: "users", fieldName: "email", fieldValue: $validInputs['email']);
+            // User Verification
+            $user = $this->userModel->retrieveSingleUser(tableName: "users", fieldName: "user_email", fieldValue: $validInputs['email']);
 
             $password_check = password_verify($password, $user['user_password']);
             if (empty($errors) && $password_check) {

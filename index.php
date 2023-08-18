@@ -17,6 +17,8 @@ try {
 
     $router->get(route: '/e-shop/', action: [app\Controller\HomeController::class, 'index'])
         ->get(route: '/e-shop/users', action: [app\Controller\UserController::class, 'index'])
+        ->post(route: '/e-shop/users/login', action: [app\Controller\UserController::class, 'login'])
+        ->post(route: '/e-shop/users/register', action: [app\Controller\UserController::class, 'register'])
         ->get(route: '/e-shop/book', action: [app\Controller\BookController::class, 'index'])
         ->get(route: '/e-shop/cart', action: [app\Controller\CartController::class, 'index'])
         ->post(route: '/e-shop/cart/createOrder', action: [app\Controller\CartController::class, 'createOrder'])
