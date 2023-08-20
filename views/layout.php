@@ -1,11 +1,4 @@
-<?php
-// views/layout.php
-
-// use app\Form;
-
-// require_once __DIR__ . '/../vendor/autoload.php';
-
-?>
+<!-- views/layout.php -->
 
 <!DOCTYPE html>
 <html>

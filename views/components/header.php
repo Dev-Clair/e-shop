@@ -5,13 +5,13 @@
         <h5><strong>JoyBoy</strong></h5>
 
         <div class="d-flex align-items-center">
-            <a type="button" class="btn btn-sm btn-outline rounded text-black me-2" href="/e-shop/cart"><strong>🛒 Cart</strong></a>
+            <a type="button" class="btn btn-sm btn-outline rounded text-white me-2" href="/e-shop/cart"><strong>🛒 Cart</strong></a>
 
             <?php
             if (!isset($_SESSION['user_id'])) {
-                echo '<a type="button" class="btn btn-sm btn-outline rounded text-black" href="/e-shop/users/logout"><strong>&#128100; Logout</strong></a>';
+                echo '<a type="button" class="btn btn-sm btn-outline rounded text-white" href="/e-shop/users/logout"><strong>&#128100; Logout</strong></a>';
             } else {
-                echo '<a type="button" class="btn btn-sm btn-outline rounded text-black" href="/e-shop/users"><strong>&#128100; Login</strong></a>';
+                echo '<a type="button" class="btn btn-sm btn-outline rounded text-white" href="/e-shop/users"><strong>&#128100; Login</strong></a>';
             }
             ?>
         </div>

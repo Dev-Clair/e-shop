@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use app\Model\UserModel;
+use app\Model\BookModel;
 
 require __DIR__ . '/../../vendor/autoload.php';
 
@@ -17,23 +17,14 @@ $databaseName = $databaseNames[0];
  * 
  * *************************************************************************************
  */
-// $admin_id = "adm" . time(); // Admin User
-$customer_id = "cus" . time(); // Customer User
+$book_id = "bk" . time() + 1; // Book ID
 
-$user_password = password_hash(password: readline("Enter Password: "), algo: PASSWORD_BCRYPT); // Admin or Customer
+$newRecord = [];
 
-// $newRecord = [
-//     "user_id" => $admin_id, "user_name" => "Samuel Aniogbu", "user_email" => "aniogbu.samuel@yahoo.com", "user_password" => $user_password, "user_address" => "C94, Street C6 Nicon Town Lekki, Lagos", "user_role" => "ADMIN"
-// ];
+$tableName = "books";
+$conn = new BookModel(databaseName: $databaseName);
 
-$newRecord = [
-    "user_id" => $customer_id, "user_name" => "Wendy Uche", "user_email" => "uche.wendy@yahoo.com", "user_password" => $user_password, "user_address" => "B10, Street B4 Nicon Town Lekki, Lagos"
-];
-
-$tableName = "users";
-$conn = new UserModel(databaseName: $databaseName);
-
-$status = $conn->createUser(tableName: $tableName, sanitizedData: $newRecord);
+$status = $conn->createBook(tableName: $tableName, sanitizedData: $newRecord);
 if ($status) {
     echo "Creating new record in $tableName returned: " . "true" . PHP_EOL;
 } else {
@@ -51,8 +42,8 @@ $fieldName = "";
 $fieldValue = "";
 
 $tableName = "";
-// $conn = new UserModel(databaseName: $databaseName);
-// $status = $conn->validateUser(tableName: $tableName, fieldName: $fieldName, fieldValue: $fieldValue);
+// $conn = new BookModel(databaseName: $databaseName);
+// $status = $conn->validateBook(tableName: $tableName, fieldName: $fieldName, fieldValue: $fieldValue);
 // if ($status) {
 //     echo "Validating record in $tableName returned: " . "true" . PHP_EOL;
 // } else {
@@ -67,8 +58,8 @@ $tableName = "";
  * *************************************************************************************
  */
 $tableName = "";
-// $conn = new UserModel(databaseName: $databaseName);
-// $result = $conn->retrieveAllUsers(tableName: $tableName, fetchMode: "1");
+// $conn = new BookModel(databaseName: $databaseName);
+// $result = $conn->retrieveAllBooks(tableName: $tableName, fetchMode: "1");
 // echo "Retrieving all records in $tableName: " . PHP_EOL;
 // var_dump($result);
 
@@ -83,8 +74,8 @@ $fieldName = "";
 $fieldValue = "";
 
 $tableName = "";
-// $conn = new UserModel(databaseName: $databaseName);
-// $result = $conn->retrieveSingleUser(tableName: $tableName, fieldName: $fieldName, fieldValue: $fieldValue);
+// $conn = new BookModel(databaseName: $databaseName);
+// $result = $conn->retrieveSingleBook(tableName: $tableName, fieldName: $fieldName, fieldValue: $fieldValue);
 // echo "Retrieving single record in $tableName: " . PHP_EOL;
 // var_dump($result);
 
@@ -100,8 +91,8 @@ $fieldName = "";
 $fieldValue = "";
 
 $tableName = "";
-// $conn = new UserModel(databaseName: $databaseName);
-// $status = $conn->updateUser(tableName: $tableName, sanitizedData: $record, fieldName: $fieldName, fieldValue: $fieldValue);
+// $conn = new BookModel(databaseName: $databaseName);
+// $status = $conn->updateBook(tableName: $tableName, sanitizedData: $record, fieldName: $fieldName, fieldValue: $fieldValue);
 // if ($status) {
 //     echo "Updating record in $tableName returned: " . "true" . PHP_EOL;
 // } else {
@@ -119,10 +110,125 @@ $fieldName = "";
 $fieldValue = "";
 
 $tableName = "";
-// $conn = new UserModel(databaseName: $databaseName);
-// $status = $conn->deleteUser(tableName: $tableName, fieldName: $fieldName, fieldValue: $fieldValue);
+// $conn = new BookModel(databaseName: $databaseName);
+// $status = $conn->deleteBook(tableName: $tableName, fieldName: $fieldName, fieldValue: $fieldValue);
 // if ($status) {
 //     echo "Deleting record in $tableName returned: " . "true" . PHP_EOL;
 // } else {
 //     echo "Deleting record in $tableName returned: " . "false" . PHP_EOL;
 // }
+
+// Book title and authors
+[
+    'The Great Gatsby' => 'F. Scott Fitzgerald',
+    'To Kill a Mockingbird' => 'Harper Lee',
+    '1984' => 'George Orwell',
+    'Pride and Prejudice' => 'Jane Austen',
+    'The Catcher in the Rye' => 'J.D. Salinger',
+    'Brave New World' => 'Aldous Huxley',
+    'The Lord of the Rings' => 'J.R.R. Tolkien',
+    'Harry Potter and the Sorcerer\'s Stone' => 'J.K. Rowling',
+    'The Hobbit' => 'J.R.R. Tolkien',
+    'The Chronicles of Narnia' => 'C.S. Lewis',
+    'To the Lighthouse' => 'Virginia Woolf',
+    'Moby-Dick' => 'Herman Melville',
+    'The Grapes of Wrath' => 'John Steinbeck',
+    'The Picture of Dorian Gray' => 'Oscar Wilde',
+    'Jane Eyre' => 'Charlotte Brontë',
+    'One Hundred Years of Solitude' => 'Gabriel García Márquez',
+    'Fahrenheit 451' => 'Ray Bradbury',
+    'Crime and Punishment' => 'Fyodor Dostoevsky',
+    'The Road' => 'Cormac McCarthy',
+    'The Alchemist' => 'Paulo Coelho'
+];
+[
+    'The Shining' => 'Stephen King',
+    'The Hunger Games' => 'Suzanne Collins',
+    'The Great Expectations' => 'Charles Dickens',
+    'The Kite Runner' => 'Khaled Hosseini',
+    'Lord of the Flies' => 'William Golding',
+    'The Giver' => 'Lois Lowry',
+    'The Scarlet Letter' => 'Nathaniel Hawthorne',
+    'Anna Karenina' => 'Leo Tolstoy',
+    'Frankenstein' => 'Mary Shelley',
+    'The Outsiders' => 'S.E. Hinton',
+    'The Old Man and the Sea' => 'Ernest Hemingway',
+    'The Da Vinci Code' => 'Dan Brown',
+    'Gone with the Wind' => 'Margaret Mitchell',
+    'The Adventures of Huckleberry Finn' => 'Mark Twain',
+    'A Tale of Two Cities' => 'Charles Dickens',
+    'War and Peace' => 'Leo Tolstoy',
+    'Dracula' => 'Bram Stoker',
+    'The Little Prince' => 'Antoine de Saint-Exupéry',
+    'The Fault in Our Stars' => 'John Green',
+    'The Road Not Taken and Other Poems' => 'Robert Frost'
+];
+
+[
+    'The Count of Monte Cristo' => 'Alexandre Dumas',
+    'The Diary of a Young Girl' => 'Anne Frank',
+    'The Color Purple' => 'Alice Walker',
+    'The Joy Luck Club' => 'Amy Tan',
+    'The Book Thief' => 'Markus Zusak',
+    'The Handmaid\'s Tale' => 'Margaret Atwood',
+    'Wuthering Heights' => 'Emily Brontë',
+    'Slaughterhouse-Five' => 'Kurt Vonnegut',
+    'The Sun Also Rises' => 'Ernest Hemingway',
+    'The Hound of the Baskervilles' => 'Arthur Conan Doyle',
+    'Catch-22' => 'Joseph Heller',
+    'The Divine Comedy' => 'Dante Alighieri',
+    'Heart of Darkness' => 'Joseph Conrad',
+    'The Wind in the Willows' => 'Kenneth Grahame',
+    'The Name of the Rose' => 'Umberto Eco',
+    'The Jungle Book' => 'Rudyard Kipling',
+    'The Picture of Dorian Gray' => 'Oscar Wilde',
+    'The Prince' => 'Niccolò Machiavelli',
+    'The Grapes of Wrath' => 'John Steinbeck',
+    'The Secret Garden' => 'Frances Hodgson Burnett'
+];
+
+[
+    'Pride and Prejudice' => 'Jane Austen',
+    'The Hobbit' => 'J.R.R. Tolkien',
+    'The Chronicles of Narnia' => 'C.S. Lewis',
+    'Jane Eyre' => 'Charlotte Brontë',
+    'One Hundred Years of Solitude' => 'Gabriel García Márquez',
+    'Fahrenheit 451' => 'Ray Bradbury',
+    'Crime and Punishment' => 'Fyodor Dostoevsky',
+    'The Road' => 'Cormac McCarthy',
+    'The Alchemist' => 'Paulo Coelho',
+    'Animal Farm' => 'George Orwell',
+    'Gulliver\'s Travels' => 'Jonathan Swift',
+    'Moby-Dick' => 'Herman Melville',
+    'The Catcher in the Rye' => 'J.D. Salinger',
+    'Brave New World' => 'Aldous Huxley',
+    'Lord of the Flies' => 'William Golding',
+    'The Grapes of Wrath' => 'John Steinbeck',
+    'The Picture of Dorian Gray' => 'Oscar Wilde',
+    'To Kill a Mockingbird' => 'Harper Lee',
+    'The Great Gatsby' => 'F. Scott Fitzgerald',
+    'War and Peace' => 'Leo Tolstoy'
+];
+
+[
+    'The Kite Runner' => 'Khaled Hosseini',
+    'Harry Potter and the Sorcerer\'s Stone' => 'J.K. Rowling',
+    'The Giver' => 'Lois Lowry',
+    'The Scarlet Letter' => 'Nathaniel Hawthorne',
+    'Anna Karenina' => 'Leo Tolstoy',
+    'Frankenstein' => 'Mary Shelley',
+    'The Outsiders' => 'S.E. Hinton',
+    'The Adventures of Huckleberry Finn' => 'Mark Twain',
+    'A Tale of Two Cities' => 'Charles Dickens',
+    'Dracula' => 'Bram Stoker',
+    'The Little Prince' => 'Antoine de Saint-Exupéry',
+    'The Fault in Our Stars' => 'John Green',
+    'The Road Not Taken and Other Poems' => 'Robert Frost',
+    'The Shining' => 'Stephen King',
+    'The Hunger Games' => 'Suzanne Collins',
+    'The Joy Luck Club' => 'Amy Tan',
+    'The Book Thief' => 'Markus Zusak',
+    'The Handmaid\'s Tale' => 'Margaret Atwood',
+    'Wuthering Heights' => 'Emily Brontë',
+    'Slaughterhouse-Five' => 'Kurt Vonnegut'
+];
