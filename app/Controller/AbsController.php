@@ -69,7 +69,7 @@ abstract class AbsController implements IntController
             &&
             $this->getUserAccountStatus(user_id: $user_id) !== "Inactive"
         ) {
-            $this->errorRedirect(message: "Unauthorized Action!", redirectTo: "login");
+            $this->errorRedirect(message: "Unauthorized!", redirectTo: "login");
         }
         return;
     }
@@ -84,7 +84,7 @@ abstract class AbsController implements IntController
             &&
             $this->getUserAccountStatus(user_id: $user_id) !== "Inactive"
         ) {
-            $this->errorRedirect(message: "Unauthorized Action!", redirectTo: "login");
+            $this->errorRedirect(message: "Unauthorized!", redirectTo: "login");
         }
         return;
     }

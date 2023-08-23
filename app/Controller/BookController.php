@@ -24,10 +24,13 @@ class BookController extends AbsController
     {
         $books = $this->bookModel->retrieveAllBooks(tableName: "books");
 
+        $cart = $this->cartModel->retrieveCartItem(tableName: "cartitems");
+
         return View::make(
             'index',
             [
                 'books' => array_slice($books, 0, 50),
+                'cart' => $cart,
                 'pageTitle' => 'e-shop Books',
                 'searchFormAction' => '/e-shop/books/search',
                 'cartFormAction' => '/e-shop/books/addToCart'
@@ -189,14 +192,14 @@ class BookController extends AbsController
         }
     }
 
-    protected function confirmBookAvailability(string $fieldName = "book_id", mixed $fieldValue): bool
+    protected function confirmBookAvailability(string $tableName, string $fieldName, mixed $fieldValue): bool
     {
-        return  $this->bookModel->validateBook(tableName: "books",  fieldName: $fieldName, fieldValue: $fieldValue);
+        return  $this->bookModel->validateBook(tableName: $tableName,  fieldName: $fieldName, fieldValue: $fieldValue);
     }
 
-    protected function confirmBookQty(string $fieldName = "book_id", mixed $fieldValue): bool
+    protected function confirmBookQty(string $tableName, string $fieldName, mixed $fieldValue): bool
     {
-        return $this->bookModel->retrieveBookAttribute(tableName: "books", fieldName: $fieldName, fieldValue: $fieldValue) > 0;
+        return $this->bookModel->retrieveBookAttribute(tableName: $tableName, fieldName: $fieldName, fieldValue: $fieldValue) > 0;
     }
 
     public function addToCart()
@@ -205,13 +208,15 @@ class BookController extends AbsController
 
             // $this->verifyCustomer() || $this->verifyAdmin();
 
-            $book_id = $_GET['book_id'];
+            $book_id = $_POST['book_id'];
 
-            if (!$this->confirmBookAvailability(fieldValue: $book_id)) {
+            $default_qty = $_GET['default_qty'] ??= 1;
+
+            if (!$this->confirmBookAvailability(tableName: "books", fieldName: "book_id", fieldValue: $book_id)) {
                 $this->errorRedirect(message: "Sorry! This book is currently not available", redirectTo: "");
             }
 
-            if (!$this->confirmBookQty(fieldValue: $book_id)) {
+            if (!$this->confirmBookQty(tableName: "books", fieldName: "book_qty", fieldValue: $book_id)) {
                 $this->errorRedirect(message: "Sorry! This book is currently out of stock", redirectTo: "");
             }
 
@@ -221,7 +226,14 @@ class BookController extends AbsController
 
             $book = $this->bookModel->retrieveSingleBook(tableName: "books", fieldName: "book_id", fieldValue: $book_id);
 
-            $sanitizedData = ["cart_item_id"  => $cart_item_id, "user_id" => $user_id, "book_id" => $book_id, "item_qty" => 1, "item_amt" => $book["book_price"]];
+            $sanitizedData = [
+                "cart_item_id"  => $cart_item_id,
+                "user_id" => $user_id,
+                "book_id" => $book_id,
+                "cart_item_qty" => $default_qty,
+                "cart_item_price" => $book["book_price"],
+                "cart_item_amt" => $default_qty * $book["book_price"]
+            ];
 
             $addToCartStatus = $this->cartModel->createCartItem(tableName: "cartitems", sanitizedData: $sanitizedData);
 

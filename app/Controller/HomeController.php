@@ -27,8 +27,11 @@ class HomeController extends AbsController
 
         $books = $this->bookModel->retrieveAllBooks(tableName: "books");
 
+        $cart = $this->cartModel->retrieveCartItem(tableName: "cartitems");
+
         return View::make('index', [
             'books' => array_slice($books, 0, 20),
+            'cart' => $cart,
             'pageTitle' => 'e-shop Home',
             'searchFormAction' => '/e-shop/books/search',
             'cartFormAction' => '/e-shop/books/addToCart'

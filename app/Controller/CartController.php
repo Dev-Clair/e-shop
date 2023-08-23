@@ -28,13 +28,14 @@ class CartController extends AbsController implements IntPaymentGateWay
 
     public function index()
     {
-        $cartItems[] = $this->cartModel->retrieveCartItem(tableName: "cartitems") ?? [];
+        $cart_items[] = $this->cartModel->retrieveCartItem(tableName: "cartitems") ?? [];
 
         return View::make(
-            'index',
+            'cart/index',
             [
-                'cartItems' => $cartItems,
+                'cart_items' => $cart_items,
                 'pageTitle' => 'e-shop Cart',
+                'searchFormAction' => '/e-shop/books/search',
                 'formAction' => '/e-shop/cart/createOrder'
             ]
         );
@@ -44,13 +45,23 @@ class CartController extends AbsController implements IntPaymentGateWay
     {
         if (filter_has_var(INPUT_POST, 'proceedToCheckOut')) {
 
-            $formData = $_POST;
+            $order = [];
+            $user_id = $_SESSION['user_id'];
+            $book_id = [];
+            $order_amt = [];
 
-            $orderStatus = $this->cartModel->createOrder(tableName: "orders", sanitizedData: $formData);
+            $sanitizedData = [
+                "order_id"  => $cart_item_id,
+                "user_id" => $user_id,
+                "book_id" => $book_id,
+                "order_amt" => $order_amt
+            ];
+
+            $orderStatus = $this->cartModel->createOrder(tableName: "orders", sanitizedData: $sanitizedData);
 
             if ($orderStatus === true) {
-                foreach ($formData as $form) {
-                    $this->modifyBookQty(itemQty: $form, fieldValue: $form);
+                foreach ($book_id as $book) {
+                    $this->modifyBookQty(itemQty: $book, fieldValue: $book);
                 }
                 $this->successRedirect(message: "Your Order(s) is/are being processed, A delivery personnel will be in touch shortly", redirectTo: "");
             }
