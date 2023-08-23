@@ -25,12 +25,12 @@ abstract class AbsController implements IntController
 
     private function validateLoginStatus(): void
     {
-        $user_id = $_SESSION['user_id'];
-        if (!isset($user_id) || empty($user_id)) {
-            $this->errorRedirect(message: "Invalid Login Status", redirectTo: "users/");
+        // $user_id = $_SESSION['user_id'];
+        if (isset($_SESSION['user_id'])) {
+            session_regenerate_id(true);
+            return;
         }
-        session_regenerate_id(true);
-        return;
+        $this->errorRedirect(message: "Invalid Login Status", redirectTo: "users/");
     }
 
     protected function errorRedirect(string $message, string $redirectTo): void
@@ -61,30 +61,30 @@ abstract class AbsController implements IntController
 
     protected function verifyAdmin(): void
     {
-        $this->validateLoginStatus();
+        // $this->validateLoginStatus();
 
         $user_id = $_SESSION['user_id'];
         if (
             $this->userModel->retrieveUserValue(tableName: "users", fieldName: "user_role", fieldValue: $user_id) !== "ADMIN"
-            &&
-            $this->getUserAccountStatus(user_id: $user_id) !== "Inactive"
+            // &&
+            // $this->getUserAccountStatus(user_id: $user_id) === "Inactive"
         ) {
-            $this->errorRedirect(message: "Unauthorized!", redirectTo: "login");
+            $this->errorRedirect(message: "Unauthorized!", redirectTo: "users");
         }
         return;
     }
 
     protected function verifyCustomer(): void
     {
-        $this->validateLoginStatus();
+        // $this->validateLoginStatus();
 
         $user_id = $_SESSION['user_id'];
         if (
             $this->userModel->retrieveUserValue(tableName: "users", fieldName: "user_role", fieldValue: $user_id) !== "CUSTOMER"
-            &&
-            $this->getUserAccountStatus(user_id: $user_id) !== "Inactive"
+            // &&
+            // $this->getUserAccountStatus(user_id: $user_id) === "Inactive"
         ) {
-            $this->errorRedirect(message: "Unauthorized!", redirectTo: "login");
+            $this->errorRedirect(message: "Unauthorized!", redirectTo: "users");
         }
         return;
     }

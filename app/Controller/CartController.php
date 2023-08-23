@@ -44,7 +44,7 @@ class CartController extends AbsController implements IntPaymentGateWay
     public function createOrder()
     {
         if (filter_has_var(INPUT_POST, 'proceedToCheckOut')) {
-
+            $cart_item_id = [];
             $order = [];
             $user_id = $_SESSION['user_id'];
             $book_id = [];
@@ -60,6 +60,7 @@ class CartController extends AbsController implements IntPaymentGateWay
             $orderStatus = $this->cartModel->createOrder(tableName: "orders", sanitizedData: $sanitizedData);
 
             if ($orderStatus === true) {
+                $this->cartModel->deleteCartItem(tableName: "cartitems", fieldName: "user_id", fieldValue: $user_id);
                 foreach ($book_id as $book) {
                     $this->modifyBookQty(itemQty: $book, fieldValue: $book);
                 }

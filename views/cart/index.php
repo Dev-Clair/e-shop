@@ -9,6 +9,26 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 
 ?>
 
+<?php
+if (isset($_SESSION['errorAlertMsg'])) {
+    $errorAlertMsg = sprintf("%s", $_SESSION['errorAlertMsg']);
+?>
+    <div class="alert alert-danger"><?php echo $errorAlertMsg; ?></div>
+<?php
+}
+unset($_SESSION['errorAlertMsg']);
+?>
+
+<?php
+if (isset($_SESSION['successAlertMsg'])) {
+    $successAlertMsg = sprintf("%s", $_SESSION['successAlertMsg']);
+?>
+    <div class="alert alert-success"><?php echo $successAlertMsg; ?></div>
+<?php
+}
+unset($_SESSION['successAlertMsg']);
+?>
+
 <div class="table-responsive">
     <table class="table table-striped table-bordered mb-0" style="table-layout: auto;">
         <thead class="thead-dark">

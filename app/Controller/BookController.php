@@ -206,7 +206,8 @@ class BookController extends AbsController
     {
         if (filter_has_var(INPUT_POST, 'addToCart')) {
 
-            // $this->verifyCustomer() || $this->verifyAdmin();
+            // $this->validateLoginStatus();
+            $this->verifyCustomer() || $this->verifyAdmin();
 
             $book_id = $_POST['book_id'];
 

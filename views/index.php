@@ -11,7 +11,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 if (isset($_SESSION['errorAlertMsg'])) {
     $errorAlertMsg = sprintf("%s", $_SESSION['errorAlertMsg']);
 ?>
-    <div class="danger"><? echo $errorAlertMsg; ?></div>
+    <div class="alert alert-danger"><?php echo $errorAlertMsg; ?></div>
 <?php
 }
 unset($_SESSION['errorAlertMsg']);
@@ -21,7 +21,7 @@ unset($_SESSION['errorAlertMsg']);
 if (isset($_SESSION['successAlertMsg'])) {
     $successAlertMsg = sprintf("%s", $_SESSION['successAlertMsg']);
 ?>
-    <div class="success"><? echo $successAlertMsg; ?></div>
+    <div class="alert alert-success"><?php echo $successAlertMsg; ?></div>
 <?php
 }
 unset($_SESSION['successAlertMsg']);
@@ -44,9 +44,9 @@ echo $newForm->render();
 foreach ($books as $book) {
 ?>
     <div class="book-container text-left">
-        <img src="book_cover_imageJ.png" alt="sample_img" class="mb-2 book-image">
-        <h6 class="book-title"><?php echo $book['book_title']; ?></h6>
-        <div class="button-group">
+        <img src="book_cover_imageJ.png" alt="sample_img">
+        <h6><?php echo $book['book_title']; ?></h6>
+        <div class="btn-group">
             <!-- Display Each Book Entity -->
             <?php
             // Instantiate Form Class
@@ -54,7 +54,7 @@ foreach ($books as $book) {
             $newForm->createForm(formID: "cartForm", formName: "cartForm", formMethod: "post", formAction: $cartFormAction, enctype: "multipart/form-data");
 
             /** Add Hidden Form Input: Book_ID */
-            $newForm->formFieldInput(inputID: "book", inputType: "hidden", value: $book['book_id'] ?? "");
+            $newForm->formFieldInput(inputID: "book", inputType: "hidden", inputName: "book_id", value: $book['book_id'] ?? "");
 
             /** Add to Cart Submit Button */
             $newForm->formButton(buttonID: "addToCart", buttonName: "addToCart", buttonType: "submit", buttonClass: "btn btn-sm btn-success rounded me-2", buttonTitle: "Add to Cart");
