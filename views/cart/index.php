@@ -17,6 +17,7 @@ foreach ($cartItems['item'] as $item) {
     $newForm->formDiv(divID: "cartItem", divClass: "form-group mb-3");
 
     // Display Image Here
+    echo "<img src=\"./books/book_cover_imageJ.png\" alt=\"sample_img\" class=\"mb-2\">";
 
     $newForm->formFieldInput(inputID: "cartItem", inputName: "", inputType: "number", inputClass: "form-inline", value: "1", min: "1", max: "100");
 }

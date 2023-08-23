@@ -94,7 +94,7 @@ interface FormTextAreaInput
 
 interface FormButton
 {
-    public function formButton(?string $buttonID = null, ?string $buttonName = null, ?string $buttonType = null, ?string $buttonClass = null, ?string $buttonTitle = null): void;
+    public function formButton(?string $buttonID = null, ?string $buttonName = null, ?string $buttonType = null, ?string $buttonClass = null, ?string $buttonTitle = null, ?string $data_bs_toggle = null, ?string $data_bs_target = null): void;
 }
 
 /** Form */
@@ -172,9 +172,9 @@ class Form implements FormDiv, StatusAlert, FieldAlert, LinkAlert, FormLabel, Fo
         $this->form .= "<textarea id=\"$textareaID\" name=\"$textareaName\" class=\"$textareaClass\" placeholder=\"$textareaPlaceholder\" rows=\"$rows\" cols=\"$cols\"" . $this->formInputAttributes(disabled: $disabled) . "></textarea>";
     }
 
-    public function formButton(?string $buttonID = null, ?string $buttonName = null, ?string $buttonType = null, ?string $buttonClass = null, ?string $buttonTitle = null): void
+    public function formButton(?string $buttonID = null, ?string $buttonName = null, ?string $buttonType = null, ?string $buttonClass = null, ?string $buttonTitle = null, ?string $data_bs_toggle = null, ?string $data_bs_target = null): void
     {
-        $this->form .= "<button id=\"$buttonID\" name=\"$buttonName\" type=\"$buttonType\" class=\"$buttonClass\">$buttonTitle</button>";
+        $this->form .= "<button id=\"$buttonID\" name=\"$buttonName\" type=\"$buttonType\" class=\"$buttonClass\" data-bs-toggle=\"$data_bs_toggle\" data-bs-target=\"$data_bs_target\">$buttonTitle</button>";
     }
 
     public function render(): string

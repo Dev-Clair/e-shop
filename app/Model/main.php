@@ -19,7 +19,23 @@ $databaseName = $databaseNames[0];
  */
 $book_id = "bk" . time() + 1; // Book ID
 
-$newRecord = [];
+$newRecord = [
+    'book_id' => $book_id,
+    // 'book_title' => 'The Great Gatsby',
+    // 'book_author' => 'F. Scott Fitzgerald',
+    // 'book_edition' => '1st',
+    // 'book_price' => 25.99,
+    // 'book_qty' => 50,
+    // 'book_cover_image' => null,
+    // 'book_publication_date' => '2022-01-15'
+    'book_title' => 'To Kill a Mockingbird',
+    'book_author' => 'Harper Lee',
+    'book_edition' => '2nd',
+    'book_price' => 19.95,
+    'book_qty' => 30,
+    'book_cover_image' => null,
+    'book_publication_date' => '2021-08-10'
+];
 
 $tableName = "books";
 $conn = new BookModel(databaseName: $databaseName);
