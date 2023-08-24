@@ -71,23 +71,21 @@ class DbTableOp extends DbTable
         }
     }
 
-    public function retrieveSingleValue(string $tableName, $fieldName, $fieldValue): int|string|bool|array|null
+    public function retrieveSingleValue(string $tableName, string $fieldName, string $compareFieldName, mixed $compareFieldValue): int|string|null
     {
-        $sql_query = "SELECT $fieldName FROM $tableName WHERE $fieldName = ?";
+        $sql_query = "SELECT $fieldName FROM $tableName WHERE $compareFieldName = ?";
 
         try {
-            $stmt = $this->executeQuery(sql: $sql_query, params: [$fieldValue]);
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            if ($row) {
-                return $row[$fieldName];
-            }
-            return null;
+            $stmt = $this->executeQuery(sql: $sql_query, params: [$compareFieldValue]);
+            $value = $stmt->fetchColumn();
+
+            return $value !== false ? $value : null;
         } catch (PDOException $e) {
             throw new \RuntimeException("Error executing statement: " . $e->getMessage());
         }
     }
 
-    public function retrieveMultipleValues(string $tableName, string $fieldName, string $compareFieldName, $compareFieldValue): array
+    public function retrieveMultipleValues(string $tableName, string $fieldName, string $compareFieldName, mixed $compareFieldValue): array
     {
         $sql_query = "SELECT $fieldName FROM $tableName WHERE $compareFieldName = ?";
         try {
@@ -105,8 +103,10 @@ class DbTableOp extends DbTable
 
         try {
             $stmt = $this->executeQuery(sql: $sql_query, params: [$fieldValue]);
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $row ?: [];
+            // $row = $stmt->fetch(PDO::FETCH_ASSOC); // Fetches First Occurence Only
+            // return $row ?: [];
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetches All Occurence Only
+            return $rows;
         } catch (PDOException $e) {
             throw new \RuntimeException("Error executing statement: " . $e->getMessage());
         }

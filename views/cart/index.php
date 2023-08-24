@@ -29,16 +29,24 @@ if (isset($_SESSION['successAlertMsg'])) {
 unset($_SESSION['successAlertMsg']);
 ?>
 
+<?php
+
+// echo "<pre>";
+// var_dump($cart_items);
+
+?>
+<h3> Cart 🛒</h3>
+
 <div class="table-responsive">
     <table class="table table-striped table-bordered mb-0" style="table-layout: auto;">
         <thead class="thead-dark">
             <tr>
                 <th>Cart Item ID</th>
-                <th>Cart Item </th>
+                <th>Cart Item</th>
                 <th>Cart Item Qty</th>
                 <th>Cart Item Price</th>
                 <th>Cart Item Amount</th>
-                <th></th>
+                <th>Remove From 🛒 </th>
             </tr>
         </thead>
         <tbody>
@@ -54,10 +62,10 @@ unset($_SESSION['successAlertMsg']);
                         // Instantiate Form Class
                         $newForm = new Form();
 
-                        $newForm->createForm(formID: "userAction", formName: "userAction", formMethod: "post", formAction: $cartFormAction, enctype: null);
+                        $newForm->createForm(formID: "cartQuantity", formName: "cartQuantity", formMethod: "post", formAction: $cartQuantityFormAction, enctype: null);
 
                         /** Item Update Button */
-                        $newForm->formFieldInput(inputID: "updateField", inputName: "default_qty", inputType: "number", inputClass: "", inputPlaceholder: "1", value: $item['cart_item_qty']);
+                        $newForm->formFieldInput(inputID: "cartQuantity", inputName: "default_qty", inputType: "number", inputClass: "", inputPlaceholder: "1", value: $item['cart_item_qty']);
 
                         // Render Form
                         echo $newForm->render();
@@ -70,10 +78,10 @@ unset($_SESSION['successAlertMsg']);
                         // Instantiate Form Class
                         $newForm = new Form();
 
-                        $newForm->createForm(formID: "userAction", formName: "userAction", formMethod: "post", formAction: $cartFormAction, enctype: null);
+                        $newForm->createForm(formID: "removeFromCart", formName: "removeFromCart", formMethod: "post", formAction: $removeFromCartFormAction, enctype: null);
 
                         /** Item Delete Button */
-                        $newForm->formFieldInput(inputID: "deleteButton", inputName: "deleteCartItem[{$item['book_id']}]", inputType: "submit", inputClass: "btn btn-sm btn-danger", value: "&#9851");
+                        $newForm->formFieldInput(inputID: "removeFromCartButton", inputName: "removeFromCart[{$item['book_id']}]", inputType: "submit", inputClass: "btn btn-sm btn-danger", value: "&#9851");
 
                         // Render Form
                         echo $newForm->render();

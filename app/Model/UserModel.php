@@ -52,7 +52,7 @@ class UserModel extends MainModel
         return $this->dbTableOp->retrieveSingleRecord(tableName: $tableName, fieldName: $fieldName, fieldValue: $fieldValue);
     }
 
-    public function retrieveUserValue(string $tableName, string $fieldName, mixed $fieldValue): mixed
+    public function retrieveUserAttribute(string $tableName, string $fieldName, string $compareFieldName, mixed $compareFieldValue): mixed
     {
         if (empty($tableName)) {
             throw new \InvalidArgumentException("Invalid table name specified; kindly provide a valid table name.");
@@ -62,13 +62,17 @@ class UserModel extends MainModel
             throw new \InvalidArgumentException("No field name specified; kindly provide reference field name.");
         }
 
-        if (empty($fieldValue)) {
+        if (empty($compareFieldName)) {
+            throw new \InvalidArgumentException("No field name specified; kindly provide reference field value.");
+        }
+
+        if (empty($compareFieldValue)) {
             throw new \InvalidArgumentException("No field value specified; kindly provide reference field value.");
         }
 
         $fieldName = "`$fieldName`";
 
-        return $this->dbTableOp->retrieveSingleValue(tableName: $tableName, fieldName: $fieldName, fieldValue: $fieldValue);
+        return $this->dbTableOp->retrieveSingleValue(tableName: $tableName, fieldName: $fieldName, compareFieldName: $compareFieldName, compareFieldValue: $compareFieldValue);
     }
 
     public function validateUser(string $tableName, string $fieldName, mixed $fieldValue): bool

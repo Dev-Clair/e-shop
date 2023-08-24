@@ -28,7 +28,7 @@ class CartController extends AbsController implements IntPaymentGateWay
 
     public function index()
     {
-        $cart_items[] = $this->cartModel->retrieveCartItem(tableName: "cartitems") ?? [];
+        $cart_items = $this->cartModel->retrieveCartItem(tableName: "cartitems", fieldName: "user_id", fieldValue: $_SESSION['user_id']) ?? [];
 
         return View::make(
             'cart/index',
@@ -36,9 +36,36 @@ class CartController extends AbsController implements IntPaymentGateWay
                 'cart_items' => $cart_items,
                 'pageTitle' => 'e-shop Cart',
                 'searchFormAction' => '/e-shop/books/search',
-                'formAction' => '/e-shop/cart/createOrder'
+                'removeFromCartFormAction' => '/e-shop/cart/deleteItem',
+                'cartQuantityFormAction' => '/e-shop/cart/alterQty',
+                'orderSubmitFormAction' => '/e-shop/cart/createOrder'
             ]
         );
+    }
+
+    public function deleteItem()
+    {
+        if (filter_has_var(INPUT_POST, 'removeFromCart')) {
+            if (isset($_POST['removeFromCart']) && is_array($_POST['removeFromCart'])) {
+                $book_id = array_key_first($_POST['removeFromCart']);
+            }
+
+            $fieldValue = $book_id;
+            $this->bookModel->deleteBook(tableName: "cartitems",  fieldName: "book_id", fieldValue: $fieldValue)
+                ?
+                $this->successRedirect(message: "Item removed successfully", redirectTo: "cart")
+                :
+                $this->errorRedirect(message: "Error! Cannot remove item $fieldValue", redirectTo: "cart");
+
+            $this->errorRedirect(message: "Error! Item $book_id does not exist in your cart", redirectTo: "cart");
+        }
+    }
+
+    public function alterQty()
+    {
+        if (filter_has_var(INPUT_POST, '')) {
+            // Implement using sessions
+        }
     }
 
     public function createOrder()

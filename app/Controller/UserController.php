@@ -27,7 +27,7 @@ class UserController extends AbsController
             [
                 'loginFormAction' => '/e-shop/users/login',
                 'registerFormAction' => '/e-shop/users/register',
-                'pageTitle' => 'e-shop Log in'
+                'pageTitle' => 'Log in'
             ]
         );
     }
@@ -35,10 +35,10 @@ class UserController extends AbsController
     public function edit(): View
     {
         return View::make(
-            'users/edit',
+            'users/profile',
             [
-                'formAction' => '/e-shop/users/update',
-                'pageTitle' => 'e-shop Update Account'
+                'editFormAction' => '/e-shop/users/update',
+                'pageTitle' => 'Profile'
             ]
         );
     }
@@ -51,7 +51,7 @@ class UserController extends AbsController
             'users/show',
             [
                 'users' => $users,
-                'pageTitle' => 'e-shop Users'
+                'pageTitle' => 'Users'
             ]
         );
     }
@@ -83,7 +83,7 @@ class UserController extends AbsController
             }
 
             // Email Field
-            $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+            $email = filter_input(INPUT_POST, 'registerEmail', FILTER_VALIDATE_EMAIL);
 
             if ($email !== null && $email !== false) {
                 $validInputs['email'] = $email;
@@ -92,8 +92,8 @@ class UserController extends AbsController
             }
 
             // Password Field
-            $password = $_POST['password'];
-            $confirm_password = $_POST['confirm_password'];
+            $password = $_POST['registerPassword'];
+            $confirm_password = $_POST['confirm_registerPassword'];
 
             if ($password !== $confirm_password) {
                 $errors['password'] = "Passwords do not match";
@@ -110,6 +110,7 @@ class UserController extends AbsController
             $validInputs['address'] = $address;
 
             if (!empty($errors)) {
+                $_SESSION['errors'] = $errors;
                 $this->errorRedirect(message: "Error! Invalid Details", redirectTo: "users");
             }
             // Submit Form
@@ -137,7 +138,7 @@ class UserController extends AbsController
             $validInputs = [];
 
             // Email Field
-            $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+            $email = filter_input(INPUT_POST, 'loginEmail', FILTER_VALIDATE_EMAIL);
             if ($email !== null && $email !== false) {
                 $validInputs['email'] = $email;
             } else {
@@ -145,7 +146,7 @@ class UserController extends AbsController
             }
 
             // Password Field
-            $password = $_POST['password'];
+            $password = $_POST['loginPassword'];
 
             // User Verification
             $user = $this->userModel->retrieveSingleUser(tableName: "users", fieldName: "user_email", fieldValue: $validInputs['email']);
@@ -163,6 +164,12 @@ class UserController extends AbsController
     public function logout(): void
     {
         session_start();
+
+        // Retrieve user_id via Session Super-Global
+        $user_id = $_SESSION['user_id'];
+        // Check and clear cart of items added via user_id
+        $this->cartModel->deleteCartItem(tableName: "cartitems", fieldName: "user_id", fieldValue: $user_id);
+
         session_destroy();
         unset($_SESSION);
         header('Location: /e-shop/');

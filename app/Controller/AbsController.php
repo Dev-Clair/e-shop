@@ -25,7 +25,6 @@ abstract class AbsController implements IntController
 
     private function validateLoginStatus(): void
     {
-        // $user_id = $_SESSION['user_id'];
         if (isset($_SESSION['user_id'])) {
             session_regenerate_id(true);
             return;
@@ -50,24 +49,25 @@ abstract class AbsController implements IntController
     protected function cartAddError(string $message): void
     {
         $_SESSION['errorAlertMsg'] = $message;
+        header('Location: /e-shop/');
         return;
     }
 
     protected function cartAddSuccess(string $message): void
     {
         $_SESSION['successAlertMsg'] = $message;
+        header('Location: /e-shop/');
         return;
     }
 
     protected function verifyAdmin(): void
     {
-        // $this->validateLoginStatus();
+        $this->validateLoginStatus();
 
-        $user_id = $_SESSION['user_id'];
         if (
-            $this->userModel->retrieveUserValue(tableName: "users", fieldName: "user_role", fieldValue: $user_id) !== "ADMIN"
-            // &&
-            // $this->getUserAccountStatus(user_id: $user_id) === "Inactive"
+            $this->userModel->retrieveUserAttribute(tableName: "users", fieldName: "user_role", compareFieldName: 'user_id', compareFieldValue: $_SESSION['user_id']) !== "ADMIN"
+            &&
+            $this->getUserAccountStatus() === "Inactive"
         ) {
             $this->errorRedirect(message: "Unauthorized!", redirectTo: "users");
         }
@@ -76,13 +76,12 @@ abstract class AbsController implements IntController
 
     protected function verifyCustomer(): void
     {
-        // $this->validateLoginStatus();
+        $this->validateLoginStatus();
 
-        $user_id = $_SESSION['user_id'];
         if (
-            $this->userModel->retrieveUserValue(tableName: "users", fieldName: "user_role", fieldValue: $user_id) !== "CUSTOMER"
-            // &&
-            // $this->getUserAccountStatus(user_id: $user_id) === "Inactive"
+            $this->userModel->retrieveUserAttribute(tableName: "users", fieldName: "user_role", compareFieldName: 'user_id', compareFieldValue: $_SESSION['user_id']) !== "CUSTOMER"
+            &&
+            $this->getUserAccountStatus() === "Inactive"
         ) {
             $this->errorRedirect(message: "Unauthorized!", redirectTo: "users");
         }
@@ -98,19 +97,19 @@ abstract class AbsController implements IntController
         return $sanitizedInput;
     }
 
-    protected function getUserAccountStatus(string $user_id): string
+    protected function getUserAccountStatus(): string
     {
-        return $this->userModel->retrieveUserValue(tableName: "users", fieldName: "user_id", fieldValue: $user_id);
+        return $this->userModel->retrieveUserAttribute(tableName: "users", fieldName: "user_account_status", compareFieldName: 'user_id', compareFieldValue: $_SESSION['user_id']);
     }
 
-    protected function setUserAccountStatus(string $user_id): void
+    protected function setUserAccountStatus(): void
     {
         $this->verifyAdmin();
 
-        if ($this->userModel->retrieveUserValue(tableName: "users", fieldName: "user_account_status", fieldValue: $user_id) === "Active") {
-            $this->userModel->updateUser(tableName: "users", sanitizedData: ["user_account_status" => "Inactive"], fieldName: "user_id", fieldValue: $user_id);
+        if ($this->userModel->retrieveUserAttribute(tableName: "users", fieldName: "user_account_status", compareFieldName: 'user_id', compareFieldValue: $_SESSION['user_id']) === "Active") {
+            $this->userModel->updateUser(tableName: "users", sanitizedData: ["user_account_status" => "Inactive"], fieldName: "user_id", fieldValue: $_SESSION['user_id']);
         } else {
-            $this->userModel->updateUser(tableName: "users", sanitizedData: ["user_account_status" => "Active"], fieldName: "user_id", fieldValue: $user_id);
+            $this->userModel->updateUser(tableName: "users", sanitizedData: ["user_account_status" => "Active"], fieldName: "user_id", fieldValue: $_SESSION['user_id']);
         }
     }
 }

@@ -7,22 +7,22 @@ use app\Form;
 
 ?>
 
-<?
+<?php
 if (isset($_SESSION['errorAlertMsg'])) {
     $errorAlertMsg = sprintf("%s", $_SESSION['errorAlertMsg']);
 ?>
-    <div class="danger"><? echo $errorAlertMsg; ?></div>
-<?
+    <div class="alert alert-danger"><?php echo $errorAlertMsg; ?></div>
+<?php
 }
 unset($_SESSION['errorAlertMsg']);
 ?>
 
-<?
+<?php
 if (isset($_SESSION['successAlertMsg'])) {
     $successAlertMsg = sprintf("%s", $_SESSION['successAlertMsg']);
 ?>
-    <div class="success"><? echo $successAlertMsg; ?></div>
-<?
+    <div class="alert alert-success"><?php echo $successAlertMsg; ?></div>
+<?php
 }
 unset($_SESSION['successAlertMsg']);
 ?>
@@ -49,18 +49,18 @@ unset($_SESSION['successAlertMsg']);
     /** Form Field: Email */
     $newForm->formDiv(divID: "email", divClass: "btn-group mb-3");
     $newForm->formLabel(labelID: "email", labelClass: "form-label", labelTitle: "Email:");
-    $newForm->formFieldInput(inputID: "email", inputName: "email", inputType: "email", inputClass: "form-control mb-1", inputPlaceholder: "Enter email adddress");
-    if (isset($_SESSION['errors']['email'])) {
-        $alertMsg = sprintf("%s", $_SESSION['errors']['email']);
+    $newForm->formFieldInput(inputID: "email", inputName: "loginEmail", inputType: "email", inputClass: "form-control mb-1", inputPlaceholder: "Enter email adddress");
+    if (isset($_SESSION['errors']['loginEmail'])) {
+        $alertMsg = sprintf("%s", $_SESSION['errors']['loginEmail']);
         $newForm->fieldAlert(alertClass: "text-red", alertMsg: $alertMsg);
     }
 
     /** Form Field: Password */
     $newForm->formDiv(divID: "password", divClass: "btn-group mb-3");
     $newForm->formLabel(labelID: "password", labelClass: "form-label", labelTitle: "Password:");
-    $newForm->formFieldInput(inputID: "password", inputName: "password", inputType: "password", inputClass: "form-control mb-1", inputPlaceholder: "Enter password");
-    if (isset($_SESSION['errors']['password'])) {
-        $alertMsg = sprintf("%s", $_SESSION['errors']['password']);
+    $newForm->formFieldInput(inputID: "password", inputName: "loginPassword", inputType: "password", inputClass: "form-control mb-1", inputPlaceholder: "Enter password");
+    if (isset($_SESSION['errors']['loginPassword'])) {
+        $alertMsg = sprintf("%s", $_SESSION['errors']['loginPassword']);
         $newForm->fieldAlert(alertClass: "text-red", alertMsg: $alertMsg);
     }
 
@@ -100,27 +100,27 @@ unset($_SESSION['successAlertMsg']);
                 /** Form Field: Email */
                 $newForm->formDiv(divID: "email", divClass: "btn-group mb-3");
                 $newForm->formLabel(labelID: "email", labelClass: "form-label", labelTitle: "Email:");
-                $newForm->formFieldInput(inputID: "email", inputName: "email", inputType: "email", inputClass: "form-control mb-1", inputPlaceholder: "Enter email adddress");
-                if (isset($_SESSION['errors']['email'])) {
-                    $alertMsg = sprintf("%s", $_SESSION['errors']['email']);
+                $newForm->formFieldInput(inputID: "email", inputName: "registerEmail", inputType: "email", inputClass: "form-control mb-1", inputPlaceholder: "Enter email adddress");
+                if (isset($_SESSION['errors']['registerEmail'])) {
+                    $alertMsg = sprintf("%s", $_SESSION['errors']['registerEmail']);
                     $newForm->fieldAlert(alertClass: "text-red", alertMsg: $alertMsg);
                 }
 
                 /** Form Field: Password */
                 $newForm->formDiv(divID: "password", divClass: "btn-group mb-3");
                 $newForm->formLabel(labelID: "password", labelClass: "form-label", labelTitle: "Password:");
-                $newForm->formFieldInput(inputID: "password", inputName: "password", inputType: "password", inputClass: "form-control mb-1", inputPlaceholder: "Enter password");
-                if (isset($_SESSION['errors']['password'])) {
-                    $alertMsg = sprintf("%s", $_SESSION['errors']['password']);
+                $newForm->formFieldInput(inputID: "password", inputName: "registerPassword", inputType: "password", inputClass: "form-control mb-1", inputPlaceholder: "Enter password");
+                if (isset($_SESSION['errors']['registerPassword'])) {
+                    $alertMsg = sprintf("%s", $_SESSION['errors']['registerPassword']);
                     $newForm->fieldAlert(alertClass: "text-red", alertMsg: $alertMsg);
                 }
 
                 /** Form Field: Confirm Password */
                 $newForm->formDiv(divID: "confirm_password", divClass: "btn-group mb-3");
                 $newForm->formLabel(labelID: "confirm_password", labelClass: "form-label", labelTitle: "Confirm Password:");
-                $newForm->formFieldInput(inputID: "confirm_password", inputName: "password", inputType: "password", inputClass: "form-control mb-1", inputPlaceholder: "Re-Enter password");
-                if (isset($_SESSION['errors']['confirm_password'])) {
-                    $alertMsg = sprintf("%s", $_SESSION['errors']['confirm_password']);
+                $newForm->formFieldInput(inputID: "confirm_password", inputName: "confirm_registerPassword", inputType: "password", inputClass: "form-control mb-1", inputPlaceholder: "Re-Enter password");
+                if (isset($_SESSION['errors']['confirm_registerPassword'])) {
+                    $alertMsg = sprintf("%s", $_SESSION['errors']['confirm_registerPassword']);
                     $newForm->fieldAlert(alertClass: "text-red", alertMsg: $alertMsg);
                 }
 

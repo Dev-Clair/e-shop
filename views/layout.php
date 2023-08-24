@@ -21,7 +21,7 @@
         <div class="row">
             <div class="col-12">
                 <main class="mt-5 py-1">
-                    <?= $pageContent ?>
+                    <?php echo $pageContent; ?>
                 </main>
             </div>
         </div>

@@ -27,7 +27,9 @@ class HomeController extends AbsController
 
         $books = $this->bookModel->retrieveAllBooks(tableName: "books");
 
-        $cart = $this->cartModel->retrieveCartItem(tableName: "cartitems");
+        $user_id = $_SESSION['user_id'] ?? null;
+
+        $cart = $this->cartModel->retrieveCartItem(tableName: "cartitems", fieldName: "user_id", fieldValue: $user_id) ?? [];
 
         return View::make('index', [
             'books' => array_slice($books, 0, 20),

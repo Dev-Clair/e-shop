@@ -61,7 +61,7 @@ $booksTableFields = "`book_id` VARCHAR(20) PRIMARY KEY,
                      `book_publication_date` DATE";
 
 $ordersTable = "orders";
-$ordersTableFields = "`order_id` INT PRIMARY KEY,
+$ordersTableFields = "`order_id` VARCHAR(20) PRIMARY KEY,
                       `user_id` VARCHAR(20) NOT NULL,
                       `book_id` VARCHAR(20) NOT NULL,
                       `order_amt` DECIMAL(10, 2) NOT NULL,
@@ -70,7 +70,7 @@ $ordersTableFields = "`order_id` INT PRIMARY KEY,
                       FOREIGN KEY (`book_id`) REFERENCES `books`(`book_id`)";
 
 $cartItemsTable = "cartitems";
-$cartItemsTableFields = "`cart_item_id` INT PRIMARY KEY,
+$cartItemsTableFields = "`cart_item_id` VARCHAR(20) PRIMARY KEY,
                          `user_id` VARCHAR(20) NOT NULL,
                          `book_id` VARCHAR(20) NOT NULL,
                          `cart_item_qty` INT NOT NULL,
@@ -83,7 +83,7 @@ $returnedItemsTable = "returns";
 $returnedItemsTableFields = "`return_id` INT AUTO_INCREMENT PRIMARY KEY,
                              `user_id` VARCHAR(20) NOT NULL,
                              `book_id` VARCHAR(20) NOT NULL,
-                             `order_id` INT NOT NULL,
+                             `order_id` VARCHAR(20) NOT NULL,
                              `return_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                              FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`),
                              FOREIGN KEY (`book_id`) REFERENCES `books`(`book_id`),

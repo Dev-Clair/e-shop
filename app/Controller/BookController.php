@@ -24,7 +24,9 @@ class BookController extends AbsController
     {
         $books = $this->bookModel->retrieveAllBooks(tableName: "books");
 
-        $cart = $this->cartModel->retrieveCartItem(tableName: "cartitems");
+        $user_id = $_SESSION['user_id'] ?? null;
+
+        $cart = $this->cartModel->retrieveCartItem(tableName: "cartitems", fieldName: "user_id", fieldValue: $user_id) ?? [];
 
         return View::make(
             'index',
@@ -80,7 +82,7 @@ class BookController extends AbsController
             '/e-shop/books/edit',
             [
                 'book' => $book,
-                'formAction' => '/e-shop/books/update',
+                'editFormAction' => '/e-shop/books/update',
                 'pageTitle' => 'Update Book'
             ]
         );
@@ -197,29 +199,33 @@ class BookController extends AbsController
         return  $this->bookModel->validateBook(tableName: $tableName,  fieldName: $fieldName, fieldValue: $fieldValue);
     }
 
-    protected function confirmBookQty(string $tableName, string $fieldName, mixed $fieldValue): bool
+    protected function confirmBookQty(string $tableName, string $fieldName, string $compareFieldName, mixed $compareFieldValue): bool
     {
-        return $this->bookModel->retrieveBookAttribute(tableName: $tableName, fieldName: $fieldName, fieldValue: $fieldValue) > 0;
+        return $this->bookModel->retrieveBookAttribute(tableName: $tableName, fieldName: $fieldName, compareFieldName: $compareFieldName, compareFieldValue: $compareFieldValue) > 0;
     }
 
     public function addToCart()
     {
         if (filter_has_var(INPUT_POST, 'addToCart')) {
 
-            // $this->validateLoginStatus();
             $this->verifyCustomer() || $this->verifyAdmin();
 
             $book_id = $_POST['book_id'];
 
             $default_qty = $_GET['default_qty'] ??= 1;
 
+            // Confirm Availability
             if (!$this->confirmBookAvailability(tableName: "books", fieldName: "book_id", fieldValue: $book_id)) {
                 $this->errorRedirect(message: "Sorry! This book is currently not available", redirectTo: "");
             }
 
-            if (!$this->confirmBookQty(tableName: "books", fieldName: "book_qty", fieldValue: $book_id)) {
+            // Confirm Stock
+            if (!$this->confirmBookQty(tableName: "books", fieldName: "book_qty", compareFieldName: "book_id", compareFieldValue: $book_id)) {
                 $this->errorRedirect(message: "Sorry! This book is currently out of stock", redirectTo: "");
             }
+
+            // Check if Item is already added to cart
+
 
             $user_id = $_SESSION['user_id'];
 
