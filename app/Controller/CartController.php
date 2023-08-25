@@ -34,10 +34,10 @@ class CartController extends AbsController implements IntPaymentGateWay
             'cart/index',
             [
                 'cart_items' => $cart_items,
-                'pageTitle' => 'e-shop Cart',
+                'pageTitle' => '&#128366 Cart',
                 'searchFormAction' => '/e-shop/books/search',
                 'removeFromCartFormAction' => '/e-shop/cart/deleteItem',
-                'cartQuantityFormAction' => '/e-shop/cart/alterQty',
+                'cartQuantityFormAction' => '/e-shop/cart/updateItem',
                 'orderSubmitFormAction' => '/e-shop/cart/createOrder'
             ]
         );
@@ -47,24 +47,45 @@ class CartController extends AbsController implements IntPaymentGateWay
     {
         if (filter_has_var(INPUT_POST, 'removeFromCart')) {
             if (isset($_POST['removeFromCart']) && is_array($_POST['removeFromCart'])) {
-                $book_id = array_key_first($_POST['removeFromCart']);
+                // Retrieve Form Data via $_POST Super-global
+                $cart_item_id = array_key_first($_POST['removeFromCart']);
             }
 
-            $fieldValue = $book_id;
-            $this->bookModel->deleteBook(tableName: "cartitems",  fieldName: "book_id", fieldValue: $fieldValue)
+            $fieldValue = $cart_item_id;
+            $this->cartModel->deleteCartItem(tableName: "cartitems", fieldName: "cart_item_id", fieldValue: $fieldValue)
                 ?
                 $this->successRedirect(message: "Item removed successfully", redirectTo: "cart")
                 :
                 $this->errorRedirect(message: "Error! Cannot remove item $fieldValue", redirectTo: "cart");
 
-            $this->errorRedirect(message: "Error! Item $book_id does not exist in your cart", redirectTo: "cart");
+            $this->errorRedirect(message: "Error! Item $cart_item_id does not exist in your cart", redirectTo: "cart");
         }
     }
 
-    public function alterQty()
+    public function updateItem()
     {
-        if (filter_has_var(INPUT_POST, '')) {
-            // Implement using sessions
+        if (filter_has_var(INPUT_POST, 'alterQty')) {
+            // Retrieve Form Data via $_POST Super-global
+            $new_qty = filter_input(INPUT_POST, 'new_qty', FILTER_VALIDATE_INT);
+
+            // Retrieve Hidden Form Input: Cart_Item_ID
+            $cart_item_id = filter_input(INPUT_POST, 'cart_item_id', FILTER_SANITIZE_SPECIAL_CHARS);
+
+            // Retrieve Hidden Form Input: Cart_Item_Price
+            $cart_item_price = filter_input(INPUT_POST, 'cart_item_price', FILTER_VALIDATE_FLOAT);
+
+            if ($new_qty !== false && $new_qty !== null) {
+                $sanitizedData = [
+                    "cart_item_qty" => $new_qty,
+                    "cart_item_amt" => $new_qty * $cart_item_price
+                ];
+            }
+
+            $this->cartModel->updateCartItem(tableName: "cartitems", sanitizedData: $sanitizedData, fieldName: "cart_item_id", fieldValue: $cart_item_id)
+                ?
+                $this->successRedirect(message: "Item quantity updated successfully", redirectTo: "cart")
+                :
+                $this->errorRedirect(message: "Error! Cannot modify quantity", redirectTo: "cart");
         }
     }
 
@@ -78,7 +99,7 @@ class CartController extends AbsController implements IntPaymentGateWay
             $order_amt = [];
 
             $sanitizedData = [
-                "order_id"  => $cart_item_id,
+                "order_id" => $cart_item_id,
                 "user_id" => $user_id,
                 "book_id" => $book_id,
                 "order_amt" => $order_amt

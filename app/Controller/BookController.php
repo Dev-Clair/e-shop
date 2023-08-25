@@ -33,7 +33,7 @@ class BookController extends AbsController
             [
                 'books' => array_slice($books, 0, 50),
                 'cart' => $cart,
-                'pageTitle' => 'e-shop Books',
+                'pageTitle' => '&#128366 Books',
                 'searchFormAction' => '/e-shop/books/search',
                 'cartFormAction' => '/e-shop/books/addToCart'
             ]
@@ -48,7 +48,7 @@ class BookController extends AbsController
             'e-shop/books/create',
             [
                 'formAction' => '/e-shop/store',
-                'pageTitle' => 'Add Book'
+                'pageTitle' => '&#128366 Add Book'
             ]
         );
     }
@@ -83,7 +83,7 @@ class BookController extends AbsController
             [
                 'book' => $book,
                 'editFormAction' => '/e-shop/books/update',
-                'pageTitle' => 'Update Book'
+                'pageTitle' => '&#128366 Update Book'
             ]
         );
     }
@@ -163,16 +163,9 @@ class BookController extends AbsController
     {
         $this->verifyAdmin();
 
-        $books = $this->bookModel->retrieveAllBooks(tableName: "books");
-
         return View::make(
-            'index',
-            [
-                'books' => array_slice($books, 0, 50),
-                'pageTitle' => 'e-shop Home',
-                'searchFormAction' => '/e-shop/books/search',
-                'tableFormAction' => '/e-shop/books/userAction'
-            ]
+            'show',
+            []
         );
     }
 
@@ -204,6 +197,11 @@ class BookController extends AbsController
         return $this->bookModel->retrieveBookAttribute(tableName: $tableName, fieldName: $fieldName, compareFieldName: $compareFieldName, compareFieldValue: $compareFieldValue) > 0;
     }
 
+    protected function preventDuplicates(string $tableName, string $fieldName, mixed $fieldValue): bool
+    {
+        return $this->cartModel->preventDuplicates(tableName: $tableName, fieldName: $fieldName, fieldValue: $fieldValue);
+    }
+
     public function addToCart()
     {
         if (filter_has_var(INPUT_POST, 'addToCart')) {
@@ -212,7 +210,7 @@ class BookController extends AbsController
 
             $book_id = $_POST['book_id'];
 
-            $default_qty = $_GET['default_qty'] ??= 1;
+            $book_title = $_POST['book_title'];
 
             // Confirm Availability
             if (!$this->confirmBookAvailability(tableName: "books", fieldName: "book_id", fieldValue: $book_id)) {
@@ -224,12 +222,16 @@ class BookController extends AbsController
                 $this->errorRedirect(message: "Sorry! This book is currently out of stock", redirectTo: "");
             }
 
-            // Check if Item is already added to cart
-
+            // Check if item is already exists in cart
+            if ($this->preventDuplicates(tableName: "cartitems", fieldName: "book_id", fieldValue: $book_id)) {
+                $this->errorRedirect(message: "Item already exists in your cart!", redirectTo: "");
+            }
 
             $user_id = $_SESSION['user_id'];
 
             $cart_item_id = "crt" . time();
+
+            $default_qty = 1;
 
             $book = $this->bookModel->retrieveSingleBook(tableName: "books", fieldName: "book_id", fieldValue: $book_id);
 
@@ -237,7 +239,6 @@ class BookController extends AbsController
                 "cart_item_id"  => $cart_item_id,
                 "user_id" => $user_id,
                 "book_id" => $book_id,
-                "cart_item_qty" => $default_qty,
                 "cart_item_price" => $book["book_price"],
                 "cart_item_amt" => $default_qty * $book["book_price"]
             ];

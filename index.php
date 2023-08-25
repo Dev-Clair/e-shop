@@ -22,6 +22,8 @@ try {
         ->post(route: '/e-shop/users/register', action: [app\Controller\UserController::class, 'register'])
         ->get(route: '/e-shop/cart', action: [app\Controller\CartController::class, 'index'])
         ->post(route: '/e-shop/cart/createOrder', action: [app\Controller\CartController::class, 'createOrder'])
+        ->post(route: '/e-shop/cart/deleteItem', action: [app\Controller\CartController::class, 'deleteItem'])
+        ->post(route: '/e-shop/cart/updateItem', action: [app\Controller\CartController::class, 'updateItem'])
         ->get(route: '/e-shop/book', action: [app\Controller\BookController::class, 'index'])
         ->post(route: '/e-shop/books/addToCart', action: [app\Controller\BookController::class, 'addToCart'])
         ->get(route: '/e-shop/book/create', action: [app\Controller\BookController::class, 'create'])

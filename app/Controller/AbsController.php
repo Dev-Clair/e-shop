@@ -29,7 +29,16 @@ abstract class AbsController implements IntController
             session_regenerate_id(true);
             return;
         }
-        $this->errorRedirect(message: "Invalid Login Status", redirectTo: "users/");
+        $this->errorRedirect(message: "Invalid Login Status", redirectTo: "users");
+    }
+
+    protected function sanitizeUserInput(): array
+    {
+        $sanitizedInput = [];
+        foreach ($_POST as $fieldName => $userInput) {
+            $sanitizedInput[$fieldName] = filter_var($userInput, FILTER_SANITIZE_SPECIAL_CHARS);
+        }
+        return $sanitizedInput;
     }
 
     protected function errorRedirect(string $message, string $redirectTo): void
@@ -86,15 +95,6 @@ abstract class AbsController implements IntController
             $this->errorRedirect(message: "Unauthorized!", redirectTo: "users");
         }
         return;
-    }
-
-    protected function sanitizeUserInput(): array
-    {
-        $sanitizedInput = [];
-        foreach ($_POST as $fieldName => $userInput) {
-            $sanitizedInput[$fieldName] = filter_var($userInput, FILTER_SANITIZE_SPECIAL_CHARS);
-        }
-        return $sanitizedInput;
     }
 
     protected function getUserAccountStatus(): string

@@ -73,7 +73,7 @@ $cartItemsTable = "cartitems";
 $cartItemsTableFields = "`cart_item_id` VARCHAR(20) PRIMARY KEY,
                          `user_id` VARCHAR(20) NOT NULL,
                          `book_id` VARCHAR(20) NOT NULL,
-                         `cart_item_qty` INT NOT NULL,
+                         `cart_item_qty` INT NOT NULL DEFAULT 1,
                          `cart_item_price` DECIMAL(10, 2) NOT NULL,
                          `cart_item_amt` DECIMAL(10, 2) NOT NULL,
                          FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`),

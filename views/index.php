@@ -44,7 +44,7 @@ echo $newForm->render();
 foreach ($books as $book) {
 ?>
     <div class="book-container text-left">
-        <img src="book_cover_imageJ.png" alt="sample_img">
+        <img src="./books/book_cover_imageP.jpg" alt="sample_img">
         <h6><?php echo $book['book_title']; ?></h6>
         <div class="btn-group">
             <!-- Display Each Book Entity -->
@@ -55,6 +55,9 @@ foreach ($books as $book) {
 
             /** Add Hidden Form Input: Book_ID */
             $newForm->formFieldInput(inputID: "book", inputType: "hidden", inputName: "book_id", value: $book['book_id'] ?? "");
+
+            /** Add Hidden Form Input: Book_Title */
+            $newForm->formFieldInput(inputID: "book", inputType: "hidden", inputName: "book_title", value: $book['book_title'] ?? "");
 
             /** Add to Cart Submit Button */
             $newForm->formButton(buttonID: "addToCart", buttonName: "addToCart", buttonType: "submit", buttonClass: "btn btn-sm btn-success rounded me-2", buttonTitle: "Add to Cart");
@@ -73,24 +76,40 @@ foreach ($books as $book) {
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content mx-3 px-3 my-4 py-3">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="showBookDetailsTableModalLabel"><strong><?php echo $book['book_title']; ?></strong></h5>
+                    <h5 class="modal-title" id="showBookDetailsTableModalLabel"><strong>Product Details</strong></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-0 scrollable-container">
+                <div class="modal-body p-0 scrollable-container text-center">
                     <!-- Display Additional Book Info Here -->
-                    <img src="book_cover_imageJ.png" alt="sample_img" class="mb-2">
-                    <?php
-                    echo $book['book_author'] . "\n";
-                    echo $book['book_edition'] . "\n";
-                    echo $book['book_price'] . "\n";
-                    // echo $book['book_qty'] . "\n";
-                    echo $book['book_cover_image'] . "\n";
-                    echo $book['book_publication_date'] . "\n";
-                    ?>
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td><strong>Title</strong></td>
+                                <td><?php echo $book['book_title']; ?></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Author</strong></td>
+                                <td><?php echo $book['book_author']; ?></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Edition</strong></td>
+                                <td><?php echo $book['book_edition']; ?></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Price</strong></td>
+                                <td><?php echo "&#36;" . $book['book_price']; ?></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Publication Date</strong></td>
+                                <td><?php echo $book['book_publication_date']; ?></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
+
 
 <?php
 }

@@ -49,7 +49,7 @@ class UserModel extends MainModel
 
         $fieldName = "`$fieldName`";
 
-        return $this->dbTableOp->retrieveSingleRecord(tableName: $tableName, fieldName: $fieldName, fieldValue: $fieldValue);
+        return $this->dbTableOp->retrieveSpecificRecord_firstOccurrence(tableName: $tableName, fieldName: $fieldName, fieldValue: $fieldValue);
     }
 
     public function retrieveUserAttribute(string $tableName, string $fieldName, string $compareFieldName, mixed $compareFieldValue): mixed

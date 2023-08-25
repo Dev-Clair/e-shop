@@ -97,15 +97,26 @@ class DbTableOp extends DbTable
         }
     }
 
-    public function retrieveSingleRecord(string $tableName, string $fieldName, $fieldValue): array
+    public function retrieveSpecificRecord_firstOccurrence(string $tableName, string $fieldName, $fieldValue): array
     {
         $sql_query = "SELECT * FROM $tableName WHERE $fieldName = ?";
 
         try {
             $stmt = $this->executeQuery(sql: $sql_query, params: [$fieldValue]);
-            // $row = $stmt->fetch(PDO::FETCH_ASSOC); // Fetches First Occurence Only
-            // return $row ?: [];
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetches All Occurence Only
+            $row = $stmt->fetch(PDO::FETCH_ASSOC); // Fetches First Occurence for specified field value
+            return $row ?: [];
+        } catch (PDOException $e) {
+            throw new \RuntimeException("Error executing statement: " . $e->getMessage());
+        }
+    }
+
+    public function retrieveSpecificRecord_allOccurrence(string $tableName, string $fieldName, $fieldValue): array
+    {
+        $sql_query = "SELECT * FROM $tableName WHERE $fieldName = ?";
+
+        try {
+            $stmt = $this->executeQuery(sql: $sql_query, params: [$fieldValue]);
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetches All Occurence for specified field value
             return $rows;
         } catch (PDOException $e) {
             throw new \RuntimeException("Error executing statement: " . $e->getMessage());

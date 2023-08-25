@@ -27,41 +27,33 @@ class UserController extends AbsController
             [
                 'loginFormAction' => '/e-shop/users/login',
                 'registerFormAction' => '/e-shop/users/register',
-                'pageTitle' => 'Log in'
+                'pageTitle' => '&#128366 Log in'
             ]
         );
     }
 
-    public function edit(): View
+    public function customerProfile(): View
     {
         return View::make(
             'users/profile',
             [
-                'editFormAction' => '/e-shop/users/update',
-                'pageTitle' => 'Profile'
+                'profileFormAction' => '/e-shop/users/profile',
+                'formID' => 'CUSTOMER',
+                'pageTitle' => '&#128366 Account Profile'
             ]
         );
     }
 
-    public function show(): View
+    public function adminProfile(): View
     {
-        $users = $this->userModel->retrieveAllUsers(tableName: "users");
-
         return View::make(
-            'users/show',
+            'users/profile',
             [
-                'users' => $users,
-                'pageTitle' => 'Users'
+                'profileFormAction' => '/e-shop/users/profile',
+                'formID' => 'ADMIN',
+                'pageTitle' => '&#128366 Account Profile'
             ]
         );
-    }
-
-    public function update()
-    {
-    }
-
-    public function delete()
-    {
     }
 
     public function register(): void
@@ -113,6 +105,7 @@ class UserController extends AbsController
                 $_SESSION['errors'] = $errors;
                 $this->errorRedirect(message: "Error! Invalid Details", redirectTo: "users");
             }
+
             // Submit Form
             $user_id = "cus" . time();
             $newRecord = [
@@ -152,6 +145,7 @@ class UserController extends AbsController
             $user = $this->userModel->retrieveSingleUser(tableName: "users", fieldName: "user_email", fieldValue: $validInputs['email']);
 
             $password_check = password_verify($password, $user['user_password']);
+
             if (empty($errors) && $password_check) {
                 $_SESSION['user_id'] = $user['user_id'];
                 $this->successRedirect(message: "Logged in successfully!", redirectTo: "");
@@ -167,13 +161,36 @@ class UserController extends AbsController
 
         // Retrieve user_id via Session Super-Global
         $user_id = $_SESSION['user_id'];
-        // Check and clear cart of items added via user_id
+
+        // Check and clear cart of items added via user's user_id
         $this->cartModel->deleteCartItem(tableName: "cartitems", fieldName: "user_id", fieldValue: $user_id);
 
+        // Destroy and unset session
         session_destroy();
         unset($_SESSION);
         header('Location: /e-shop/');
         exit();
+    }
+
+    public function show(): View
+    {
+        $users = $this->userModel->retrieveAllUsers(tableName: "users");
+
+        return View::make(
+            'users/show',
+            [
+                'users' => $users,
+                'pageTitle' => '&#128366 Users'
+            ]
+        );
+    }
+
+    public function update()
+    {
+    }
+
+    public function delete()
+    {
     }
 
     protected function retrieveUserInfo()

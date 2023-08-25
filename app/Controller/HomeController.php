@@ -22,9 +22,6 @@ class HomeController extends AbsController
 
     public function index(): View
     {
-        // Create Login Functionality and retry admin verification
-        // $this->verifyAdmin();
-
         $books = $this->bookModel->retrieveAllBooks(tableName: "books");
 
         $user_id = $_SESSION['user_id'] ?? null;
@@ -34,7 +31,7 @@ class HomeController extends AbsController
         return View::make('index', [
             'books' => array_slice($books, 0, 20),
             'cart' => $cart,
-            'pageTitle' => 'e-shop Home',
+            'pageTitle' => '&#128366 Home',
             'searchFormAction' => '/e-shop/books/search',
             'cartFormAction' => '/e-shop/books/addToCart'
         ]);
