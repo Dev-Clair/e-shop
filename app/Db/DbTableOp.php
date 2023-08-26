@@ -65,8 +65,8 @@ class DbTableOp extends DbTable
         $sql_query = "SELECT * FROM $tableName";
         try {
             $stmt = $this->executeQuery(sql: $sql_query);
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            return $rows;
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $results;
         } catch (PDOException $e) {
             throw new \RuntimeException("Error executing statement: " . $e->getMessage());
         }
@@ -118,8 +118,8 @@ class DbTableOp extends DbTable
 
         try {
             $stmt = $this->executeQuery(sql: $sql_query, params: [$fieldValue]);
-            $row = $stmt->fetch(PDO::FETCH_ASSOC); // Fetches First Occurence for specified field value
-            return $row ?: [];
+            $result = $stmt->fetch(PDO::FETCH_ASSOC); // Fetches First Occurence for specified field value
+            return $result ?: [];
         } catch (PDOException $e) {
             throw new \RuntimeException("Error executing statement: " . $e->getMessage());
         }
@@ -131,8 +131,8 @@ class DbTableOp extends DbTable
 
         try {
             $stmt = $this->executeQuery(sql: $sql_query, params: [$fieldValue]);
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetches All Occurence for specified field value
-            return $rows;
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetches All Occurence for specified field value
+            return $results;
         } catch (PDOException $e) {
             throw new \RuntimeException("Error executing statement: " . $e->getMessage());
         }
@@ -185,8 +185,8 @@ class DbTableOp extends DbTable
 
         try {
             $stmt = $this->executeQuery(sql: $sql_query);
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            return $rows;
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $results;
         } catch (PDOException $e) {
             throw new \RuntimeException("Error executing statement: " . $e->getMessage());
         }
