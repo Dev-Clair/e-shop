@@ -16,7 +16,7 @@ abstract class AbsController implements IntController
 
     public function __construct(UserModel $userModel = null, BookModel $bookModel = null, CartModel $cartModel = null)
     {
-        $this->userModel = $userModel ?: new UserModel(databaseName: "eshop");
+        $this->userModel = $userModel ?: new $userModel(databaseName: "eshop");
         $this->bookModel = $bookModel ?: new $bookModel(databaseName: "eshop");
         $this->cartModel = $cartModel ?: new $cartModel(databaseName: "eshop");
     }

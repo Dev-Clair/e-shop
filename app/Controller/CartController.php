@@ -28,22 +28,27 @@ class CartController extends AbsController implements IntPaymentGateWay
 
     public function index()
     {
+        $this->verifyAdmin() || $this->verifyCustomer();
+
         $cart_items = $this->cartModel->retrieveCartItem(tableName: "cartitems", fieldName: "user_id", fieldValue: $_SESSION['user_id']) ?? [];
+
+        $cart_items_subtotal = $this->cartModel->retrieveFieldSum(tableName: "cartitems", fieldName: "cart_item_amt", compareFieldName: "user_id", compareFieldValue: $_SESSION['user_id']) ?? 0;
 
         return View::make(
             'cart/index',
             [
                 'cart_items' => $cart_items,
+                'cart_items_subtotal' => $cart_items_subtotal,
                 'pageTitle' => '&#128366 Cart',
                 'searchFormAction' => '/e-shop/books/search',
-                'removeFromCartFormAction' => '/e-shop/cart/deleteItem',
-                'cartQuantityFormAction' => '/e-shop/cart/updateItem',
-                'orderSubmitFormAction' => '/e-shop/cart/createOrder'
+                'removeFromCartFormAction' => '/e-shop/cart/deleteCartItem',
+                'cartQuantityFormAction' => '/e-shop/cart/updateCartItem',
+                'proceedToCheckOutFormAction' => '/e-shop/cart/createOrder'
             ]
         );
     }
 
-    public function deleteItem()
+    public function deleteCartItem()
     {
         if (filter_has_var(INPUT_POST, 'removeFromCart')) {
             if (isset($_POST['removeFromCart']) && is_array($_POST['removeFromCart'])) {
@@ -62,7 +67,7 @@ class CartController extends AbsController implements IntPaymentGateWay
         }
     }
 
-    public function updateItem()
+    public function updateCartItem()
     {
         if (filter_has_var(INPUT_POST, 'alterQty')) {
             // Retrieve Form Data via $_POST Super-global
@@ -92,26 +97,40 @@ class CartController extends AbsController implements IntPaymentGateWay
     public function createOrder()
     {
         if (filter_has_var(INPUT_POST, 'proceedToCheckOut')) {
-            $cart_item_id = [];
-            $order = [];
-            $user_id = $_SESSION['user_id'];
-            $book_id = [];
-            $order_amt = [];
 
+            $this->verifyCustomer() || $this->verifyAdmin();
+
+            $order_id_list = [];
+            $user_id_list = [];
+            $book_id_list = [];
+            $order_amt_list = [];
+
+            // Retrieve Cart Data via $_SESSION['user_id']
+            $user_id = $_SESSION['user_id'];
+            $cart_items = $this->cartModel->retrieveCartItem(tableName: "cartitems", fieldName: "user_id", fieldValue: $user_id);
+
+            // Assign Retrived Cart Data to Orders Array
+            for ($item = 0; $item < count($cart_items); $item++) {
+                foreach ($cart_items as $cart) {
+                    [];
+                }
+            }
+
+            // Insert Data into Orders Table
             $sanitizedData = [
-                "order_id" => $cart_item_id,
-                "user_id" => $user_id,
-                "book_id" => $book_id,
-                "order_amt" => $order_amt
+                // "order_id" => $order_id,
+                // "user_id" => $user_id,
+                // "book_id" => $book_id,
+                // "order_amt" => $order_amt
             ];
 
             $orderStatus = $this->cartModel->createOrder(tableName: "orders", sanitizedData: $sanitizedData);
 
             if ($orderStatus === true) {
                 $this->cartModel->deleteCartItem(tableName: "cartitems", fieldName: "user_id", fieldValue: $user_id);
-                foreach ($book_id as $book) {
-                    $this->modifyBookQty(itemQty: $book, fieldValue: $book);
-                }
+                // foreach ($book_id as $book) {
+                //     $this->modifyBookQty(itemQty: $book, fieldValue: $book);
+                // }
                 $this->successRedirect(message: "Your Order(s) is/are being processed, A delivery personnel will be in touch shortly", redirectTo: "");
             }
             $this->errorRedirect(message: "Error! Cannot process orders for now, Please try again", redirectTo: "");

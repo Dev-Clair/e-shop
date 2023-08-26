@@ -222,7 +222,7 @@ class BookController extends AbsController
                 $this->errorRedirect(message: "Sorry! This book is currently out of stock", redirectTo: "");
             }
 
-            // Check if item is already exists in cart
+            // Check if item already exists in cart
             if ($this->preventDuplicates(tableName: "cartitems", fieldName: "book_id", fieldValue: $book_id)) {
                 $this->errorRedirect(message: "Item already exists in your cart!", redirectTo: "");
             }

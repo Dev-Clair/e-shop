@@ -85,6 +85,20 @@ class DbTableOp extends DbTable
         }
     }
 
+    public function retrieveFieldSum(string $tableName, string $fieldName, string $compareFieldName, mixed $compareFieldValue): mixed
+    {
+        $sql_query = "SELECT sum($fieldName) FROM $tableName WHERE $compareFieldName = ?";
+
+        try {
+            $stmt = $this->executeQuery(sql: $sql_query, params: [$compareFieldValue]);
+            $value = $stmt->fetchColumn();
+
+            return $value !== false ? $value : null;
+        } catch (PDOException $e) {
+            throw new \RuntimeException("Error executing statement: " . $e->getMessage());
+        }
+    }
+
     public function retrieveMultipleValues(string $tableName, string $fieldName, string $compareFieldName, mixed $compareFieldValue): array
     {
         $sql_query = "SELECT $fieldName FROM $tableName WHERE $compareFieldName = ?";
