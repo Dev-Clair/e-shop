@@ -5,8 +5,6 @@ declare(strict_types=1);
 
 use app\Form;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
 ?>
 
 <?php
@@ -105,7 +103,7 @@ unset($_SESSION['successAlertMsg']);
                 <td>
                     <!-- Display Sub-Total -->
                     <?php
-                    $subtotal = $cart_item_subtotal ?? "";
+                    $subtotal = $cart_items_subtotal ?? "";
                     echo "&#36;" . $subtotal;
                     ?>
                 </td>
@@ -122,7 +120,7 @@ unset($_SESSION['successAlertMsg']);
                 <td colspan="4"><strong>Total Cost</strong></td>
                 <td>
                     <?php
-                    $subtotal = $cart_item_subtotal ?? "";
+                    $subtotal = $cart_items_subtotal ?? "";
                     echo "&#36;" . $subtotal;
                     ?>
                 </td>

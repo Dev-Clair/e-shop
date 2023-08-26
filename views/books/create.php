@@ -5,8 +5,6 @@ declare(strict_types=1);
 
 use app\Form;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
 // Instantiate Form Class
 $newForm = new Form();
 
