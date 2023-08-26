@@ -24,14 +24,14 @@ try {
         ->post(route: '/e-shop/cart/createOrder', action: [app\Controller\CartController::class, 'createOrder'])
         ->post(route: '/e-shop/cart/deleteCartItem', action: [app\Controller\CartController::class, 'deleteCartItem'])
         ->post(route: '/e-shop/cart/updateCartItem', action: [app\Controller\CartController::class, 'updateCartItem'])
-        ->get(route: '/e-shop/book', action: [app\Controller\BookController::class, 'index'])
+        ->get(route: '/e-shop/books', action: [app\Controller\BookController::class, 'index'])
         ->post(route: '/e-shop/books/addToCart', action: [app\Controller\BookController::class, 'addToCart'])
-        ->get(route: '/e-shop/book/create', action: [app\Controller\BookController::class, 'create'])
-        ->post(route: '/e-shop/book/store', action: [app\Controller\BookController::class, 'store'])
-        ->get(route: '/e-shop/book/edit', action: [app\Controller\BookController::class, 'edit'])
-        ->post(route: '/e-shop/book/update', action: [app\Controller\BookController::class, 'update'])
-        ->post(route: '/e-shop/book/userAction', action: [app\Controller\BookController::class, 'userAction'])
-        ->post(route: '/e-shop/book/search', action: [app\Controller\BookController::class, 'search']);
+        ->get(route: '/e-shop/books/create', action: [app\Controller\BookController::class, 'create'])
+        ->post(route: '/e-shop/books/store', action: [app\Controller\BookController::class, 'store'])
+        ->get(route: '/e-shop/books/edit', action: [app\Controller\BookController::class, 'edit'])
+        ->post(route: '/e-shop/books/update', action: [app\Controller\BookController::class, 'update'])
+        ->post(route: '/e-shop/books/userAction', action: [app\Controller\BookController::class, 'userAction'])
+        ->post(route: '/e-shop/books/search', action: [app\Controller\BookController::class, 'search']);
 
     $result = $router->resolve();
     echo $result;

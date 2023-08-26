@@ -24,16 +24,14 @@ class HomeController extends AbsController
     {
         $books = $this->bookModel->retrieveAllBooks(tableName: "books");
 
-        $user_id = $_SESSION['user_id'] ?? null;
-
-        $cart = $this->cartModel->retrieveCartItem(tableName: "cartitems", fieldName: "user_id", fieldValue: $user_id) ?? [];
-
-        return View::make('index', [
-            'books' => array_slice($books, 0, 20),
-            'cart' => $cart,
-            'pageTitle' => '&#128366 Home',
-            'searchFormAction' => '/e-shop/books/search',
-            'cartFormAction' => '/e-shop/books/addToCart'
-        ]);
+        return View::make(
+            'index',
+            [
+                'books' => array_slice($books, 0, 20),
+                'pageTitle' => '&#128366 Home',
+                'searchFormAction' => '/e-shop/books/search',
+                'cartFormAction' => '/e-shop/books/addToCart'
+            ]
+        );
     }
 }

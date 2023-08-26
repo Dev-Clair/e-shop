@@ -46,12 +46,13 @@ class DbTableOp extends DbTable
         }
     }
 
-    public function searchRecord(string $tableName, $fieldName, $fieldValue): array
+    public function searchRecord(string $tableName, string $fieldName, string $fieldValue): array
     {
         $sql_query = "SELECT * FROM $tableName WHERE $fieldName LIKE ?";
+        $searchValue = "%$fieldValue%";
 
         try {
-            $stmt = $this->executeQuery(sql: $sql_query, params: [$fieldValue]);
+            $stmt = $this->executeQuery(sql: $sql_query, params: [$searchValue]);
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return $results;
         } catch (PDOException $e) {

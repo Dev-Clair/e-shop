@@ -70,9 +70,9 @@ class CartModel extends MainModel
             throw new \InvalidArgumentException("No field name specified; kindly provide reference field value.");
         }
 
-        if (empty($compareFieldValue)) {
-            throw new \InvalidArgumentException("No field value specified; kindly provide reference field value.");
-        }
+        // if (empty($compareFieldValue)) {
+        //     throw new \InvalidArgumentException("No field value specified; kindly provide reference field value.");
+        // }
 
         $fieldName = "`$fieldName`";
 

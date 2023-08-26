@@ -105,12 +105,14 @@ unset($_SESSION['successAlertMsg']);
                 <td>
                     <!-- Display Sub-Total -->
                     <?php
-                    echo "&#36;" . $cart_item_subtotal;
+                    $subtotal = $cart_item_subtotal ?? "";
+                    echo "&#36;" . $subtotal;
                     ?>
                 </td>
             </tr>
             <tr>
                 <td colspan="4"><strong>Add:</strong></td>
+                <td></td>
             </tr>
             <tr>
                 <td colspan="4"><strong>Shipping Fee</strong></td>
@@ -120,7 +122,8 @@ unset($_SESSION['successAlertMsg']);
                 <td colspan="4"><strong>Total Cost</strong></td>
                 <td>
                     <?php
-                    echo "&#36;" . $cart_item_subtotal;
+                    $subtotal = $cart_item_subtotal ?? "";
+                    echo "&#36;" . $subtotal;
                     ?>
                 </td>
             </tr>

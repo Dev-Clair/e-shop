@@ -22,17 +22,22 @@ class CartController extends AbsController implements IntPaymentGateWay
 
     private function modifyBookQty($itemQty, $fieldValue): void
     {
-        $this->bookModel->updateBook(tableName: "books", sanitizedData: ["book_qty" => "book_qty - $itemQty"], fieldName: "book_qty", fieldValue: $fieldValue);
+        $this->bookModel->updateBook(
+            tableName: "books",
+            sanitizedData: ["book_qty" => "book_qty - $itemQty"],
+            fieldName: "book_qty",
+            fieldValue: $fieldValue
+        );
         return;
     }
 
     public function index()
     {
-        $this->verifyAdmin() || $this->verifyCustomer();
+        $fieldValue = $_SESSION['user_id'] ?? null;
 
-        $cart_items = $this->cartModel->retrieveCartItem(tableName: "cartitems", fieldName: "user_id", fieldValue: $_SESSION['user_id']) ?? [];
+        $cart_items = $this->cartModel->retrieveCartItem(tableName: "cartitems", fieldName: "user_id", fieldValue: $fieldValue) ?? [];
 
-        $cart_items_subtotal = $this->cartModel->retrieveFieldSum(tableName: "cartitems", fieldName: "cart_item_amt", compareFieldName: "user_id", compareFieldValue: $_SESSION['user_id']) ?? 0;
+        $cart_items_subtotal = $this->cartModel->retrieveFieldSum(tableName: "cartitems", fieldName: "cart_item_amt", compareFieldName: "user_id", compareFieldValue: $fieldValue) ?? "";
 
         return View::make(
             'cart/index',
@@ -57,6 +62,7 @@ class CartController extends AbsController implements IntPaymentGateWay
             }
 
             $fieldValue = $cart_item_id;
+
             $this->cartModel->deleteCartItem(tableName: "cartitems", fieldName: "cart_item_id", fieldValue: $fieldValue)
                 ?
                 $this->successRedirect(message: "Item removed successfully", redirectTo: "cart")

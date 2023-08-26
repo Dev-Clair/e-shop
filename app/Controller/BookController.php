@@ -173,17 +173,18 @@ class BookController extends AbsController
     {
         if (filter_has_var(INPUT_POST, 'searchBook')) {
 
-            $searchInput = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $searchInput = filter_input(INPUT_POST, 'searchBook', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-            $fieldValue = "%$searchInput%";
+            $fieldValue = $searchInput;
 
             $searchResult = $this->bookModel->searchBook(tableName: "books", fieldName: "book_title", fieldValue: $fieldValue);
             if (!empty($searchResult)) {
+                $_SESSION['searchResult'] = $searchResult;
                 $message = sprintf("%s", "Similar Entries Found for $searchInput");
-                $this->successRedirect(message: $message, redirectTo: "books");
+                $this->successRedirect(message: $message, redirectTo: "");
             }
             $message = sprintf("%s", "No Similar Record Found for &#128366 $searchInput");
-            $this->errorRedirect(message: $message, redirectTo: "books");
+            $this->errorRedirect(message: $message, redirectTo: "");
         }
     }
 
