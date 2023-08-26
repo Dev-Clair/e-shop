@@ -22,12 +22,12 @@ class HomeController extends AbsController
 
     public function index(): View
     {
-        $books = $this->bookModel->retrieveAllBooks(tableName: "books");
+        $retrieved_books = $this->bookModel->retrieveAllBooks(tableName: "books");
 
         return View::make(
             'index',
             [
-                'books' => array_slice($books, 0, 20),
+                'retrieved_books' => array_slice($retrieved_books, 0, 20),
                 'pageTitle' => '&#128366 Home',
                 'searchFormAction' => '/e-shop/books/search',
                 'cartFormAction' => '/e-shop/books/addToCart'

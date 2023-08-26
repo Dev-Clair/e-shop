@@ -22,7 +22,7 @@ class BookController extends AbsController
 
     public function index(): View
     {
-        $books = $this->bookModel->retrieveAllBooks(tableName: "books");
+        $retrieved_books = $this->bookModel->retrieveAllBooks(tableName: "books");
 
         $user_id = $_SESSION['user_id'] ?? null;
 
@@ -31,7 +31,7 @@ class BookController extends AbsController
         return View::make(
             'index',
             [
-                'books' => array_slice($books, 0, 50),
+                'retrieved_books' => array_slice($retrieved_books, 0, 50),
                 'cart' => $cart,
                 'pageTitle' => '&#128366 Books',
                 'searchFormAction' => '/e-shop/books/search',
