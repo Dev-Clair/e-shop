@@ -22,6 +22,11 @@ class UserController extends AbsController
 
     public function index(): View
     {
+        // Prevents already logged-in user from accessing this page
+        if (isset($_SESSION['user_id'])) {
+            $this->errorRedirect(message: "Unauthorized!", redirectTo: "");
+        }
+
         return View::make(
             'users/login',
             [

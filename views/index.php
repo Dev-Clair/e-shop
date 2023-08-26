@@ -1,9 +1,9 @@
 <?php
 // views/index.php (Home Controller)
 
-use app\Form;
+declare(strict_types=1);
 
-require_once __DIR__ . '/../vendor/autoload.php';
+use app\Form;
 
 ?>
 
