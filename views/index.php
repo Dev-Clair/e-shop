@@ -109,7 +109,7 @@ if (count($searchResult) > 0) {
             <div class="col-md-3">
                 <div class="book-container text-center">
                     <img src="./books/book_cover_imageP.jpg" alt="sample_img">
-                    <h6><?php echo $book['book_title']; ?></h6>
+                    <h6><?php echo "{$book['book_title']} | {$book['book_edition']} ed"; ?></h6>
                     <div class="btn-group">
                         <!-- Display Each Book Entity -->
                         <?php

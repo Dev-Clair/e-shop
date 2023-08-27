@@ -18,33 +18,11 @@ $databaseName = $databaseNames[0];
  * *************************************************************************************
  */
 
-// Book title and authors
-[
-    'The Great Gatsby' => 'F. Scott Fitzgerald',
-    'To Kill a Mockingbird' => 'Harper Lee',
-    '1984' => 'George Orwell',
-    'Pride and Prejudice' => 'Jane Austen',
-    'The Catcher in the Rye' => 'J.D. Salinger',
-    'Brave New World' => 'Aldous Huxley',
-    'The Lord of the Rings' => 'J.R.R. Tolkien',
-    'Harry Potter and the Sorcerer\'s Stone' => 'J.K. Rowling',
-    'The Hobbit' => 'J.R.R. Tolkien',
-    'The Chronicles of Narnia' => 'C.S. Lewis',
-    'To the Lighthouse' => 'Virginia Woolf',
-    'Moby-Dick' => 'Herman Melville',
-    'The Grapes of Wrath' => 'John Steinbeck',
-    'The Picture of Dorian Gray' => 'Oscar Wilde',
-    'Jane Eyre' => 'Charlotte Brontë',
-    'One Hundred Years of Solitude' => 'Gabriel García Márquez',
-    'Fahrenheit 451' => 'Ray Bradbury',
-    'Crime and Punishment' => 'Fyodor Dostoevsky',
-    'The Road' => 'Cormac McCarthy',
-    'The Alchemist' => 'Paulo Coelho'
-];
+$catalogue_no = rand(999, 9999);
 
 $newBooks = [
     [
-        'book_id' => "bk" . time(),
+        'book_id' => "bk" . $catalogue_no++,
         'book_title' => 'The Great Gatsby',
         'book_author' => 'F. Scott Fitzgerald',
         'book_edition' => '1st',
@@ -54,7 +32,7 @@ $newBooks = [
         'book_publication_date' => '2022-01-15'
     ],
     [
-        'book_id' => "bk" . time(),
+        'book_id' => "bk" . $catalogue_no++,
         'book_title' => 'To Kill a Mockingbird',
         'book_author' => 'Harper Lee',
         'book_edition' => '2nd',
@@ -64,24 +42,44 @@ $newBooks = [
         'book_publication_date' => '2021-08-10'
     ],
     [
-        'book_id' => "bk" . time(),
-        'book_title' => '',
-        'book_author' => '',
-        'book_edition' => '2nd',
+        'book_id' => "bk" . $catalogue_no++,
+        'book_title' => 'The Catcher in the Rye',
+        'book_author' => 'J.D. Salinger',
+        'book_edition' => '5th',
         'book_price' => 10.05,
         'book_qty' => 20,
         'book_cover_image' => null,
         'book_publication_date' => '2018-07-11'
     ],
     [
-        'book_id' => "bk" . time(),
-        'book_title' => '',
-        'book_author' => '',
+        'book_id' => "bk" . $catalogue_no++,
+        'book_title' => 'Harry Potter and the Sorcerer\'s Stone',
+        'book_author' => 'J.K. Rowling',
         'book_edition' => '4th',
         'book_price' => 39.95,
         'book_qty' => 15,
         'book_cover_image' => null,
-        'book_publication_date' => '2016-12-03'
+        'book_publication_date' => '2015-12-03'
+    ],
+    [
+        'book_id' => "bk" . $catalogue_no++,
+        'book_title' => 'The Alchemist',
+        'book_author' => 'Paulo Coelho',
+        'book_edition' => '1st',
+        'book_price' => 11.95,
+        'book_qty' => 55,
+        'book_cover_image' => null,
+        'book_publication_date' => '2016-06-03'
+    ],
+    [
+        'book_id' => "bk" . $catalogue_no++,
+        'book_title' => 'The Great Gatsby',
+        'book_author' => 'F. Scott Fitzgerald',
+        'book_edition' => '2nd',
+        'book_price' => 35,
+        'book_qty' => 20,
+        'book_cover_image' => null,
+        'book_publication_date' => '2023-01-15'
     ]
 ];
 

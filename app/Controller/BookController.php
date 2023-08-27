@@ -230,7 +230,8 @@ class BookController extends AbsController
 
             $user_id = $_SESSION['user_id'];
 
-            $cart_item_id = "crt" . time();
+            $cart_no = rand(9, 989);
+            $cart_item_id = "crt" . $cart_no++;
 
             $default_qty = 1;
 

@@ -56,7 +56,7 @@ $booksTableFields = "`book_id` VARCHAR(20) PRIMARY KEY,
                      `book_author` VARCHAR(150) NOT NULL,
                      `book_edition` VARCHAR(10) NOT NULL,
                      `book_price` DECIMAL(10, 2) NOT NULL,
-                     `book_qty` INT NOT NULL DEFAULT 0,
+                     `book_qty` INT NOT NULL,
                      `book_cover_image` BLOB,
                      `book_publication_date` DATE";
 
@@ -64,6 +64,7 @@ $ordersTable = "orders";
 $ordersTableFields = "`order_id` VARCHAR(20) PRIMARY KEY,
                       `user_id` VARCHAR(20) NOT NULL,
                       `book_id` VARCHAR(20) NOT NULL,
+                      `order_qty` INT NOT NULL,
                       `order_amt` DECIMAL(10, 2) NOT NULL,
                       `order_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                       FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`),

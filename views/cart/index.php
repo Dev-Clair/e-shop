@@ -31,6 +31,7 @@ unset($_SESSION['successAlertMsg']);
 
 <div class="table-responsive">
     <table class="table table-striped table-bordered mb-0 text-center" style="table-layout: auto;">
+        <caption>Cart Summary</caption>
         <thead class="thead-dark">
             <tr>
                 <th>Cart Item ID</th>
