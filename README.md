@@ -1,4 +1,4 @@
-# E-Shop Web Application
+# E-BookShop Web Application
 
 The E-Shop is a web application that allows users to browse, search, and purchase books online. It provides features for both customers and administrators to manage user accounts, browse book catalog, add items to the cart, and more.
 
@@ -13,8 +13,8 @@ The E-Shop is a web application that allows users to browse, search, and purchas
 
 ## Features
 
-- User authentication and role-based access control (admin/customer).
-- Browse and search the book catalog.
+- User authentication and MiddleWare - role-based access control (admin/customer).
+- Browse and search book by author or title.
 - View detailed information about each book.
 - Add items to the shopping cart.
 - Manage user profiles (customers and admins).
