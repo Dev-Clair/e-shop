@@ -13,7 +13,7 @@ The E-Shop is a web application that allows users to browse, search, and purchas
 
 ## Features
 
-- User authentication and MiddleWare - role-based access control (admin/customer).
+- User authentication and Middleware - role-based access control (admin/customer).
 - Browse and search book by author or title.
 - View detailed information about each book.
 - Add items to the shopping cart.
@@ -48,7 +48,7 @@ The E-Shop is a web application that allows users to browse, search, and purchas
 ## Technologies Used
 
 - PHP for backend logic.
-- HTML, Boostrap anf=d JQuery for frontend.
+- HTML, Boostrap and JQuery for frontend.
 - MySQL database for data storage.
 - Composer for dependency management.
 - Bootstrap for responsive design.
