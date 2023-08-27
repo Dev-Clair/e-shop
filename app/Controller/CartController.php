@@ -33,7 +33,7 @@ class CartController extends AbsController implements IntPaymentGateWay
         return;
     }
 
-    public function index()
+    public function index(): View
     {
         $fieldValue = $_SESSION['user_id'] ?? null;
 
@@ -54,7 +54,7 @@ class CartController extends AbsController implements IntPaymentGateWay
         );
     }
 
-    public function deleteCartItem()
+    public function deleteCartItem(): void
     {
         if (filter_has_var(INPUT_POST, 'removeFromCart')) {
 
@@ -76,7 +76,7 @@ class CartController extends AbsController implements IntPaymentGateWay
         }
     }
 
-    public function updateCartItem()
+    public function updateCartItem(): void
     {
         if (filter_has_var(INPUT_POST, 'alterQty')) {
             // Retrieve Form Data via $_POST Super-global
@@ -103,7 +103,7 @@ class CartController extends AbsController implements IntPaymentGateWay
         }
     }
 
-    public function createOrder()
+    public function createOrder(): void
     {
         if (filter_has_var(INPUT_POST, 'proceedToCheckOut')) {
 
