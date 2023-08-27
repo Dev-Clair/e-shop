@@ -3,7 +3,7 @@
 
 declare(strict_types=1);
 
-use app\Form;
+use app\Utils\Form;
 
 // Instantiate Form Class
 $newForm = new Form();

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\Model;
 
-use app\DbResource;
+use app\Utils\DbResource;
 use app\Db\DbTableOp;
 
 abstract class MainModel

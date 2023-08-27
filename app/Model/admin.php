@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use app\DbResource;
+use app\Utils\DbResource;
 use app\Model\AdminModel;
 
 require_once __DIR__ . '/../../vendor/autoload.php';

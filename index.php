@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use app\Router;
+use app\Utils\Router;
 use app\Exception\RouteNotFoundException;
 
 session_start();
