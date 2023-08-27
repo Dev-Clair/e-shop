@@ -161,7 +161,7 @@ class CartController extends AbsController implements IntPaymentGateWay
             }
 
             if (!empty($this->orderLog['success'])) {
-                $successMessage = "Your order(s) for item(s) " . implode(",", $this->orderLog['success']) . " is being processed, Kindly Check your Profile to track your order(s)";
+                $successMessage = "Your order(s) for item(s) " . implode(",", $this->orderLog['success']) . " is being processed, Kindly check your profile to track delivery";
                 $this->successRedirect(message: $successMessage, redirectTo: "");
             } else {
                 $errorMessage = "Try Again! Cannot process order(s) for item(s) " . implode(",", $this->orderLog['error']) . " is being processed";
