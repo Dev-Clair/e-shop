@@ -103,6 +103,17 @@ class CartController extends AbsController implements IntPaymentGateWay
         }
     }
 
+    /**
+     * Assign retrieved cart data to orders array
+     * Create orders
+     * Cache result of the process into a log
+     * if successful,
+     * Modify the existing stock for the specific record in the books table via the book_id
+     * Delete each item from the carts table via the cart_item_id
+     * Redirects to home with success message
+     * else
+     * Redirects to home with error message
+     */
     public function createOrder(): void
     {
         if (filter_has_var(INPUT_POST, 'proceedToCheckOut')) {
@@ -119,17 +130,6 @@ class CartController extends AbsController implements IntPaymentGateWay
             $user_id = $_SESSION['user_id'];
             $cart_items = $this->cartModel->retrieveCartItem(tableName: "cartitems", fieldName: "user_id", fieldValue: $user_id);
 
-            /**
-             * Assign retrieved cart data to orders array
-             * Create orders
-             * Cache result of the process into a log
-             * if successful,
-             * Modify the existing stock for the specific record in the books table via the book_id
-             * Delete each item from the carts table via the cart_item_id
-             * Redirects to home with success message
-             * else
-             * Redirects to home with error message
-             */
             foreach ($cart_items as $key => $item) {
 
                 // Orders table array
