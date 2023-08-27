@@ -25,7 +25,7 @@ class CartController extends AbsController implements IntPaymentGateWay
         $this->bookModel->updateBook(
             tableName: "books",
             sanitizedData: ["book_qty" => "book_qty - $itemQty"],
-            fieldName: "book_qty",
+            fieldName: "book_id",
             fieldValue: $fieldValue
         );
         return;
@@ -45,7 +45,6 @@ class CartController extends AbsController implements IntPaymentGateWay
                 'cart_items' => $cart_items,
                 'cart_items_subtotal' => $cart_items_subtotal,
                 'pageTitle' => '&#128366 Cart',
-                'searchFormAction' => '/e-shop/books/search',
                 'removeFromCartFormAction' => '/e-shop/cart/deleteCartItem',
                 'cartQuantityFormAction' => '/e-shop/cart/updateCartItem',
                 'proceedToCheckOutFormAction' => '/e-shop/cart/createOrder'
@@ -56,7 +55,9 @@ class CartController extends AbsController implements IntPaymentGateWay
     public function deleteCartItem()
     {
         if (filter_has_var(INPUT_POST, 'removeFromCart')) {
+
             if (isset($_POST['removeFromCart']) && is_array($_POST['removeFromCart'])) {
+
                 // Retrieve Form Data via $_POST Super-global
                 $cart_item_id = array_key_first($_POST['removeFromCart']);
             }
@@ -106,40 +107,52 @@ class CartController extends AbsController implements IntPaymentGateWay
 
             $this->verifyCustomer() || $this->verifyAdmin();
 
-            $order_id_list = [];
-            $user_id_list = [];
-            $book_id_list = [];
-            $order_amt_list = [];
+            // Logs success or failure of order creation process
+            $orderLog = [];
 
             // Retrieve Cart Data via $_SESSION['user_id']
             $user_id = $_SESSION['user_id'];
             $cart_items = $this->cartModel->retrieveCartItem(tableName: "cartitems", fieldName: "user_id", fieldValue: $user_id);
 
-            // Assign Retrived Cart Data to Orders Array
-            for ($item = 0; $item < count($cart_items); $item++) {
-                foreach ($cart_items as $cart) {
-                    [];
+            /**
+             * Assign retrieved cart data to orders array
+             * Create orders
+             * Cache result of the process into a log
+             * if successful,
+             * Delete each item from the carts table via the cart_item_id
+             * Modify the existing stock for the specific record in the books table via the book_id
+             * Redirects to home with success message
+             * else
+             * Redirects to home with error message
+             */
+            foreach ($cart_items as $cart => $item) {
+
+                // Orders table array
+                $sanitizedData = [
+                    "order_id" => $order_id ??= str_ireplace("crt", "ord", $item['cart_item_id']),
+                    "user_id" => $user_id ??= $item['user_id'],
+                    "book_id" => $book_id ??= $item['book_id'],
+                    "order_amt" => $order_amt ??= $item['cart_item_amt']
+                ];
+
+                // Insert orders into orders table
+                if ($this->cartModel->createOrder(tableName: "orders", sanitizedData: $sanitizedData) === true) {
+                    // Cache result of operation
+                    $orderLog["{$item['book_id']}"] = "Your order(s) for item {$item['book_id']} is being processed, A delivery personnel will be in touch shortly" . PHP_EOL;
+                    // Modify existing book stock based on ordered quantity
+                    $this->modifyBookQty(itemQty: $item['cart_item_qty'], fieldValue: $item['book_id']);
+                    // Delete record from cartitems table
+                    $this->cartModel->deleteCartItem(tableName: "cartitems", fieldName: "cart_item_id", fieldValue: $item['cart_item_id']);
+                } else {
+                    // Cache result of operation
+                    $orderLog["{$item['book_id']}"] = "Error! Cannot process orders for item {$item['book_id']} now, Please try again" . PHP_EOL;
                 }
             }
 
-            // Insert Data into Orders Table
-            $sanitizedData = [
-                // "order_id" => $order_id,
-                // "user_id" => $user_id,
-                // "book_id" => $book_id,
-                // "order_amt" => $order_amt
-            ];
-
-            $orderStatus = $this->cartModel->createOrder(tableName: "orders", sanitizedData: $sanitizedData);
-
-            if ($orderStatus === true) {
-                $this->cartModel->deleteCartItem(tableName: "cartitems", fieldName: "user_id", fieldValue: $user_id);
-                // foreach ($book_id as $book) {
-                //     $this->modifyBookQty(itemQty: $book, fieldValue: $book);
-                // }
-                $this->successRedirect(message: "Your Order(s) is/are being processed, A delivery personnel will be in touch shortly", redirectTo: "");
+            if (!empty($orderLog)) {
+                $this->successRedirect(message: implode("\n", $orderLog), redirectTo: "");
             }
-            $this->errorRedirect(message: "Error! Cannot process orders for now, Please try again", redirectTo: "");
+            $this->errorRedirect(message: implode("\n", $orderLog), redirectTo: "");
         }
     }
 }
