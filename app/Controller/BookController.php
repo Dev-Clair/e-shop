@@ -203,7 +203,7 @@ class BookController extends AbsController
         return $this->cartModel->preventDuplicates(tableName: $tableName, fieldName: $fieldName, fieldValue: $fieldValue);
     }
 
-    public function addToCart()
+    public function addToCart(): void
     {
         if (filter_has_var(INPUT_POST, 'addToCart')) {
 
