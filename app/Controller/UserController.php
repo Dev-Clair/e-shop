@@ -123,7 +123,7 @@ class UserController extends AbsController
 
             $this->userModel->createUser(tableName: "users", sanitizedData: $newRecord)
                 ?
-                $this->successRedirect(message: "Account Creation was Successful, You can now login", redirectTo: "users")
+                $this->successRedirect(message: "Account Creation Successful, kindly login", redirectTo: "users")
                 :
                 $this->errorRedirect(message: "Error! Account Creation Failed, Please Try Again", redirectTo: "users");
         }
@@ -148,6 +148,11 @@ class UserController extends AbsController
 
             // User Verification
             $user = $this->userModel->retrieveSingleUser(tableName: "users", fieldName: "user_email", fieldValue: $validInputs['email']);
+
+            // Check if retrieved data is empty
+            if (empty($user)) {
+                $this->errorRedirect(message: "Invalid User! Click on Register to Create a New Account", redirectTo: "users");
+            }
 
             $password_check = password_verify($password, $user['user_password']);
 

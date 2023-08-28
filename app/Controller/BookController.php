@@ -241,6 +241,7 @@ class BookController extends AbsController
                 "cart_item_id"  => $cart_item_id,
                 "user_id" => $user_id,
                 "book_id" => $book_id,
+                "book_title" => $book_title,
                 "cart_item_price" => $book["book_price"],
                 "cart_item_amt" => $default_qty * $book["book_price"]
             ];

@@ -48,7 +48,7 @@ class CartController extends AbsController implements IntPaymentGateWay
                 'cart_items_subtotal' => $cart_items_subtotal,
                 'pageTitle' => '&#128366 Cart',
                 'removeFromCartFormAction' => '/e-shop/cart/deleteCartItem',
-                'cartQuantityFormAction' => '/e-shop/cart/updateCartItem',
+                'modifyCartQuantityFormAction' => '/e-shop/cart/updateCartItem',
                 'proceedToCheckOutFormAction' => '/e-shop/cart/createOrder'
             ]
         );
@@ -142,6 +142,7 @@ class CartController extends AbsController implements IntPaymentGateWay
                     "order_id" => str_ireplace("crt", "ord", $item['cart_item_id']) . $key,
                     "user_id" => $item['user_id'],
                     "book_id" => $item['book_id'],
+                    "book_title" => $item['book_title'],
                     "order_qty" => $item['cart_item_qty'],
                     "order_amt" => $item['cart_item_amt']
                 ];
@@ -149,7 +150,7 @@ class CartController extends AbsController implements IntPaymentGateWay
                 // Insert orders into orders table
                 if ($this->cartModel->createOrder(tableName: "orders", sanitizedData: $sanitizedData) === true) {
                     // Cache result of operation
-                    $this->orderLog['success'][] = "{$item['book_id']}, ";
+                    $this->orderLog['success'][] = "{$item['book_title']}, ";
 
                     // Modify existing book stock based on ordered quantity
                     // $this->modifyBookQty(itemQty: $item['cart_item_qty'], fieldValue: $item['book_id']);
@@ -158,7 +159,7 @@ class CartController extends AbsController implements IntPaymentGateWay
                     $this->cartModel->deleteCartItem(tableName: "cartitems", fieldName: "cart_item_id", fieldValue: $item['cart_item_id']);
                 } else {
                     // Cache result of operation
-                    $this->orderLog['error'][]  = $item['book_id'];
+                    $this->orderLog['error'][]  = $item['book_title'];
                 }
 
                 // Unset $sanitizedData after to prevent carrying over data already inserted into table
@@ -166,10 +167,10 @@ class CartController extends AbsController implements IntPaymentGateWay
             }
 
             if (!empty($this->orderLog['success'])) {
-                $successMessage = "Your order(s) for item(s) " . implode(",", $this->orderLog['success']) . " is being processed, Kindly check your profile to track delivery";
+                $successMessage = "Your order(s) for item(s): " . implode("", $this->orderLog['success']) . " is being processed. Kindly check your profile to track delivery";
                 $this->successRedirect(message: $successMessage, redirectTo: "");
             } else {
-                $errorMessage = "Try Again! Cannot process order(s) for " . implode(",", $this->orderLog['error']) . " item(s)";
+                $errorMessage = "Try Again! Cannot process order(s) for " . implode("", $this->orderLog['error']) . " item(s)";
                 $this->errorRedirect(message: $errorMessage, redirectTo: "");
             }
         }
