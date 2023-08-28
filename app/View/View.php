@@ -62,18 +62,3 @@ class View
         return $this->render();
     }
 }
-
-
-
-    // protected function includeParams(array $params = []): void
-    // {
-    //     extract($params);
-    //     include $path;
-    // }
-
-    // protected function includeView(string $path): string
-    // {
-    //     ob_start();
-    //     $this->includeParams($this->params);
-    //     return ob_get_clean();
-    // }
