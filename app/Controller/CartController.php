@@ -126,9 +126,14 @@ class CartController extends AbsController implements IntPaymentGateWay
                 'error' => []
             ];
 
-            // Retrieve Cart Data via $_SESSION['user_id']
+            // Retrieve cart data via $_SESSION['user_id']
             $user_id = $_SESSION['user_id'];
             $cart_items = $this->cartModel->retrieveCartItem(tableName: "cartitems", fieldName: "user_id", fieldValue: $user_id);
+
+            // Check if cart is empty
+            if (empty($cart_items)) {
+                $this->errorRedirect(message: "Try Again! Cannot process order(s) for " . count($cart_items) . " item(s)", redirectTo: "cart");
+            }
 
             foreach ($cart_items as $key => $item) {
 
@@ -164,7 +169,7 @@ class CartController extends AbsController implements IntPaymentGateWay
                 $successMessage = "Your order(s) for item(s) " . implode(",", $this->orderLog['success']) . " is being processed, Kindly check your profile to track delivery";
                 $this->successRedirect(message: $successMessage, redirectTo: "");
             } else {
-                $errorMessage = "Try Again! Cannot process order(s) for item(s) " . implode(",", $this->orderLog['error']) . " is being processed";
+                $errorMessage = "Try Again! Cannot process order(s) for " . implode(",", $this->orderLog['error']) . " item(s)";
                 $this->errorRedirect(message: $errorMessage, redirectTo: "");
             }
         }
