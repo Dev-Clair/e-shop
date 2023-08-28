@@ -40,15 +40,20 @@ class BookController extends AbsController
         );
     }
 
-    public function create(): View
+    public function show(): View
     {
         $this->verifyAdmin();
 
+        $retrieved_books = $this->bookModel->retrieveAllBooks(tableName: "books");
+
         return View::make(
-            'e-shop/books/create',
+            'books/show',
             [
-                'formAction' => '/e-shop/store',
-                'pageTitle' => '&#128366 Add Book'
+                'retrieved_books' => $retrieved_books,
+                'pageTitle' => '&#128366 Books',
+                'adminSearchFormAction' => '/e-shop/books/search',
+                'createFormAction' => '/e-shop/books/store',
+                'editFormAction' => '/e-shop/books/userAction',
             ]
         );
     }
@@ -63,6 +68,7 @@ class BookController extends AbsController
             if (empty($sanitizedData)) {
                 $this->errorRedirect(message: "Error! Cannot Create New Book", redirectTo: "books/create");
             }
+
             $createStatus = $this->bookModel->createBook(tableName: "books", sanitizedData: $sanitizedData);
             if ($createStatus === true) {
                 $this->successRedirect(message: "New Book Added", redirectTo: "books");
@@ -79,7 +85,7 @@ class BookController extends AbsController
         $book = $this->bookModel->retrieveSingleBook(tableName: "books",  fieldName: "book_id", fieldValue: $fieldValue);
 
         return View::make(
-            '/e-shop/books/edit',
+            'books/edit',
             [
                 'book' => $book,
                 'editFormAction' => '/e-shop/books/update',
@@ -157,16 +163,6 @@ class BookController extends AbsController
                 :
                 $this->errorRedirect(message: "Error! Cannot Update Book $fieldValue", redirectTo: "books");
         }
-    }
-
-    public function show(): View
-    {
-        $this->verifyAdmin();
-
-        return View::make(
-            'show',
-            []
-        );
     }
 
     public function search(): void
