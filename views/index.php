@@ -59,11 +59,11 @@ if (count($searchResult) > 0) {
                 <div class="card-body">
                     <div class="row justify-content-end">
                         <div class="col-md-6">
+                            <p class="card-text"><strong>Title:</strong> <?php echo ucwords($result["book_title"]); ?></p>
                             <p class="card-text"><strong>Product ID:</strong> <?php echo $result["book_id"]; ?></p>
                             <p class="card-text"><strong>Author:</strong> <?php echo $result["book_author"]; ?></p>
-                            <p class="card-text"><strong>Publication Date:</strong> <?php echo $result["book_publication_date"]; ?></p>
-                            <p class="card-text"><strong>Title:</strong> <?php echo ucwords($result["book_title"]); ?></p>
                             <p class="card-text"><strong>Edition:</strong> <?php echo $result["book_edition"]; ?></p>
+                            <p class="card-text"><strong>Publication Date:</strong> <?php echo $result["book_publication_date"]; ?></p>
                         </div>
                         <div class="col-md-6 text-md-end">
                             <?php
