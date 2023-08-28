@@ -35,7 +35,8 @@ unset($_SESSION['successAlertMsg']);
         <thead class="thead-dark">
             <tr>
                 <th>Cart Item ID</th>
-                <th>Cart Item</th>
+                <th>Product ID</th>
+                <th>Product Description</th>
                 <th>Cart Item Qty</th>
                 <th>Cart Item Price</th>
                 <th>Cart Item Amount</th>
@@ -49,12 +50,13 @@ unset($_SESSION['successAlertMsg']);
             ?>
                     <td><?php echo $item['cart_item_id']; ?></td>
                     <td><?php echo $item['book_id']; ?></td>
+                    <td><?php echo $item['book_title']; ?></td>
                     <td class="btn-group">
                         <?php
                         // Instantiate Form Class
                         $newForm = new Form();
 
-                        $newForm->createForm(formID: "alterQty", formName: "alterQty", formMethod: "post", formAction: $cartQuantityFormAction, enctype: null);
+                        $newForm->createForm(formID: "alterQty", formName: "alterQty", formMethod: "post", formAction: $modifyCartQuantityFormAction, enctype: null);
 
                         /** Add Hidden Form Input: Cart_Item_ID */
                         $newForm->formFieldInput(inputID: "cart_item_id", inputType: "hidden", inputName: "cart_item_id", value: $item['cart_item_id'] ?? "");
@@ -100,7 +102,7 @@ unset($_SESSION['successAlertMsg']);
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="4"><strong>sub-total</strong></td>
+                <td colspan="5"><strong>sub-total</strong></td>
                 <td>
                     <!-- Display Sub-Total -->
                     <?php
@@ -110,15 +112,15 @@ unset($_SESSION['successAlertMsg']);
                 </td>
             </tr>
             <tr>
-                <td colspan="4"><strong>Add:</strong></td>
+                <td colspan="5"><strong>Add:</strong></td>
                 <td></td>
             </tr>
             <tr>
-                <td colspan="4"><strong>Shipping Fee</strong></td>
+                <td colspan="5"><strong>Shipping Fee</strong></td>
                 <td><strong>Free</strong></td>
             </tr>
             <tr>
-                <td colspan="4"><strong>Total Cost</strong></td>
+                <td colspan="5"><strong>Total Cost</strong></td>
                 <td>
                     <?php
                     $subtotal = $cart_items_subtotal ?? "";
