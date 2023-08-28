@@ -85,7 +85,7 @@ class UserController extends AbsController
             if ($email !== null && $email !== false) {
                 $validInputs['email'] = $email;
             } else {
-                $errors['email'] = "Please enter a valid email";
+                $errors['registerEmail'] = "Please enter a valid email";
             }
 
             // Password Field
@@ -93,8 +93,8 @@ class UserController extends AbsController
             $confirm_password = $_POST['confirm_registerPassword'];
 
             if ($password !== $confirm_password) {
-                $errors['password'] = "Passwords do not match";
-                $errors['confirm_password'] = "Passwords do not match";
+                $errors['registerPassword'] = "Passwords do not match";
+                $errors['confirm_registerPassword'] = "Passwords do not match";
             }
             $validInputs['password'] = password_hash($password, PASSWORD_BCRYPT);
 
@@ -106,22 +106,36 @@ class UserController extends AbsController
             }
             $validInputs['address'] = $address;
 
+            // User Role Field - Hidden
+            $user_role = $_POST['user_role'];
+
+            // Check for userinput Errors
             if (!empty($errors)) {
                 $_SESSION['errors'] = $errors;
                 $this->errorRedirect(message: "Error! Invalid Details", redirectTo: "users");
             }
 
             // Submit Form
-            $user_id = "cus" . time();
-            $newRecord = [
-                "user_id" => $user_id,
+            $user_id = rand(999, 9999);
+
+            $customerRecord = [
+                "user_id" => 'cus' . $user_id++,
                 "user_name" => $validInputs['name'],
                 "user_email" => $validInputs['email'],
                 "user_password" => $validInputs['password'],
                 "user_address" => $validInputs['address']
             ];
 
-            $this->userModel->createUser(tableName: "users", sanitizedData: $newRecord)
+            $adminRecord = [
+                "user_id" => 'adm' . $user_id++,
+                "user_name" => $validInputs['name'],
+                "user_email" => $validInputs['email'],
+                "user_password" => $validInputs['password'],
+                "user_address" => $validInputs['address'],
+                "user_role" => $user_role
+            ];
+
+            $this->userModel->createUser(tableName: "users", sanitizedData: isset($user_role) ? $adminRecord : $customerRecord)
                 ?
                 $this->successRedirect(message: "Account Creation Successful, kindly login", redirectTo: "users")
                 :
@@ -140,19 +154,20 @@ class UserController extends AbsController
             if ($email !== null && $email !== false) {
                 $validInputs['email'] = $email;
             } else {
-                $errors['email'] = "Please enter a valid email";
+                $errors['loginEmail'] = "Please enter a valid email";
             }
 
             // Password Field
             $password = $_POST['loginPassword'];
 
+            // Check for userinput Errors
+            if (!empty($errors)) {
+                $_SESSION['errors'] = $errors;
+                $this->errorRedirect(message: "Error! Fields Cannot be Empty", redirectTo: "users");
+            }
+
             // User Verification
             $user = $this->userModel->retrieveSingleUser(tableName: "users", fieldName: "user_email", fieldValue: $validInputs['email']);
-
-            // Check if retrieved data is empty
-            if (empty($user)) {
-                $this->errorRedirect(message: "Invalid User! Click on Register to Create a New Account", redirectTo: "users");
-            }
 
             $password_check = password_verify($password, $user['user_password']);
 

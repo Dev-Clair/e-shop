@@ -71,8 +71,8 @@ $ordersTableFields = "`order_id` VARCHAR(20) PRIMARY KEY,
                       FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`),
                       FOREIGN KEY (`book_id`) REFERENCES `books`(`book_id`)";
 
-$cartItemsTable = "cartitems";
-$cartItemsTableFields = "`cart_item_id` VARCHAR(20) PRIMARY KEY,
+$cartsTable = "cartitems";
+$cartsTableFields = "`cart_item_id` VARCHAR(20) PRIMARY KEY,
                          `user_id` VARCHAR(20) NOT NULL,
                          `book_id` VARCHAR(20) NOT NULL,
                          `book_title` VARCHAR(150) NOT NULL,
@@ -82,8 +82,8 @@ $cartItemsTableFields = "`cart_item_id` VARCHAR(20) PRIMARY KEY,
                          FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`),
                          FOREIGN KEY (`book_id`) REFERENCES `books`(`book_id`)";
 
-$returnedItemsTable = "returns";
-$returnedItemsTableFields = "`return_id` INT AUTO_INCREMENT PRIMARY KEY,
+$returnsTable = "returns";
+$returnsTableFields = "`return_id` INT AUTO_INCREMENT PRIMARY KEY,
                              `user_id` VARCHAR(20) NOT NULL,
                              `book_id` VARCHAR(20) NOT NULL,
                              `book_title` VARCHAR(150) NOT NULL,
@@ -97,8 +97,8 @@ $databaseTables = [
     $usersTable => $usersTableFields,
     $booksTable => $booksTableFields,
     $ordersTable => $ordersTableFields,
-    $cartItemsTable => $cartItemsTableFields,
-    $returnedItemsTable => $returnedItemsTableFields
+    $cartsTable => $cartsTableFields,
+    $returnsTable => $returnsTableFields
 ];
 
 $conn = new AdminModel(databaseName: $databaseName);
