@@ -31,6 +31,7 @@ unset($_SESSION['successAlertMsg']);
     <button type="button" class="btn btn-sm btn-success rounded me-2" data-bs-toggle="modal" data-bs-target="#showAdminFormTableModal">Admin</button>
 </div>
 
+<!-- Login Form -->
 <div>
     <h2>Log in</h2>
     <hr class="mb-3">

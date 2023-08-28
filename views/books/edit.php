@@ -9,42 +9,26 @@ use app\Utils\Form;
 $newForm = new Form();
 
 $newForm->createForm(formID: "editBook", formName: "editBook", formMethod: "post", formAction: $formAction, enctype: "multipart/form-data");
-if (isset($_SESSION['errorAlertMsg'])) {
-    $errorAlertMsg = sprintf("%s", $_SESSION['errorAlertMsg']);
-    $newForm->statusAlert("danger", $errorAlertMsg);
-}
-unset($_SESSION['errorAlertMsg']);
 
-if (isset($_SESSION['successAlertMsg'])) {
-    $successAlertMsg = sprintf("%s", $_SESSION['successAlertMsg']);
-    $newForm->statusAlert("success", $successAlertMsg);
-}
-unset($_SESSION['successAlertMsg']);
-
-/** Form File Upload: Book Image */
-$newForm->formDiv(divID: "image", divClass: "form-group mb-3");
-$newForm->formLabel(labelID: "image", labelClass: "form-label", labelTitle: "Click to Upload an Image:");
-$newForm->formFileUploadInput(fileInputID: "image", fileInputName: "image", acceptFileType: "image/png", fileInputClass: "form-control", multiple: null, disabled: "disabled", fileInputValue: null);
-if (isset($_SESSION['errors']['image'])) {
-    $alertMsg = sprintf("%s", $_SESSION['errors']['image']);
-    $newForm->fieldAlert(alertClass: "text-red is-invalid", alertMsg: $alertMsg);
+/** Form File Upload: Book Cover Image */
+$newForm->formDiv(divID: "book_cover_image", divClass: "form-group mb-3");
+$newForm->formLabel(labelID: "book_cover_image", labelClass: "form-label", labelTitle: "Click to Upload an Image:");
+$newForm->formFileUploadInput(fileInputID: "book_cover_image", fileInputName: "book_cover_image", acceptFileType: "image/png", fileInputClass: "form-control", multiple: null, disabled: "disabled", fileInputValue: null);
+if (isset($_SESSION['errors']['book_cover_image'])) {
+    $alertMsg = sprintf("%s", $_SESSION['errors']['book_cover_image']);
+    $newForm->fieldAlert(alertClass: "text-danger", alertMsg: $alertMsg);
 }
 
 /** Form Field: Book ID */
-$newForm->formDiv(divID: "id", divClass: "form-group mb-3");
-$newForm->formFieldInput(inputID: "id", inputName: "id", inputType: "hidden", value: $book['ID']);
-if (isset($_SESSION['errors']['id'])) {
-    $alertMsg = sprintf("%s", $_SESSION['errors']['id']);
-    $newForm->fieldAlert(alertClass: "text-red is-invalid", alertMsg: $alertMsg);
-}
+$newForm->formFieldInput(inputID: "book_id", inputName: "book_id", inputType: "hidden", value: $book['book_id']);
 
-/** Form Field: Book Name */
-$newForm->formDiv(divID: "title", divClass: "form-group mb-3");
-$newForm->formLabel(labelID: "title", labelClass: "form-label", labelTitle: "Book Title:");
-$newForm->formFieldInput(inputID: "title", inputName: "title", inputType: "text", inputClass: "form-control", inputPlaceholder: "Enter book title", value: $book['Title']);
-if (isset($_SESSION['errors']['title'])) {
-    $alertMsg = sprintf("%s", $_SESSION['errors']['title']);
-    $newForm->fieldAlert(alertClass: "text-red is-invalid", alertMsg: $alertMsg);
+/** Form Field: Book Title */
+$newForm->formDiv(divID: "book_title", divClass: "form-group mb-3");
+$newForm->formLabel(labelID: "book_title", labelClass: "form-label", labelTitle: "Book Title:");
+$newForm->formFieldInput(inputID: "book_title", inputName: "book_title", inputType: "text", inputClass: "form-control", inputPlaceholder: "Enter book title", value: $book['book_title']);
+if (isset($_SESSION['errors']['book_title'])) {
+    $alertMsg = sprintf("%s", $_SESSION['errors']['book_title']);
+    $newForm->fieldAlert(alertClass: "text-danger", alertMsg: $alertMsg);
 }
 
 unset($_SESSION['errors']);
