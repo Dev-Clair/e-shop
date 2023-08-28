@@ -98,8 +98,8 @@ class BookController extends AbsController
     {
         if (filter_has_var(INPUT_POST, 'updateBook')) {
 
-            if (isset($_POST['updateBook']) && is_array($_POST['updateBook'])) {
-                $book_id = array_key_first($_POST['updateBook']);
+            if (isset($_POST['updateBook'])) {
+                $book_id = $_POST['updateBook'];
 
                 // Retrieve and pass $_POST['updateBook'] value to validateUpdate method
                 $this->validateUpdateAction(book_id: $book_id);
@@ -128,8 +128,8 @@ class BookController extends AbsController
     {
         $this->verifyAdmin();
 
-        if (isset($_POST['deleteBook']) && is_array($_POST['deleteBook'])) {
-            $book_id = array_key_first($_POST['deleteBook']);
+        if (isset($_POST['deleteBook'])) {
+            $book_id = $_POST['deleteBook'];
         }
 
         $fieldValue = $book_id;

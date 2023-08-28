@@ -75,10 +75,8 @@ abstract class AbsController implements IntController
 
         if (
             $this->userModel->retrieveUserAttribute(tableName: "users", fieldName: "user_role", compareFieldName: 'user_id', compareFieldValue: $_SESSION['user_id']) !== "ADMIN"
-            &&
-            $this->getUserAccountStatus() === "Inactive"
         ) {
-            $this->errorRedirect(message: "Unauthorized!", redirectTo: "users");
+            $this->errorRedirect(message: "Unauthorized!", redirectTo: "");
         }
         return;
     }
@@ -89,10 +87,8 @@ abstract class AbsController implements IntController
 
         if (
             $this->userModel->retrieveUserAttribute(tableName: "users", fieldName: "user_role", compareFieldName: 'user_id', compareFieldValue: $_SESSION['user_id']) !== "CUSTOMER"
-            &&
-            $this->getUserAccountStatus() === "Inactive"
         ) {
-            $this->errorRedirect(message: "Unauthorized!", redirectTo: "users");
+            $this->errorRedirect(message: "Unauthorized!", redirectTo: "");
         }
         return;
     }
