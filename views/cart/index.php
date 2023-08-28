@@ -1,5 +1,5 @@
 <?php
-// views/cart/index.php
+// views/cart/index.php (Cart Controller)
 
 declare(strict_types=1);
 
