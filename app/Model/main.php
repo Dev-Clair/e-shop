@@ -80,6 +80,26 @@ $newBooks = [
         'book_qty' => 20,
         'book_cover_image' => null,
         'book_publication_date' => '2023-01-15'
+    ],
+    [
+        'book_id' => "bk" . $catalogue_no++,
+        'book_title' => 'Engineering Mathematics',
+        'book_author' => 'K. A. Stroud',
+        'book_edition' => '5th',
+        'book_price' => 9.99,
+        'book_qty' => 25,
+        'book_cover_image' => null,
+        'book_publication_date' => '2004-08-03'
+    ],
+    [
+        'book_id' => "bk" . $catalogue_no++,
+        'book_title' => 'Building Construction',
+        'book_author' => 'Derek Osbourn and Roger Greeno',
+        'book_edition' => '4th',
+        'book_price' => 24.99,
+        'book_qty' => 45,
+        'book_cover_image' => null,
+        'book_publication_date' => '1997-01-15'
     ]
 ];
 

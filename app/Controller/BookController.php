@@ -51,7 +51,7 @@ class BookController extends AbsController
             [
                 'retrieved_books' => $retrieved_books,
                 'pageTitle' => '&#128366 Books',
-                'adminSearchFormAction' => '/e-shop/books/search?redirectTo=' . rtrim(basename($_SERVER['PHP_SELF']), ".php"),
+                'adminSearchFormAction' => '/e-shop/books/search',
                 'createFormAction' => '/e-shop/books/store',
                 'editFormAction' => '/e-shop/books/userAction',
             ]
@@ -68,6 +68,8 @@ class BookController extends AbsController
             if (empty($sanitizedData)) {
                 $this->errorRedirect(message: "Error! Cannot Create New Book", redirectTo: "books/create");
             }
+
+            $sanitizedData["book_id"] = "bk" . rand(999, 9999);
 
             $createStatus = $this->bookModel->createBook(tableName: "books", sanitizedData: $sanitizedData);
             if ($createStatus === true) {
