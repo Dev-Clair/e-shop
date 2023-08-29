@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace app;
+namespace app\Utils;
 
 use Dotenv\Dotenv;
 use app\Db\DbConn;
@@ -20,7 +20,7 @@ class DbResource
      */
     private static function getConnection(?string $databaseName = null)
     {
-        $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+        $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
         $dotenv->load();
 
         $conn = new DbConn(

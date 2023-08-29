@@ -45,43 +45,62 @@ class DbTableOp extends DbTable
             throw new \RuntimeException("Error executing statement: " . $e->getMessage());
         }
     }
-    public function retrieveAllRecords(string $tableName, string $fetchMode): array
+
+    public function searchRecord(string $tableName, string $fieldName, string $fieldValue): array
+    {
+        $sql_query = "SELECT * FROM $tableName WHERE $fieldName LIKE ?";
+        $searchValue = "%$fieldValue%";
+
+        try {
+            $stmt = $this->executeQuery(sql: $sql_query, params: [$searchValue]);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $results;
+        } catch (PDOException $e) {
+            throw new \RuntimeException("Error executing statement: " . $e->getMessage());
+        }
+    }
+
+    public function retrieveAllRecords(string $tableName): array
     {
         $sql_query = "SELECT * FROM $tableName";
-        $fetchMode = match ($fetchMode) {
-            "1" => PDO::FETCH_ASSOC,
-            "2" => PDO::FETCH_BOTH,
-            "3" => PDO::FETCH_BOUND,
-            "4" => PDO::FETCH_CLASS,
-            "5" => PDO::FETCH_OBJ,
-            default => PDO::FETCH_ASSOC
-        };
         try {
             $stmt = $this->executeQuery(sql: $sql_query);
-            $rows = $stmt->fetchAll($fetchMode);
-            return $rows;
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $results;
         } catch (PDOException $e) {
             throw new \RuntimeException("Error executing statement: " . $e->getMessage());
         }
     }
 
-    public function retrieveSingleValue(string $tableName, $fieldName, $fieldValue): int|string|bool|array|null
+    public function retrieveSingleValue(string $tableName, string $fieldName, string $compareFieldName, mixed $compareFieldValue): int|string|null
     {
-        $sql_query = "SELECT $fieldName FROM $tableName WHERE $fieldName = ?";
+        $sql_query = "SELECT $fieldName FROM $tableName WHERE $compareFieldName = ?";
 
         try {
-            $stmt = $this->executeQuery(sql: $sql_query, params: [$fieldValue]);
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            if ($row) {
-                return $row[$fieldName];
-            }
-            return null;
+            $stmt = $this->executeQuery(sql: $sql_query, params: [$compareFieldValue]);
+            $value = $stmt->fetchColumn();
+
+            return $value !== false ? $value : null;
         } catch (PDOException $e) {
             throw new \RuntimeException("Error executing statement: " . $e->getMessage());
         }
     }
 
-    public function retrieveMultipleValues(string $tableName, string $fieldName, string $compareFieldName, $compareFieldValue): array
+    public function retrieveFieldSum(string $tableName, string $fieldName, string $compareFieldName, mixed $compareFieldValue): mixed
+    {
+        $sql_query = "SELECT sum($fieldName) FROM $tableName WHERE $compareFieldName = ?";
+
+        try {
+            $stmt = $this->executeQuery(sql: $sql_query, params: [$compareFieldValue]);
+            $value = $stmt->fetchColumn();
+
+            return $value !== false ? $value : null;
+        } catch (PDOException $e) {
+            throw new \RuntimeException("Error executing statement: " . $e->getMessage());
+        }
+    }
+
+    public function retrieveMultipleValues(string $tableName, string $fieldName, string $compareFieldName, mixed $compareFieldValue): array
     {
         $sql_query = "SELECT $fieldName FROM $tableName WHERE $compareFieldName = ?";
         try {
@@ -93,14 +112,27 @@ class DbTableOp extends DbTable
         }
     }
 
-    public function retrieveSingleRecord(string $tableName, string $fieldName, $fieldValue): array
+    public function retrieveSpecificRecord_firstOccurrence(string $tableName, string $fieldName, $fieldValue): array
     {
         $sql_query = "SELECT * FROM $tableName WHERE $fieldName = ?";
 
         try {
             $stmt = $this->executeQuery(sql: $sql_query, params: [$fieldValue]);
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $row ?: [];
+            $result = $stmt->fetch(PDO::FETCH_ASSOC); // Fetches First Occurence for specified field value
+            return $result ?: [];
+        } catch (PDOException $e) {
+            throw new \RuntimeException("Error executing statement: " . $e->getMessage());
+        }
+    }
+
+    public function retrieveSpecificRecord_allOccurrence(string $tableName, string $fieldName, $fieldValue): array
+    {
+        $sql_query = "SELECT * FROM $tableName WHERE $fieldName = ?";
+
+        try {
+            $stmt = $this->executeQuery(sql: $sql_query, params: [$fieldValue]);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetches All Occurence for specified field value
+            return $results;
         } catch (PDOException $e) {
             throw new \RuntimeException("Error executing statement: " . $e->getMessage());
         }
@@ -153,8 +185,8 @@ class DbTableOp extends DbTable
 
         try {
             $stmt = $this->executeQuery(sql: $sql_query);
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            return $rows;
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $results;
         } catch (PDOException $e) {
             throw new \RuntimeException("Error executing statement: " . $e->getMessage());
         }

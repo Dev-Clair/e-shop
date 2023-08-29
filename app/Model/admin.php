@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-use app\DbResource;
+use app\Utils\DbResource;
 use app\Model\AdminModel;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 // Database Array
 $databaseNames = ['eshop', 'backup'];
+$databaseName = $databaseNames[0];
 
 /**
  * *************************************************************************************
@@ -18,7 +19,6 @@ $databaseNames = ['eshop', 'backup'];
  * *************************************************************************************
  */
 
-$databaseName = $databaseNames[0];
 $dbConn = DbResource::dbConn($databaseName);
 
 if (!$dbConn instanceof \PDO) {
@@ -41,42 +41,74 @@ if ($dbConn->query($sql_query)) {
  * 
  * *************************************************************************************
  */
+$usersTable = "users";
+$usersTableFields = "`user_id` VARCHAR(20) PRIMARY KEY,
+                     `user_name` VARCHAR(150) NOT NULL,
+                     `user_email` VARCHAR(150) UNIQUE NOT NULL,
+                     `user_password` VARCHAR(255) NOT NULL,
+                     `user_address` VARCHAR(150),
+                     `user_role` ENUM('ADMIN', 'CUSTOMER') DEFAULT 'CUSTOMER',
+                     `user_account_status` ENUM('Active', 'Inactive') DEFAULT 'Active'";
 
-$tableName = "stock";
-$fieldNames = "";
-$databaseName = $databaseNames[0];
-$conn = new AdminModel(databaseName: $databaseName);
-$status = $conn->createTable(tableName: $tableName, fieldNames: $fieldNames);
-if ($status) {
-    echo "Creating new table `$tableName` in $databaseName returned: " . "true" . PHP_EOL;
-} else {
-    echo "Creating new table `$tableName` in $databaseName returned: " . "false" . PHP_EOL;
-}
+$booksTable = "books";
+$booksTableFields = "`book_id` VARCHAR(20) PRIMARY KEY,
+                     `book_title` VARCHAR(150) NOT NULL,
+                     `book_author` VARCHAR(150) NOT NULL,
+                     `book_edition` VARCHAR(10) NOT NULL,
+                     `book_price` DECIMAL(10, 2) NOT NULL,
+                     `book_qty` INT NOT NULL,
+                     `book_cover_image` BLOB,
+                     `book_publication_date` DATE";
 
-$tableName = "sold";
-$fieldNames = "`ID` INT PRIMARY KEY,
-                `BookID` VARCHAR(20) UNIQUE NOT NULL,
-                FOREIGN KEY (`BookID`) REFERENCES stock(`BookID`) ON DELETE CASCADE";
-$databaseName =  $databaseNames[0];
-$conn = new AdminModel(databaseName: $databaseName);
-$status = $conn->createTable(tableName: $tableName, fieldNames: $fieldNames);
-if ($status) {
-    echo "Creating new table `$tableName` in $databaseName returned: " . "true" . PHP_EOL;
-} else {
-    echo "Creating new table `$tableName` in $databaseName returned: " . "false" . PHP_EOL;
-}
+$ordersTable = "orders";
+$ordersTableFields = "`order_id` VARCHAR(20) PRIMARY KEY,
+                      `user_id` VARCHAR(20) NOT NULL,
+                      `book_id` VARCHAR(20) NOT NULL,
+                      `book_title` VARCHAR(150) NOT NULL,
+                      `order_qty` INT NOT NULL,
+                      `order_amt` DECIMAL(10, 2) NOT NULL,
+                      `order_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                      FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`),
+                      FOREIGN KEY (`book_id`) REFERENCES `books`(`book_id`)";
 
-$tableName = "returned";
-$fieldNames = "`ID` INT PRIMARY KEY,
-                `BookID` VARCHAR(20) UNIQUE NOT NULL,
-                FOREIGN KEY (`BookID`) REFERENCES stock(`BookID`) ON DELETE CASCADE";
-$databaseName =  $databaseNames[0];
+$cartsTable = "cartitems";
+$cartsTableFields = "`cart_item_id` VARCHAR(20) PRIMARY KEY,
+                         `user_id` VARCHAR(20) NOT NULL,
+                         `book_id` VARCHAR(20) NOT NULL,
+                         `book_title` VARCHAR(150) NOT NULL,
+                         `cart_item_qty` INT NOT NULL DEFAULT 1,
+                         `cart_item_price` DECIMAL(10, 2) NOT NULL,
+                         `cart_item_amt` DECIMAL(10, 2) NOT NULL,
+                         FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`),
+                         FOREIGN KEY (`book_id`) REFERENCES `books`(`book_id`)";
+
+$returnsTable = "returns";
+$returnsTableFields = "`return_id` INT AUTO_INCREMENT PRIMARY KEY,
+                             `user_id` VARCHAR(20) NOT NULL,
+                             `book_id` VARCHAR(20) NOT NULL,
+                             `book_title` VARCHAR(150) NOT NULL,
+                             `order_id` VARCHAR(20) NOT NULL,
+                             `return_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                             FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`),
+                             FOREIGN KEY (`book_id`) REFERENCES `books`(`book_id`),
+                             FOREIGN KEY (`order_id`) REFERENCES `orders`(`order_id`)";
+
+$databaseTables = [
+    $usersTable => $usersTableFields,
+    $booksTable => $booksTableFields,
+    $ordersTable => $ordersTableFields,
+    $cartsTable => $cartsTableFields,
+    $returnsTable => $returnsTableFields
+];
+
 $conn = new AdminModel(databaseName: $databaseName);
-$status = $conn->createTable(tableName: $tableName, fieldNames: $fieldNames);
-if ($status) {
-    echo "Creating new table `$tableName` in $databaseName returned: " . "true" . PHP_EOL;
-} else {
-    echo "Creating new table `$tableName` in $databaseName returned: " . "false" . PHP_EOL;
+foreach ($databaseTables as $tableName => $fieldNames) {
+    $status = $conn->createTable(tableName: $tableName, fieldNames: $fieldNames);
+    if ($status) {
+        echo "Creating new table `$tableName` in $databaseName returned: " . "true" . PHP_EOL;
+    } else {
+        echo "Creating new table `$tableName` in $databaseName returned: " . "false" . PHP_EOL;
+    }
 }
 
 /** *************************************************************************************
@@ -85,7 +117,6 @@ if ($status) {
  * 
  * *************************************************************************************
  */
-$databaseName = "";
 $tableName = "";
 $alterStatement = "ADD COLUMN ``  NOT NULL FIRST";
 // $conn = new AdminModel(databaseName: $databaseName);
@@ -103,7 +134,6 @@ $alterStatement = "ADD COLUMN ``  NOT NULL FIRST";
  * 
  * *************************************************************************************
  */
-$databaseName = "";
 $tableName = "";
 // $conn = new AdminModel(databaseName: $databaseName);
 // $status = $conn->truncateTable(tableName: $tableName);
@@ -120,7 +150,6 @@ $tableName = "";
  * 
  * *************************************************************************************
  */
-$databaseName = "";
 $tableName = "";
 // $conn = new AdminModel(databaseName: $databaseName);
 // $status = $conn->dropTable(tableName: $tableName);
