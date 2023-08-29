@@ -34,7 +34,7 @@ class BookController extends AbsController
                 'retrieved_books' => array_slice($retrieved_books, 0, 50),
                 'cart' => $cart,
                 'pageTitle' => '&#128366 Books',
-                'searchFormAction' => '/e-shop/books/search',
+                'searchFormAction' => '/e-shop/books/search?redirectTo=' . rtrim(basename($_SERVER['PHP_SELF']), ".php"),
                 'cartFormAction' => '/e-shop/books/addToCart'
             ]
         );
@@ -51,7 +51,7 @@ class BookController extends AbsController
             [
                 'retrieved_books' => $retrieved_books,
                 'pageTitle' => '&#128366 Books',
-                'adminSearchFormAction' => '/e-shop/books/search',
+                'adminSearchFormAction' => '/e-shop/books/search?redirectTo=' . rtrim(basename($_SERVER['PHP_SELF']), ".php"),
                 'createFormAction' => '/e-shop/books/store',
                 'editFormAction' => '/e-shop/books/userAction',
             ]
@@ -81,7 +81,8 @@ class BookController extends AbsController
     {
         $this->verifyAdmin();
 
-        $fieldValue = (int)$_GET['book_id'];
+        $fieldValue = $_GET['book_id'];
+
         $book = $this->bookModel->retrieveSingleBook(tableName: "books",  fieldName: "book_id", fieldValue: $fieldValue);
 
         return View::make(
@@ -98,52 +99,25 @@ class BookController extends AbsController
     {
         if (filter_has_var(INPUT_POST, 'updateBook')) {
 
-            if (isset($_POST['updateBook'])) {
-                $book_id = $_POST['updateBook'];
+            // Update operation
+            if (isset($_POST['book_id'])) {
 
-                // Retrieve and pass $_POST['updateBook'] value to validateUpdate method
-                $this->validateUpdateAction(book_id: $book_id);
+                $book_id = $_POST['book_id'];
+
+                $this->bookModel->validateBook(tableName: "books",  fieldName: "book_id", fieldValue: $book_id)
+                    ?
+                    header('Location: /e-shop/books/edit?book_id=' . $book_id)
+                    :
+                    $this->errorRedirect(message: "Error! Book $book_id does not exist", redirectTo: "books");
+                exit();
             }
         }
 
         if (filter_has_var(INPUT_POST, 'deleteBook')) {
+
+            // Delete operation
             $this->delete();
         }
-    }
-
-    protected function validateUpdateAction(int|string $book_id): void
-    {
-        $fieldValue = $book_id;
-        $validateStatus = $this->bookModel->validateBook(tableName: "books",  fieldName: "book_id", fieldValue: $fieldValue);
-
-        if ($validateStatus === true) {
-            header('Location: /e-shop/books/edit?book_id=' . $book_id);
-            exit();
-        }
-
-        $this->errorRedirect(message: "Error! Book $book_id does not exist", redirectTo: "books");
-    }
-
-    protected function delete(): void
-    {
-        $this->verifyAdmin();
-
-        if (isset($_POST['deleteBook'])) {
-            $book_id = $_POST['deleteBook'];
-        }
-
-        $fieldValue = $book_id;
-        $validateStatus = $this->bookModel->validateBook(tableName: "books",  fieldName: "book_id", fieldValue: $fieldValue);
-
-        if ($validateStatus === true) {
-            $this->bookModel->deleteBook(tableName: "books",  fieldName: "book_id", fieldValue: $fieldValue)
-                ?
-                $this->successRedirect(message: "Book Deleted", redirectTo: "books")
-                :
-                $this->errorRedirect(message: "Error! Cannot Delete Book $fieldValue", redirectTo: "books");
-        }
-
-        $this->errorRedirect(message: "Error! Book $book_id does not exist", redirectTo: "books");
     }
 
     public function update(): void
@@ -159,9 +133,9 @@ class BookController extends AbsController
 
             $this->bookModel->updateBook(tableName: "books",  fieldName: "book_id", sanitizedData: $sanitizedData, fieldValue: $fieldValue)
                 ?
-                $this->successRedirect(message: "Book Record Updated", redirectTo: "books")
+                $this->successRedirect(message: "Book Record Updated", redirectTo: "books/show")
                 :
-                $this->errorRedirect(message: "Error! Cannot Update Book $fieldValue", redirectTo: "books");
+                $this->errorRedirect(message: "Error! Cannot Update Book $fieldValue", redirectTo: "books/show");
         }
     }
 
@@ -173,15 +147,39 @@ class BookController extends AbsController
 
             $fieldValue = $searchInput;
 
+            $redirectTo = $_GET['redirectTo'];
+
             $searchResult = $this->bookModel->searchBook(tableName: "books", fieldName: "book_title", fieldValue: $fieldValue);
             if (!empty($searchResult)) {
                 $_SESSION['searchResult'] = $searchResult;
-                $message = sprintf("%s", "Similar Entries Found for $searchInput");
-                $this->successRedirect(message: $message, redirectTo: "");
+                $message = sprintf("%s", "Similar Records Found for: $searchInput");
+                $this->successRedirect(message: $message, redirectTo: $redirectTo);
             }
-            $message = sprintf("%s", "No Similar Record Found for &#128366 $searchInput");
-            $this->errorRedirect(message: $message, redirectTo: "");
+            $message = sprintf("%s", "No Similar Record Found for: &#128366 $searchInput");
+            $this->errorRedirect(message: $message, redirectTo: $redirectTo);
         }
+    }
+
+    protected function delete(): void
+    {
+        $this->verifyAdmin();
+
+        if (isset($_POST['deleteBook'])) {
+            $book_id = $_POST['book_id'];
+        }
+
+        $fieldValue = $book_id;
+        $validateStatus = $this->bookModel->validateBook(tableName: "books",  fieldName: "book_id", fieldValue: $fieldValue);
+
+        if ($validateStatus === true) {
+            $this->bookModel->deleteBook(tableName: "books",  fieldName: "book_id", fieldValue: $fieldValue)
+                ?
+                $this->successRedirect(message: "Book Deleted", redirectTo: "books/show")
+                :
+                $this->errorRedirect(message: "Error! Cannot Delete Book $fieldValue", redirectTo: "books/show");
+        }
+
+        $this->errorRedirect(message: "Error! Book $book_id does not exist", redirectTo: "books");
     }
 
     protected function confirmBookAvailability(string $tableName, string $fieldName, mixed $fieldValue): bool
@@ -209,12 +207,12 @@ class BookController extends AbsController
 
             $book_title = $_POST['book_title'];
 
-            // Confirm Availability
+            // Confirm product availability
             if (!$this->confirmBookAvailability(tableName: "books", fieldName: "book_id", fieldValue: $book_id)) {
                 $this->errorRedirect(message: "Sorry! This book is currently not available", redirectTo: "");
             }
 
-            // Confirm Stock
+            // Confirm product stock
             if (!$this->confirmBookQty(tableName: "books", fieldName: "book_qty", compareFieldName: "book_id", compareFieldValue: $book_id)) {
                 $this->errorRedirect(message: "Sorry! This book is currently out of stock", redirectTo: "");
             }

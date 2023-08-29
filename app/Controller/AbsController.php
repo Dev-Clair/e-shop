@@ -38,6 +38,7 @@ abstract class AbsController implements IntController
         foreach ($_POST as $fieldName => $userInput) {
             $sanitizedInput[$fieldName] = filter_var($userInput, FILTER_SANITIZE_SPECIAL_CHARS);
         }
+        unset($sanitizedInput[array_key_last($sanitizedInput)]);
         return $sanitizedInput;
     }
 
@@ -91,21 +92,5 @@ abstract class AbsController implements IntController
             $this->errorRedirect(message: "Unauthorized!", redirectTo: "");
         }
         return;
-    }
-
-    protected function getUserAccountStatus(): string
-    {
-        return $this->userModel->retrieveUserAttribute(tableName: "users", fieldName: "user_account_status", compareFieldName: 'user_id', compareFieldValue: $_SESSION['user_id']);
-    }
-
-    protected function setUserAccountStatus(): void
-    {
-        $this->verifyAdmin();
-
-        if ($this->userModel->retrieveUserAttribute(tableName: "users", fieldName: "user_account_status", compareFieldName: 'user_id', compareFieldValue: $_SESSION['user_id']) === "Active") {
-            $this->userModel->updateUser(tableName: "users", sanitizedData: ["user_account_status" => "Inactive"], fieldName: "user_id", fieldValue: $_SESSION['user_id']);
-        } else {
-            $this->userModel->updateUser(tableName: "users", sanitizedData: ["user_account_status" => "Active"], fieldName: "user_id", fieldValue: $_SESSION['user_id']);
-        }
     }
 }

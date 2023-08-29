@@ -22,7 +22,7 @@ class UserController extends AbsController
 
     public function index(): View
     {
-        // Prevents already logged-in user from accessing this page
+        // MIDDLEWARE :: Prevents already logged-in user from accessing this page
         if (isset($_SESSION['user_id'])) {
             $this->errorRedirect(message: "Unauthorized!", redirectTo: "");
         }
@@ -106,8 +106,12 @@ class UserController extends AbsController
             }
             $validInputs['address'] = $address;
 
-            // User Role Field - Hidden
-            $user_role = $_POST['user_role'];
+            // User Role Field
+            $admin_passkey = strtoupper($_POST['passkey']);
+            if ($admin_passkey === 'ADMIN') {
+                $user_role = $_POST['passkey'];
+            }
+            $errors['passkey'] = "Invalid passkey";
 
             // Check for userinput Errors
             if (!empty($errors)) {
@@ -210,19 +214,51 @@ class UserController extends AbsController
         );
     }
 
-    public function update()
+    public function update(): void
     {
     }
 
-    public function delete()
+    public function delete(): void
     {
     }
 
-    protected function retrieveUserInfo()
+    private function validateEmail(): string|null
     {
+        return filter_input(INPUT_POST, 'user_email', FILTER_SANITIZE_EMAIL | FILTER_VALIDATE_EMAIL);
     }
 
-    protected function verifyUserInfo()
+    protected function authenticateUser(): bool
     {
+        $password = $_POST['user_password'];
+
+        $user_password = $this->userModel->retrieveUserAttribute(tableName: "users", fieldName: "user_password", compareFieldName: 'user_id', compareFieldValue: $_SESSION['user_id']);
+
+        return password_verify($password, $user_password);
+    }
+
+    protected function retrieveUserAccountStatus($user_email): string|null
+    {
+        $this->verifyAdmin();
+
+        if (is_null($user_email)) {
+            $this->errorRedirect(message: "Invalid! Pleae enter a valid email address", redirectTo: "");
+        }
+
+        return $this->userModel->retrieveUserAttribute(tableName: "users", fieldName: "user_account_status", compareFieldName: 'user_email', compareFieldValue: $user_email);
+    }
+
+    protected function setUserAccountStatus(): void
+    {
+        $this->verifyAdmin();
+
+        $user_email = $this->validateEmail();
+
+        $user_account_status = $this->retrieveUserAccountStatus($user_email);
+
+        if ($user_account_status === "Active") {
+            $this->userModel->updateUser(tableName: "users", sanitizedData: ["user_account_status" => "Inactive"], fieldName: "user_email", fieldValue: $user_email);
+        } else {
+            $this->userModel->updateUser(tableName: "users", sanitizedData: ["user_account_status" => "Active"], fieldName: "user_email", fieldValue: $user_email);
+        }
     }
 }
