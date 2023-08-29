@@ -106,12 +106,8 @@ class UserController extends AbsController
             }
             $validInputs['address'] = $address;
 
-            // User Role Field
-            $admin_passkey = strtoupper($_POST['passkey']);
-            if ($admin_passkey !== 'ADMIN') {
-                $errors['passkey'] = "Invalid passkey";
-            }
-            $user_role = $_POST['passkey'];
+            // User Role - Hidden Field
+            $user_role = $_POST['passkey'] ?: null;
 
             // Check for userinput Errors
             if (!empty($errors)) {

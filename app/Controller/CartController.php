@@ -118,7 +118,7 @@ class CartController extends AbsController implements IntPaymentGateWay
     {
         if (filter_has_var(INPUT_POST, 'proceedToCheckOut')) {
 
-            $this->verifyCustomer() || $this->verifyAdmin();
+            // $this->verifyCustomer() || $this->verifyAdmin();
 
             // Logs success or failure of order creation process
             $this->orderLog = [
