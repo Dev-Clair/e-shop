@@ -108,11 +108,11 @@ echo $newForm->render();
                 }
 
                 /** Form Field: Book Quantity */
-                $newForm->formDiv(divID: "quantity", divClass: "form-group mb-3");
-                $newForm->formLabel(labelID: "quantity", labelClass: "form-label", labelTitle: "Book Quantity:");
-                $newForm->formFieldInput(inputID: "quantity", inputName: "book_quantity", inputType: "text", inputClass: "form-control", inputPlaceholder: "Enter book quantity");
-                if (isset($_SESSION['errors']['book_quantity'])) {
-                    $alertMsg = sprintf("%s", $_SESSION['errors']['book_quantity']);
+                $newForm->formDiv(divID: "qty", divClass: "form-group mb-3");
+                $newForm->formLabel(labelID: "qty", labelClass: "form-label", labelTitle: "Book Quantity:");
+                $newForm->formFieldInput(inputID: "qty", inputName: "book_qty", inputType: "text", inputClass: "form-control", inputPlaceholder: "Enter book quantity");
+                if (isset($_SESSION['errors']['book_qty'])) {
+                    $alertMsg = sprintf("%s", $_SESSION['errors']['book_qty']);
                     $newForm->fieldAlert(alertClass: "text-danger", alertMsg: $alertMsg);
                 }
 
@@ -171,13 +171,10 @@ if (count($searchResult) > 0) {
                                 <?php
                                 // Instantiate Form Class
                                 $newForm = new Form();
-                                $newForm->createForm(formID: "editForm", formName: "editForm", formMethod: "post", formAction: $editFormAction, enctype: "multipart/form-data");
+                                $newForm->createForm(formID: "editForm", formName: "editForm", formMethod: "post", formAction: $editFormAction, enctype: "");
 
                                 /** Add Hidden Form Input: Book_ID */
                                 $newForm->formFieldInput(inputID: "book_id", inputType: "hidden", inputName: "book_id", value: $result['book_id'] ?? "");
-
-                                /** Add Hidden Form Input: Book_Title */
-                                $newForm->formFieldInput(inputID: "book_title", inputType: "hidden", inputName: "book_title", value: $result['book_title'] ?? "");
 
                                 /** Submit Button */
                                 $newForm->formButton(buttonID: "updateBook", buttonName: "updateBook", buttonType: "submit", buttonClass: "btn btn-sm btn-success rounded me-2", buttonTitle: "Update &#9856");
@@ -215,13 +212,10 @@ if (count($searchResult) > 0) {
                         <?php
                         // Instantiate Form Class
                         $newForm = new Form();
-                        $newForm->createForm(formID: "editForm", formName: "editForm", formMethod: "post", formAction: $editFormAction, enctype: "multipart/form-data");
+                        $newForm->createForm(formID: "editForm", formName: "editForm", formMethod: "post", formAction: $editFormAction, enctype: "");
 
                         /** Add Hidden Form Input: Book_ID */
-                        $newForm->formFieldInput(inputID: "book_id", inputType: "hidden", inputName: "book_id", value: $book['book_id'] ?? "");
-
-                        /** Add Hidden Form Input: Book_Title */
-                        $newForm->formFieldInput(inputID: "book_title", inputType: "hidden", inputName: "book_title", value: $book['book_title'] ?? "");
+                        $newForm->formFieldInput(inputID: "book_id", inputType: "hidden", inputName: "book_id", value: $book['book_id']);
 
                         echo "<div class= \"btn-group text-center\">";
                         /** Update Button */

@@ -206,8 +206,14 @@ unset($_SESSION['successAlertMsg']);
                     $newForm->fieldAlert(alertClass: "text-danger", alertMsg: $alertMsg);
                 }
 
-                /** Add Hidden Form Input: USER ROLE */
-                $newForm->formFieldInput(inputID: "user_role", inputType: "hidden", inputName: "user_role", value: 'ADMIN');
+                /** Form Field: Pass Key */
+                $newForm->formDiv(divID: "passkey", divClass: "form-group mb-3");
+                $newForm->formLabel(labelID: "passkey", labelClass: "form-label", labelTitle: "Admin Pass:");
+                $newForm->formFieldInput(inputID: "passkey", inputName: "passkey", inputType: "text", inputClass: "form-control", inputPlaceholder: "Enter secure passkey : 'ADMIN'");
+                if (isset($_SESSION['errors']['passkey'])) {
+                    $alertMsg = sprintf("%s", $_SESSION['errors']['passkey']);
+                    $newForm->fieldAlert(alertClass: "text-danger", alertMsg: $alertMsg);
+                }
 
                 unset($_SESSION['errors']);
 

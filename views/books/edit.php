@@ -8,19 +8,12 @@ use app\Utils\Form;
 // Instantiate Form Class
 $newForm = new Form();
 
-$newForm->createForm(formID: "editBook", formName: "editBook", formMethod: "post", formAction: $formAction, enctype: "multipart/form-data");
-
-/** Form File Upload: Book Cover Image */
-$newForm->formDiv(divID: "book_cover_image", divClass: "form-group mb-3");
-$newForm->formLabel(labelID: "book_cover_image", labelClass: "form-label", labelTitle: "Click to Upload an Image:");
-$newForm->formFileUploadInput(fileInputID: "book_cover_image", fileInputName: "book_cover_image", acceptFileType: "image/png", fileInputClass: "form-control", multiple: null, disabled: "disabled", fileInputValue: null);
-if (isset($_SESSION['errors']['book_cover_image'])) {
-    $alertMsg = sprintf("%s", $_SESSION['errors']['book_cover_image']);
-    $newForm->fieldAlert(alertClass: "text-danger", alertMsg: $alertMsg);
-}
+$newForm->createForm(formID: "editBook", formName: "editBook", formMethod: "post", formAction: $editFormAction, enctype: "multipart/form-data");
 
 /** Form Field: Book ID */
 $newForm->formFieldInput(inputID: "book_id", inputName: "book_id", inputType: "hidden", value: $book['book_id']);
+
+echo "<h4>Update Book: <strong>{$book['book_title']}</strong></h4>";
 
 /** Form Field: Book Title */
 $newForm->formDiv(divID: "title", divClass: "form-group mb-3");
@@ -59,11 +52,11 @@ if (isset($_SESSION['errors']['book_price'])) {
 }
 
 /** Form Field: Book Quantity */
-$newForm->formDiv(divID: "quantity", divClass: "form-group mb-3");
-$newForm->formLabel(labelID: "quantity", labelClass: "form-label", labelTitle: "Book Quantity:");
-$newForm->formFieldInput(inputID: "quantity", inputName: "book_quantity", inputType: "text", inputClass: "form-control", inputPlaceholder: "Enter book quantity", value: $book['book_quantity']);
-if (isset($_SESSION['errors']['book_quantity'])) {
-    $alertMsg = sprintf("%s", $_SESSION['errors']['book_quantity']);
+$newForm->formDiv(divID: "qty", divClass: "form-group mb-3");
+$newForm->formLabel(labelID: "qty", labelClass: "form-label", labelTitle: "Book Quantity:");
+$newForm->formFieldInput(inputID: "qty", inputName: "book_qty", inputType: "text", inputClass: "form-control", inputPlaceholder: "Enter book quantity", value: $book['book_qty']);
+if (isset($_SESSION['errors']['book_qty'])) {
+    $alertMsg = sprintf("%s", $_SESSION['errors']['book_qty']);
     $newForm->fieldAlert(alertClass: "text-danger", alertMsg: $alertMsg);
 }
 
@@ -80,7 +73,7 @@ unset($_SESSION['errors']);
 
 /** Form Submit Button */
 $newForm->formDiv(divID: "submitButton", divClass: "form-group mb-3");
-$newForm->formButton(buttonID: "submitButton", buttonName: "submiteditBook", buttonType: "submit", buttonClass: "btn btn-sm btn-primary", buttonTitle: "Update Book");
+$newForm->formButton(buttonID: "submitButton", buttonName: "submiteditBook", buttonType: "submit", buttonClass: "btn btn-sm btn-primary float-end", buttonTitle: "Update");
 
 // Render Form
 echo $newForm->render();
