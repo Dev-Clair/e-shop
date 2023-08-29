@@ -13,7 +13,7 @@ $newForm->createForm(formID: "editBook", formName: "editBook", formMethod: "post
 /** Form Field: Book ID */
 $newForm->formFieldInput(inputID: "book_id", inputName: "book_id", inputType: "hidden", value: $book['book_id']);
 
-echo "<h4>Update Book: <strong>{$book['book_title']}</strong></h4>";
+echo "<h4>Update: <strong>{$book['book_title']}</strong> by <strong>{$book['book_author']}</strong></h4>";
 
 /** Form Field: Book Title */
 $newForm->formDiv(divID: "title", divClass: "form-group mb-3");
