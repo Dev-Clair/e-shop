@@ -29,7 +29,7 @@ class HomeController extends AbsController
             [
                 'retrieved_books' => array_slice($retrieved_books, 0, 20),
                 'pageTitle' => '&#128366 Home',
-                'searchFormAction' => '/e-shop/books/search?redirectTo=' . rtrim(basename($_SERVER['PHP_SELF']), ".php"),
+                'searchFormAction' => '/e-shop/books/search',
                 'cartFormAction' => '/e-shop/books/addToCart'
             ]
         );
