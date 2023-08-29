@@ -34,7 +34,7 @@ class BookController extends AbsController
                 'retrieved_books' => array_slice($retrieved_books, 0, 50),
                 'cart' => $cart,
                 'pageTitle' => '&#128366 Books',
-                'searchFormAction' => '/e-shop/books/search?redirectTo=' . rtrim(basename($_SERVER['PHP_SELF']), ".php"),
+                'searchFormAction' => '/e-shop/books/search',
                 'cartFormAction' => '/e-shop/books/addToCart'
             ]
         );
@@ -147,16 +147,14 @@ class BookController extends AbsController
 
             $fieldValue = $searchInput;
 
-            $redirectTo = $_GET['redirectTo'];
-
             $searchResult = $this->bookModel->searchBook(tableName: "books", fieldName: "book_title", fieldValue: $fieldValue);
             if (!empty($searchResult)) {
                 $_SESSION['searchResult'] = $searchResult;
                 $message = sprintf("%s", "Similar Records Found for: $searchInput");
-                $this->successRedirect(message: $message, redirectTo: $redirectTo);
+                $this->successRedirect(message: $message, redirectTo: "");
             }
             $message = sprintf("%s", "No Similar Record Found for: &#128366 $searchInput");
-            $this->errorRedirect(message: $message, redirectTo: $redirectTo);
+            $this->errorRedirect(message: $message, redirectTo: "");
         }
     }
 
@@ -222,7 +220,7 @@ class BookController extends AbsController
                 $this->errorRedirect(message: "Item already exists in your cart!", redirectTo: "");
             }
 
-            $user_id = $_SESSION['user_id'];
+            $user_id = $_SESSION['user_id'] ?? null;
 
             $cart_no = rand(9, 989);
             $cart_item_id = "crt" . $cart_no++;
@@ -240,13 +238,15 @@ class BookController extends AbsController
                 "cart_item_amt" => $default_qty * $book["book_price"]
             ];
 
-            $addToCartStatus = $this->cartModel->createCartItem(tableName: "cartitems", sanitizedData: $sanitizedData);
-
-            if ($addToCartStatus) {
-                $this->cartAddSuccess(message: "Book added to your cart!");
-            } else {
-                $this->cartAddError(message: "Failed to add book to your cart!");
+            if (is_null($user_id)) {
+                $this->errorRedirect(message: "Unauthorized! Kindly Login", redirectTo: "users");
             }
+
+            $this->cartModel->createCartItem(tableName: "cartitems", sanitizedData: $sanitizedData)
+                ?
+                $this->cartAddSuccess(message: "Book added to your cart!")
+                :
+                $this->cartAddError(message: "Failed to add book to your cart!");
         }
     }
 }
