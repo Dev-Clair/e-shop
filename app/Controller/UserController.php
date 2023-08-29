@@ -108,10 +108,10 @@ class UserController extends AbsController
 
             // User Role Field
             $admin_passkey = strtoupper($_POST['passkey']);
-            if ($admin_passkey === 'ADMIN') {
-                $user_role = $_POST['passkey'];
+            if ($admin_passkey !== 'ADMIN') {
+                $errors['passkey'] = "Invalid passkey";
             }
-            $errors['passkey'] = "Invalid passkey";
+            $user_role = $_POST['passkey'];
 
             // Check for userinput Errors
             if (!empty($errors)) {
